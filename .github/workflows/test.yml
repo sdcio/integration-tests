@@ -11,5 +11,29 @@ jobs:
         with:
           path: integration-tests
 
-      - name: Debug
+      - name: Checkout schema-server
+        uses: actions/checkout@v4
+        with:
+          repository: iptecharch/schema-server
+          token: ${{ secrets.GH_PAT }} # `GH_PAT` is a secret that contains your PAT
+          path: data-server
+      
+      - name: Checkout data-server
+        uses: actions/checkout@v4
+        with:
+          repository: iptecharch/data-server
+          token: ${{ secrets.GH_PAT }} # `GH_PAT` is a secret that contains your PAT
+          path: data-server
+      
+      - name: Checkout cache
+        uses: actions/checkout@v4
+        with:
+          repository: iptecharch/cache
+          token: ${{ secrets.GH_PAT }} # `GH_PAT` is a secret that contains your PAT
+          path: cache
+      
+      
+      - name: Debug 1
+        run: ls -al
+      - name: Debug 2
         run: ls -al */
