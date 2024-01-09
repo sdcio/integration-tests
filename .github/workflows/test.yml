@@ -16,7 +16,7 @@ jobs:
         with:
           repository: iptecharch/schema-server
           token: ${{ secrets.GH_PAT }} # `GH_PAT` is a secret that contains your PAT
-          path: data-server
+          path: schema-server
       
       - name: Checkout data-server
         uses: actions/checkout@v4
@@ -31,7 +31,11 @@ jobs:
           repository: iptecharch/cache
           token: ${{ secrets.GH_PAT }} # `GH_PAT` is a secret that contains your PAT
           path: cache
-      
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GOVER }}
+      - name: Display Go version
+        run: go version
       
       - name: Debug 1
         run: ls -al
