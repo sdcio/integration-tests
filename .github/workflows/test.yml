@@ -1,0 +1,15 @@
+name: poc-integration-tests
+
+on: workflow_dispatch
+
+jobs:
+  build-distributed:
+    runs-on: iptecharch-action-runners
+    steps:
+      - name: Checkout integration-tests
+        uses: actions/checkout@v4
+        with:
+          path: integration-tests
+
+      - name: Debug
+        run: ls -al */
