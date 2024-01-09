@@ -2,6 +2,9 @@ name: poc-integration-tests
 
 on: workflow_dispatch
 
+env:
+  GOVER: 1.21.4
+
 jobs:
   build-distributed:
     runs-on: iptecharch-action-runners
