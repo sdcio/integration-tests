@@ -1,0 +1,52 @@
+name: docker-build
+
+on: workflow_dispatch
+
+env:
+  GOVER: 1.21.4
+
+jobs:
+  docker-build:
+    runs-on: iptecharch-action-runners
+    steps:
+      - name: Checkout integration-tests
+        uses: actions/checkout@v4
+        with:
+          path: integration-tests
+
+      - name: Checkout schema-server
+        uses: actions/checkout@v4
+        with:
+          repository: iptecharch/schema-server
+          token: ${{ secrets.GH_PAT }} # `GH_PAT` is a secret that contains your PAT
+          path: schema-server
+
+      - name: Checkout data-server
+        uses: actions/checkout@v4
+        with:
+          repository: iptecharch/data-server
+          token: ${{ secrets.GH_PAT }} # `GH_PAT` is a secret that contains your PAT
+          path: data-server
+
+      - name: Checkout cache
+        uses: actions/checkout@v4
+        with:
+          repository: iptecharch/cache
+          token: ${{ secrets.GH_PAT }} # `GH_PAT` is a secret that contains your PAT
+          path: cache
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+          #- name: Login to Docker Hub
+          # uses: docker/login-action@v3
+          #with:
+          #username: ${{ secrets.HARBOR_USERNAME }}
+          #password: ${{ secrets.HARBOR_TOKEN }}
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: data-server
+          push: true
+          tags: registry.k8s.hans.io/iptecharch/data-server:v0.0.0-hash
