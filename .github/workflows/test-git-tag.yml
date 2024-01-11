@@ -38,7 +38,8 @@ jobs:
         uses: actions/checkout@v4
         with:
           path: integration-tests
-      
+      - name: echo output
+        run: echo ${{ needs.get-tag.outputs }}
       - name: Debug 1
         run: ls -al
       - name: Debug 2
