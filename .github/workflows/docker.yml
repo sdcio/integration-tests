@@ -34,7 +34,19 @@ jobs:
           repository: iptecharch/cache
           token: ${{ secrets.GH_PAT }} # `GH_PAT` is a secret that contains your PAT
           path: cache
-
+      - name: Add SSH key
+        env:
+          SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+        run: |
+          mkdir -p /home/runner/.ssh
+          # Replace example.com with the hostname of the machine
+          # you're SSH-ing into
+          ssh-keyscan github.com >> /home/runner/.ssh/known_hosts
+          # IPTECHARCH_SSH_KEY is the name of the repository secret
+          echo "${{ secrets.IPTECHARCH_SSH_KEY }}" > /home/runner/.ssh/github_actions
+          chmod 600 /home/runner/.ssh/github_actions
+          ssh-agent -a $SSH_AUTH_SOCK > /dev/null	
+          ssh-add /home/runner/.ssh/github_actions
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
@@ -50,3 +62,5 @@ jobs:
           context: data-server
           push: true
           tags: registry.k8s.hans.io/iptecharch/data-server:v0.0.0-hash
+          ssh: |
+            default=${{ env.SSH_AUTH_SOCK }}
