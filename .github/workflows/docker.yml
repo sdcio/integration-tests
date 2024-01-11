@@ -9,6 +9,9 @@ jobs:
   docker-build:
     runs-on: iptecharch-action-runners
     steps:
+      - name: Install OpenSSH Client
+        run: sudo apt install openssh-client
+        
       - name: Checkout integration-tests
         uses: actions/checkout@v4
         with:
