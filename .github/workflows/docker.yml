@@ -10,8 +10,10 @@ jobs:
     runs-on: iptecharch-action-runners
     steps:
       - name: Install OpenSSH Client
-        run: sudo apt install openssh-client
-        
+        run: |
+          sudo apt update
+          sudo apt install openssh-client
+
       - name: Checkout integration-tests
         uses: actions/checkout@v4
         with:
