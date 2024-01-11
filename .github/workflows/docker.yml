@@ -11,8 +11,8 @@ jobs:
     steps:
       - name: Install OpenSSH Client
         run: |
-          sudo apt update
-          sudo apt install openssh-client
+          sudo apt-get update -y
+          sudo apt-get install -y openssh-client
 
       - name: Checkout integration-tests
         uses: actions/checkout@v4
