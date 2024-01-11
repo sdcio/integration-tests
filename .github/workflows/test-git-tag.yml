@@ -21,12 +21,12 @@ jobs:
           fetch-depth: 0
           repository: ${{ matrix.repository }}
           token: ${{ secrets.GH_PAT }} # `GH_PAT` is a secret that contains your PAT
-          path: ${{ matrix.repository }}
 
       - name: Get git tag
         id: git_tag
         run: |
-          echo "git_tag=$(git tag --points-at)" >> $GITHUB_OUTPUT
+          echo "$(git describe --tags --long --candidates 100)"
+          echo "git_tag=$(git describe --tags --long --candidates 100)" >> $GITHUB_OUTPUT
           echo ${{ steps.git_tag.outputs.git_tag }}
 
   build:
