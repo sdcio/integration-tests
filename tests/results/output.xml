@@ -1,0 +1,3580 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot generator="Robot 6.0.2 (Python 3.10.13 on linux)" generated="20231212 13:37:29.340" rpa="false" schemaversion="3">
+<suite id="s1" name="Robot" source="/app/tests/robot">
+<suite id="s1-s1" name="Tests" source="/app/tests/robot/tests">
+<suite id="s1-s1-s1" name="Leafref" source="/app/tests/robot/tests/leafref">
+<suite id="s1-s1-s1-s1" name="Leafref Statements" source="/app/tests/robot/tests/leafref/leafref_statements.robot">
+<test id="s1-s1-s1-s1-t1" name="BGP export-policy non-existing" line="43">
+<kw name="LogLeafRefStatements" library="client">
+<arg>${srlinux1-schema-name}</arg>
+<arg>${srlinux1-schema-version}</arg>
+<arg>${srlinux1-schema-vendor}</arg>
+<arg>network-instance[name=default]/protocols/bgp/group</arg>
+<doc>Takes vendor, name, version and a path, retrieves the schema for the given path, extracts the returned leafref_statements and logs them.</doc>
+<kw name="GetSchema" library="client">
+<var>${schema}</var>
+<arg>${name}</arg>
+<arg>${version}</arg>
+<arg>${vendor}</arg>
+<arg>${path}</arg>
+<doc>Retrieve the schema element described by name (plattform name), version and vendor under the given path.</doc>
+<kw name="Run Process" library="Process">
+<var>${result}</var>
+<arg>${CLIENT-BIN}</arg>
+<arg>-a</arg>
+<arg>${SCHEMA-SERVER-IP}:${SCHEMA-SERVER-PORT}</arg>
+<arg>schema</arg>
+<arg>get</arg>
+<arg>--name</arg>
+<arg>${name}</arg>
+<arg>--version</arg>
+<arg>${version}</arg>
+<arg>--vendor</arg>
+<arg>${vendor}</arg>
+<arg>--path</arg>
+<arg>${path}</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<msg timestamp="20231212 13:37:29.472" level="INFO">Starting process:
+./bin/datactl -a 127.0.0.1:55000 schema get --name srl --version 22.11.2 --vendor Nokia --path network-instance[name=default]/protocols/bgp/group</msg>
+<msg timestamp="20231212 13:37:29.507" level="INFO">Waiting for process to complete.</msg>
+<msg timestamp="20231212 13:37:29.609" level="INFO">Process completed.</msg>
+<msg timestamp="20231212 13:37:29.610" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:37:29.471" endtime="20231212 13:37:29.610"/>
+</kw>
+<return>
+<value>${result}</value>
+<status status="PASS" starttime="20231212 13:37:29.610" endtime="20231212 13:37:29.610"/>
+</return>
+<msg timestamp="20231212 13:37:29.610" level="INFO">${schema} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:37:29.470" endtime="20231212 13:37:29.611"/>
+</kw>
+<kw name="_ExtractLeafRefStatements" library="client">
+<var>${lref}</var>
+<arg>${schema.stdout}</arg>
+<doc>Takes a GetSchema response and extracts the leafref_statements of the response.</doc>
+<kw name="Get Regexp Matches" library="String">
+<var>${matches}</var>
+<arg>${input}</arg>
+<arg>leafref:\\s*".*"</arg>
+<arg>flags=IGNORECASE</arg>
+<doc>Returns a list of all non-overlapping matches in the given string.</doc>
+<msg timestamp="20231212 13:37:29.613" level="INFO">${matches} = []</msg>
+<status status="PASS" starttime="20231212 13:37:29.613" endtime="20231212 13:37:29.614"/>
+</kw>
+<return>
+<value>${matches}</value>
+<status status="PASS" starttime="20231212 13:37:29.614" endtime="20231212 13:37:29.614"/>
+</return>
+<msg timestamp="20231212 13:37:29.614" level="INFO">${lref} = []</msg>
+<status status="PASS" starttime="20231212 13:37:29.611" endtime="20231212 13:37:29.614"/>
+</kw>
+<for flavor="IN">
+<var>${item}</var>
+<value>@{lref}</value>
+<iter>
+<var name="${item}"/>
+<kw name="Log" library="BuiltIn">
+<arg>${item}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="NOT RUN" starttime="20231212 13:37:29.615" endtime="20231212 13:37:29.615"/>
+</kw>
+<status status="NOT RUN" starttime="20231212 13:37:29.614" endtime="20231212 13:37:29.615"/>
+</iter>
+<status status="NOT RUN" starttime="20231212 13:37:29.614" endtime="20231212 13:37:29.615"/>
+</for>
+<status status="PASS" starttime="20231212 13:37:29.469" endtime="20231212 13:37:29.615"/>
+</kw>
+<kw name="CreateCandidate" library="client">
+<arg>${srlinux1-name}</arg>
+<arg>${srlinux1-candidate}</arg>
+<doc>Create a new named Candidate in the given Datastore</doc>
+<kw name="Run Process" library="Process">
+<var>${result}</var>
+<arg>${CLIENT-BIN}</arg>
+<arg>-a</arg>
+<arg>${DATA-SERVER-IP}:${DATA-SERVER-PORT}</arg>
+<arg>datastore</arg>
+<arg>create</arg>
+<arg>--ds</arg>
+<arg>${datastore}</arg>
+<arg>--candidate</arg>
+<arg>${candidate}</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<msg timestamp="20231212 13:37:29.616" level="INFO">Starting process:
+./bin/datactl -a 127.0.0.1:56000 datastore create --ds srl1 --candidate default</msg>
+<msg timestamp="20231212 13:37:29.618" level="INFO">Waiting for process to complete.</msg>
+<msg timestamp="20231212 13:37:39.622" level="INFO">Process completed.</msg>
+<msg timestamp="20231212 13:37:39.623" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:37:29.616" endtime="20231212 13:37:39.623"/>
+</kw>
+<return>
+<value>${result}</value>
+<status status="PASS" starttime="20231212 13:37:39.623" endtime="20231212 13:37:39.624"/>
+</return>
+<status status="PASS" starttime="20231212 13:37:29.615" endtime="20231212 13:37:39.624"/>
+</kw>
+<kw name="Set" library="client">
+<var>${result}</var>
+<arg>${srlinux1-name}</arg>
+<arg>${srlinux1-candidate}</arg>
+<arg>network-instance[name=default]/protocols/bgp/group[group-name=foo]/export-policy:::bar-policy</arg>
+<doc>Applies to the candidate of the given datastore the provided update</doc>
+<kw name="Run Process" library="Process">
+<var>${result}</var>
+<arg>${CLIENT-BIN}</arg>
+<arg>-a</arg>
+<arg>${DATA-SERVER-IP}:${DATA-SERVER-PORT}</arg>
+<arg>data</arg>
+<arg>set</arg>
+<arg>--ds</arg>
+<arg>${datastore}</arg>
+<arg>--candidate</arg>
+<arg>${candidate}</arg>
+<arg>--update</arg>
+<arg>${update}</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<msg timestamp="20231212 13:37:39.627" level="INFO">Starting process:
+./bin/datactl -a 127.0.0.1:56000 data set --ds srl1 --candidate default --update network-instance[name=default]/protocols/bgp/group[group-name=foo]/export-policy:::bar-policy</msg>
+<msg timestamp="20231212 13:37:39.631" level="INFO">Waiting for process to complete.</msg>
+<msg timestamp="20231212 13:37:49.635" level="INFO">Process completed.</msg>
+<msg timestamp="20231212 13:37:49.635" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:37:39.626" endtime="20231212 13:37:49.636"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${result.stdout}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20231212 13:37:49.639" level="INFO"/>
+<status status="PASS" starttime="20231212 13:37:49.636" endtime="20231212 13:37:49.639"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${result.stderr}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20231212 13:37:49.642" level="INFO">Error: context deadline exceeded</msg>
+<status status="PASS" starttime="20231212 13:37:49.640" endtime="20231212 13:37:49.642"/>
+</kw>
+<return>
+<value>${result}</value>
+<status status="PASS" starttime="20231212 13:37:49.643" endtime="20231212 13:37:49.643"/>
+</return>
+<msg timestamp="20231212 13:37:49.643" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:37:39.625" endtime="20231212 13:37:49.643"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${result.rc}</arg>
+<arg>0</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<msg timestamp="20231212 13:37:49.646" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;class 'str'&gt;</msg>
+<msg timestamp="20231212 13:37:49.647" level="FAIL">1 != 0</msg>
+<status status="FAIL" starttime="20231212 13:37:49.644" endtime="20231212 13:37:49.647"/>
+</kw>
+<kw name="Commit" library="client">
+<var>${result}</var>
+<arg>${srlinux1-name}</arg>
+<arg>${srlinux1-candidate}</arg>
+<doc>Performs a commit on the given datastore/candidate and returns the Process Result object https://robotframework.org/robotframework/latest/libraries/Process.html#Result%20object</doc>
+<status status="NOT RUN" starttime="20231212 13:37:49.647" endtime="20231212 13:37:49.648"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${result.stderr}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="NOT RUN" starttime="20231212 13:37:49.648" endtime="20231212 13:37:49.648"/>
+</kw>
+<kw name="Should Contain" library="BuiltIn">
+<arg>${result.stderr}</arg>
+<arg>missing leaf reference</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="NOT RUN" starttime="20231212 13:37:49.649" endtime="20231212 13:37:49.649"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${result.rc}</arg>
+<arg>1</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="NOT RUN" starttime="20231212 13:37:49.649" endtime="20231212 13:37:49.649"/>
+</kw>
+<kw name="DeleteCandidate" library="client">
+<arg>${srlinux1-name}</arg>
+<arg>${srlinux1-candidate}</arg>
+<doc>Delete a named Candidate in the given Datastore</doc>
+<status status="NOT RUN" starttime="20231212 13:37:49.649" endtime="20231212 13:37:49.650"/>
+</kw>
+<status status="FAIL" starttime="20231212 13:37:29.468" endtime="20231212 13:37:49.651">1 != 0</status>
+</test>
+<test id="s1-s1-s1-s1-t2" name="BGP export-policy existing" line="58">
+<kw name="LogLeafRefStatements" library="client">
+<arg>${srlinux1-schema-name}</arg>
+<arg>${srlinux1-schema-version}</arg>
+<arg>${srlinux1-schema-vendor}</arg>
+<arg>network-instance[name=default]/protocols/bgp/group</arg>
+<doc>Takes vendor, name, version and a path, retrieves the schema for the given path, extracts the returned leafref_statements and logs them.</doc>
+<kw name="GetSchema" library="client">
+<var>${schema}</var>
+<arg>${name}</arg>
+<arg>${version}</arg>
+<arg>${vendor}</arg>
+<arg>${path}</arg>
+<doc>Retrieve the schema element described by name (plattform name), version and vendor under the given path.</doc>
+<kw name="Run Process" library="Process">
+<var>${result}</var>
+<arg>${CLIENT-BIN}</arg>
+<arg>-a</arg>
+<arg>${SCHEMA-SERVER-IP}:${SCHEMA-SERVER-PORT}</arg>
+<arg>schema</arg>
+<arg>get</arg>
+<arg>--name</arg>
+<arg>${name}</arg>
+<arg>--version</arg>
+<arg>${version}</arg>
+<arg>--vendor</arg>
+<arg>${vendor}</arg>
+<arg>--path</arg>
+<arg>${path}</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<msg timestamp="20231212 13:37:49.657" level="INFO">Starting process:
+./bin/datactl -a 127.0.0.1:55000 schema get --name srl --version 22.11.2 --vendor Nokia --path network-instance[name=default]/protocols/bgp/group</msg>
+<msg timestamp="20231212 13:37:49.660" level="INFO">Waiting for process to complete.</msg>
+<msg timestamp="20231212 13:37:49.663" level="INFO">Process completed.</msg>
+<msg timestamp="20231212 13:37:49.664" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:37:49.655" endtime="20231212 13:37:49.664"/>
+</kw>
+<return>
+<value>${result}</value>
+<status status="PASS" starttime="20231212 13:37:49.664" endtime="20231212 13:37:49.664"/>
+</return>
+<msg timestamp="20231212 13:37:49.665" level="INFO">${schema} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:37:49.654" endtime="20231212 13:37:49.665"/>
+</kw>
+<kw name="_ExtractLeafRefStatements" library="client">
+<var>${lref}</var>
+<arg>${schema.stdout}</arg>
+<doc>Takes a GetSchema response and extracts the leafref_statements of the response.</doc>
+<kw name="Get Regexp Matches" library="String">
+<var>${matches}</var>
+<arg>${input}</arg>
+<arg>leafref:\\s*".*"</arg>
+<arg>flags=IGNORECASE</arg>
+<doc>Returns a list of all non-overlapping matches in the given string.</doc>
+<msg timestamp="20231212 13:37:49.668" level="INFO">${matches} = []</msg>
+<status status="PASS" starttime="20231212 13:37:49.667" endtime="20231212 13:37:49.668"/>
+</kw>
+<return>
+<value>${matches}</value>
+<status status="PASS" starttime="20231212 13:37:49.668" endtime="20231212 13:37:49.668"/>
+</return>
+<msg timestamp="20231212 13:37:49.669" level="INFO">${lref} = []</msg>
+<status status="PASS" starttime="20231212 13:37:49.665" endtime="20231212 13:37:49.669"/>
+</kw>
+<for flavor="IN">
+<var>${item}</var>
+<value>@{lref}</value>
+<iter>
+<var name="${item}"/>
+<kw name="Log" library="BuiltIn">
+<arg>${item}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="NOT RUN" starttime="20231212 13:37:49.669" endtime="20231212 13:37:49.670"/>
+</kw>
+<status status="NOT RUN" starttime="20231212 13:37:49.669" endtime="20231212 13:37:49.670"/>
+</iter>
+<status status="NOT RUN" starttime="20231212 13:37:49.669" endtime="20231212 13:37:49.670"/>
+</for>
+<status status="PASS" starttime="20231212 13:37:49.652" endtime="20231212 13:37:49.670"/>
+</kw>
+<kw name="CreateCandidate" library="client">
+<arg>${srlinux1-name}</arg>
+<arg>${srlinux1-candidate}</arg>
+<doc>Create a new named Candidate in the given Datastore</doc>
+<kw name="Run Process" library="Process">
+<var>${result}</var>
+<arg>${CLIENT-BIN}</arg>
+<arg>-a</arg>
+<arg>${DATA-SERVER-IP}:${DATA-SERVER-PORT}</arg>
+<arg>datastore</arg>
+<arg>create</arg>
+<arg>--ds</arg>
+<arg>${datastore}</arg>
+<arg>--candidate</arg>
+<arg>${candidate}</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<msg timestamp="20231212 13:37:49.672" level="INFO">Starting process:
+./bin/datactl -a 127.0.0.1:56000 datastore create --ds srl1 --candidate default</msg>
+<msg timestamp="20231212 13:37:49.674" level="INFO">Waiting for process to complete.</msg>
+<msg timestamp="20231212 13:37:59.678" level="INFO">Process completed.</msg>
+<msg timestamp="20231212 13:37:59.678" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:37:49.671" endtime="20231212 13:37:59.678"/>
+</kw>
+<return>
+<value>${result}</value>
+<status status="PASS" starttime="20231212 13:37:59.679" endtime="20231212 13:37:59.679"/>
+</return>
+<status status="PASS" starttime="20231212 13:37:49.670" endtime="20231212 13:37:59.679"/>
+</kw>
+<kw name="GetSchema" library="client">
+<var>${result}</var>
+<arg>${srlinux1-schema-name}</arg>
+<arg>${srlinux1-schema-version}</arg>
+<arg>${srlinux1-schema-vendor}</arg>
+<arg>routing-policy/policy[name=bar-policy]/default-action/policy-result:::reject</arg>
+<doc>Retrieve the schema element described by name (plattform name), version and vendor under the given path.</doc>
+<kw name="Run Process" library="Process">
+<var>${result}</var>
+<arg>${CLIENT-BIN}</arg>
+<arg>-a</arg>
+<arg>${SCHEMA-SERVER-IP}:${SCHEMA-SERVER-PORT}</arg>
+<arg>schema</arg>
+<arg>get</arg>
+<arg>--name</arg>
+<arg>${name}</arg>
+<arg>--version</arg>
+<arg>${version}</arg>
+<arg>--vendor</arg>
+<arg>${vendor}</arg>
+<arg>--path</arg>
+<arg>${path}</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<msg timestamp="20231212 13:37:59.682" level="INFO">Starting process:
+./bin/datactl -a 127.0.0.1:55000 schema get --name srl --version 22.11.2 --vendor Nokia --path routing-policy/policy[name=bar-policy]/default-action/policy-result:::reject</msg>
+<msg timestamp="20231212 13:37:59.686" level="INFO">Waiting for process to complete.</msg>
+<msg timestamp="20231212 13:37:59.689" level="INFO">Process completed.</msg>
+<msg timestamp="20231212 13:37:59.689" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:37:59.681" endtime="20231212 13:37:59.689"/>
+</kw>
+<return>
+<value>${result}</value>
+<status status="PASS" starttime="20231212 13:37:59.690" endtime="20231212 13:37:59.690"/>
+</return>
+<msg timestamp="20231212 13:37:59.690" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:37:59.680" endtime="20231212 13:37:59.690"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${result.stdout}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20231212 13:37:59.693" level="INFO"/>
+<status status="PASS" starttime="20231212 13:37:59.691" endtime="20231212 13:37:59.693"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${result.stderr}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20231212 13:37:59.695" level="INFO">Error: unknown command "schema" for "datactl"
+Run 'datactl --help' for usage.</msg>
+<status status="PASS" starttime="20231212 13:37:59.693" endtime="20231212 13:37:59.695"/>
+</kw>
+<kw name="Set" library="client">
+<var>${result}</var>
+<arg>${srlinux1-name}</arg>
+<arg>${srlinux1-candidate}</arg>
+<arg>routing-policy/policy[name=mypolicy]/default-action/policy-result:::reject</arg>
+<doc>Applies to the candidate of the given datastore the provided update</doc>
+<kw name="Run Process" library="Process">
+<var>${result}</var>
+<arg>${CLIENT-BIN}</arg>
+<arg>-a</arg>
+<arg>${DATA-SERVER-IP}:${DATA-SERVER-PORT}</arg>
+<arg>data</arg>
+<arg>set</arg>
+<arg>--ds</arg>
+<arg>${datastore}</arg>
+<arg>--candidate</arg>
+<arg>${candidate}</arg>
+<arg>--update</arg>
+<arg>${update}</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<msg timestamp="20231212 13:37:59.697" level="INFO">Starting process:
+./bin/datactl -a 127.0.0.1:56000 data set --ds srl1 --candidate default --update routing-policy/policy[name=mypolicy]/default-action/policy-result:::reject</msg>
+<msg timestamp="20231212 13:37:59.700" level="INFO">Waiting for process to complete.</msg>
+<msg timestamp="20231212 13:38:09.704" level="INFO">Process completed.</msg>
+<msg timestamp="20231212 13:38:09.704" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:37:59.696" endtime="20231212 13:38:09.704"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${result.stdout}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20231212 13:38:09.706" level="INFO"/>
+<status status="PASS" starttime="20231212 13:38:09.705" endtime="20231212 13:38:09.706"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${result.stderr}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20231212 13:38:09.708" level="INFO">Error: context deadline exceeded</msg>
+<status status="PASS" starttime="20231212 13:38:09.707" endtime="20231212 13:38:09.708"/>
+</kw>
+<return>
+<value>${result}</value>
+<status status="PASS" starttime="20231212 13:38:09.708" endtime="20231212 13:38:09.708"/>
+</return>
+<msg timestamp="20231212 13:38:09.709" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:37:59.695" endtime="20231212 13:38:09.709"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${result.stdout}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20231212 13:38:09.710" level="INFO"/>
+<status status="PASS" starttime="20231212 13:38:09.709" endtime="20231212 13:38:09.710"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${result.stderr}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20231212 13:38:09.711" level="INFO">Error: context deadline exceeded</msg>
+<status status="PASS" starttime="20231212 13:38:09.710" endtime="20231212 13:38:09.712"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${result.rc}</arg>
+<arg>0</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<msg timestamp="20231212 13:38:09.713" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;class 'str'&gt;</msg>
+<msg timestamp="20231212 13:38:09.713" level="FAIL">1 != 0</msg>
+<status status="FAIL" starttime="20231212 13:38:09.712" endtime="20231212 13:38:09.713"/>
+</kw>
+<kw name="Set" library="client">
+<var>${result}</var>
+<arg>${srlinux1-name}</arg>
+<arg>${srlinux1-candidate}</arg>
+<arg>network-instance[name=default]/protocols/bgp/group[group-name=foo]/export-policy:::mypolicy</arg>
+<doc>Applies to the candidate of the given datastore the provided update</doc>
+<status status="NOT RUN" starttime="20231212 13:38:09.714" endtime="20231212 13:38:09.714"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${result.rc}</arg>
+<arg>0</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="NOT RUN" starttime="20231212 13:38:09.714" endtime="20231212 13:38:09.714"/>
+</kw>
+<kw name="Commit" library="client">
+<var>${result}</var>
+<arg>${srlinux1-name}</arg>
+<arg>${srlinux1-candidate}</arg>
+<doc>Performs a commit on the given datastore/candidate and returns the Process Result object https://robotframework.org/robotframework/latest/libraries/Process.html#Result%20object</doc>
+<status status="NOT RUN" starttime="20231212 13:38:09.714" endtime="20231212 13:38:09.714"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${result.stderr}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="NOT RUN" starttime="20231212 13:38:09.714" endtime="20231212 13:38:09.715"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${result.rc}</arg>
+<arg>0</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="NOT RUN" starttime="20231212 13:38:09.715" endtime="20231212 13:38:09.715"/>
+</kw>
+<kw name="DeleteCandidate" library="client">
+<arg>${srlinux1-name}</arg>
+<arg>${srlinux1-candidate}</arg>
+<doc>Delete a named Candidate in the given Datastore</doc>
+<status status="NOT RUN" starttime="20231212 13:38:09.715" endtime="20231212 13:38:09.715"/>
+</kw>
+<status status="FAIL" starttime="20231212 13:37:49.651" endtime="20231212 13:38:09.716">1 != 0</status>
+</test>
+<status status="FAIL" starttime="20231212 13:37:29.402" endtime="20231212 13:38:09.716"/>
+</suite>
+<status status="FAIL" starttime="20231212 13:37:29.400" endtime="20231212 13:38:09.718"/>
+</suite>
+<suite id="s1-s1-s2" name="Must" source="/app/tests/robot/tests/must">
+<suite id="s1-s1-s2-s1" name="Must Statements" source="/app/tests/robot/tests/must/must_statements.robot">
+<test id="s1-s1-s2-s1-t1" name="Check Server State" line="40">
+<kw name="CheckServerState" library="server">
+<arg>${schema-server-process-alias}</arg>
+<arg>${data-server-process-alias}</arg>
+<arg>${cache-server-process-alias}</arg>
+<doc>Check that schema-server and data-server are still running</doc>
+<kw name="Process Should Be Running" library="Process">
+<arg>handle=${schema-server-process-alias}</arg>
+<arg>error_message="schema-server failed"</arg>
+<doc>Verifies that the process is running.</doc>
+<msg timestamp="20231212 13:38:09.733" level="FAIL">Non-existing index or alias 'ssa'.</msg>
+<status status="FAIL" starttime="20231212 13:38:09.733" endtime="20231212 13:38:09.733"/>
+</kw>
+<kw name="Process Should Be Running" library="Process">
+<arg>handle=${data-server-process-alias}</arg>
+<arg>error_message="data-server failed"</arg>
+<doc>Verifies that the process is running.</doc>
+<status status="NOT RUN" starttime="20231212 13:38:09.733" endtime="20231212 13:38:09.734"/>
+</kw>
+<kw name="Process Should Be Running" library="Process">
+<arg>handle=${cache-server-process-alias}</arg>
+<arg>error_message="cache-server failed"</arg>
+<doc>Verifies that the process is running.</doc>
+<status status="NOT RUN" starttime="20231212 13:38:09.734" endtime="20231212 13:38:09.734"/>
+</kw>
+<status status="FAIL" starttime="20231212 13:38:09.732" endtime="20231212 13:38:09.734"/>
+</kw>
+<status status="FAIL" starttime="20231212 13:38:09.731" endtime="20231212 13:38:09.734">Non-existing index or alias 'ssa'.</status>
+</test>
+<test id="s1-s1-s2-s1-t2" name="Set system0 admin-state disable -&gt; Fail" line="43">
+<kw name="LogMustStatements" library="client">
+<arg>${srlinux1-schema-name}</arg>
+<arg>${srlinux1-schema-version}</arg>
+<arg>${srlinux1-schema-vendor}</arg>
+<arg>interface[name=system0]/admin-state</arg>
+<doc>Takes vendor, name, version and a path, retrieves the schema for the given path, extracts the returned must_statements and logs them.</doc>
+<kw name="GetSchema" library="client">
+<var>${schema}</var>
+<arg>${name}</arg>
+<arg>${version}</arg>
+<arg>${vendor}</arg>
+<arg>${path}</arg>
+<doc>Retrieve the schema element described by name (plattform name), version and vendor under the given path.</doc>
+<kw name="Run Process" library="Process">
+<var>${result}</var>
+<arg>${CLIENT-BIN}</arg>
+<arg>-a</arg>
+<arg>${SCHEMA-SERVER-IP}:${SCHEMA-SERVER-PORT}</arg>
+<arg>schema</arg>
+<arg>get</arg>
+<arg>--name</arg>
+<arg>${name}</arg>
+<arg>--version</arg>
+<arg>${version}</arg>
+<arg>--vendor</arg>
+<arg>${vendor}</arg>
+<arg>--path</arg>
+<arg>${path}</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<msg timestamp="20231212 13:38:09.738" level="INFO">Starting process:
+./bin/datactl -a 127.0.0.1:55000 schema get --name srl --version 22.11.2 --vendor Nokia --path interface[name=system0]/admin-state</msg>
+<msg timestamp="20231212 13:38:09.740" level="INFO">Waiting for process to complete.</msg>
+<msg timestamp="20231212 13:38:09.744" level="INFO">Process completed.</msg>
+<msg timestamp="20231212 13:38:09.744" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:38:09.737" endtime="20231212 13:38:09.744"/>
+</kw>
+<return>
+<value>${result}</value>
+<status status="PASS" starttime="20231212 13:38:09.744" endtime="20231212 13:38:09.744"/>
+</return>
+<msg timestamp="20231212 13:38:09.745" level="INFO">${schema} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:38:09.736" endtime="20231212 13:38:09.745"/>
+</kw>
+<kw name="_ExtractMustStatements" library="client">
+<var>${msts}</var>
+<arg>${schema.stdout}</arg>
+<doc>Takes a GetSchema response and extracts the must_statements of the response. Returns an array with all the must_statements as a string array.</doc>
+<kw name="Get Regexp Matches" library="String">
+<var>${matches}</var>
+<arg>${input}</arg>
+<arg>must_statements:\\s*\{[\\s\\S]*?\}</arg>
+<arg>flags=MULTILINE | IGNORECASE</arg>
+<doc>Returns a list of all non-overlapping matches in the given string.</doc>
+<msg timestamp="20231212 13:38:09.748" level="INFO">${matches} = []</msg>
+<status status="PASS" starttime="20231212 13:38:09.747" endtime="20231212 13:38:09.748"/>
+</kw>
+<return>
+<value>${matches}</value>
+<status status="PASS" starttime="20231212 13:38:09.748" endtime="20231212 13:38:09.748"/>
+</return>
+<msg timestamp="20231212 13:38:09.748" level="INFO">${msts} = []</msg>
+<status status="PASS" starttime="20231212 13:38:09.745" endtime="20231212 13:38:09.748"/>
+</kw>
+<for flavor="IN">
+<var>${item}</var>
+<value>@{msts}</value>
+<iter>
+<var name="${item}"/>
+<kw name="Log" library="BuiltIn">
+<arg>${item}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="NOT RUN" starttime="20231212 13:38:09.749" endtime="20231212 13:38:09.749"/>
+</kw>
+<status status="NOT RUN" starttime="20231212 13:38:09.748" endtime="20231212 13:38:09.749"/>
+</iter>
+<status status="NOT RUN" starttime="20231212 13:38:09.748" endtime="20231212 13:38:09.749"/>
+</for>
+<status status="PASS" starttime="20231212 13:38:09.735" endtime="20231212 13:38:09.749"/>
+</kw>
+<kw name="CreateCandidate" library="client">
+<arg>${srlinux1-name}</arg>
+<arg>${srlinux1-candidate}</arg>
+<doc>Create a new named Candidate in the given Datastore</doc>
+<kw name="Run Process" library="Process">
+<var>${result}</var>
+<arg>${CLIENT-BIN}</arg>
+<arg>-a</arg>
+<arg>${DATA-SERVER-IP}:${DATA-SERVER-PORT}</arg>
+<arg>datastore</arg>
+<arg>create</arg>
+<arg>--ds</arg>
+<arg>${datastore}</arg>
+<arg>--candidate</arg>
+<arg>${candidate}</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<msg timestamp="20231212 13:38:09.751" level="INFO">Starting process:
+./bin/datactl -a 127.0.0.1:56000 datastore create --ds srl1 --candidate default</msg>
+<msg timestamp="20231212 13:38:09.753" level="INFO">Waiting for process to complete.</msg>
+<msg timestamp="20231212 13:38:19.757" level="INFO">Process completed.</msg>
+<msg timestamp="20231212 13:38:19.758" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:38:09.750" endtime="20231212 13:38:19.758"/>
+</kw>
+<return>
+<value>${result}</value>
+<status status="PASS" starttime="20231212 13:38:19.758" endtime="20231212 13:38:19.758"/>
+</return>
+<status status="PASS" starttime="20231212 13:38:09.749" endtime="20231212 13:38:19.759"/>
+</kw>
+<kw name="Set" library="client">
+<var>${result}</var>
+<arg>${srlinux1-name}</arg>
+<arg>${srlinux1-candidate}</arg>
+<arg>interface[name=system0]/admin-state:::disable</arg>
+<doc>Applies to the candidate of the given datastore the provided update</doc>
+<kw name="Run Process" library="Process">
+<var>${result}</var>
+<arg>${CLIENT-BIN}</arg>
+<arg>-a</arg>
+<arg>${DATA-SERVER-IP}:${DATA-SERVER-PORT}</arg>
+<arg>data</arg>
+<arg>set</arg>
+<arg>--ds</arg>
+<arg>${datastore}</arg>
+<arg>--candidate</arg>
+<arg>${candidate}</arg>
+<arg>--update</arg>
+<arg>${update}</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<msg timestamp="20231212 13:38:19.762" level="INFO">Starting process:
+./bin/datactl -a 127.0.0.1:56000 data set --ds srl1 --candidate default --update interface[name=system0]/admin-state:::disable</msg>
+<msg timestamp="20231212 13:38:19.765" level="INFO">Waiting for process to complete.</msg>
+<msg timestamp="20231212 13:38:29.772" level="INFO">Process completed.</msg>
+<msg timestamp="20231212 13:38:29.772" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:38:19.761" endtime="20231212 13:38:29.773"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${result.stdout}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20231212 13:38:29.775" level="INFO"/>
+<status status="PASS" starttime="20231212 13:38:29.773" endtime="20231212 13:38:29.775"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${result.stderr}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20231212 13:38:29.776" level="INFO">Error: context deadline exceeded</msg>
+<status status="PASS" starttime="20231212 13:38:29.775" endtime="20231212 13:38:29.776"/>
+</kw>
+<return>
+<value>${result}</value>
+<status status="PASS" starttime="20231212 13:38:29.776" endtime="20231212 13:38:29.776"/>
+</return>
+<msg timestamp="20231212 13:38:29.777" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:38:19.760" endtime="20231212 13:38:29.777"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${result.rc}</arg>
+<arg>0</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<msg timestamp="20231212 13:38:29.778" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;class 'str'&gt;</msg>
+<msg timestamp="20231212 13:38:29.778" level="FAIL">1 != 0</msg>
+<status status="FAIL" starttime="20231212 13:38:29.777" endtime="20231212 13:38:29.779"/>
+</kw>
+<kw name="Commit" library="client">
+<var>${result}</var>
+<arg>${srlinux1-name}</arg>
+<arg>${srlinux1-candidate}</arg>
+<doc>Performs a commit on the given datastore/candidate and returns the Process Result object https://robotframework.org/robotframework/latest/libraries/Process.html#Result%20object</doc>
+<status status="NOT RUN" starttime="20231212 13:38:29.779" endtime="20231212 13:38:29.779"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${result.stderr}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="NOT RUN" starttime="20231212 13:38:29.779" endtime="20231212 13:38:29.779"/>
+</kw>
+<kw name="Should Contain" library="BuiltIn">
+<arg>${result.stderr}</arg>
+<arg>admin-state must be enable</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="NOT RUN" starttime="20231212 13:38:29.779" endtime="20231212 13:38:29.779"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${result.rc}</arg>
+<arg>1</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="NOT RUN" starttime="20231212 13:38:29.779" endtime="20231212 13:38:29.780"/>
+</kw>
+<kw name="DeleteCandidate" library="client">
+<arg>${srlinux1-name}</arg>
+<arg>${srlinux1-candidate}</arg>
+<doc>Delete a named Candidate in the given Datastore</doc>
+<status status="NOT RUN" starttime="20231212 13:38:29.780" endtime="20231212 13:38:29.780"/>
+</kw>
+<status status="FAIL" starttime="20231212 13:38:09.735" endtime="20231212 13:38:29.780">1 != 0</status>
+</test>
+<test id="s1-s1-s2-s1-t3" name="Set system0 admin-state enable -&gt; Pass" line="57">
+<kw name="LogMustStatements" library="client">
+<arg>${srlinux1-schema-name}</arg>
+<arg>${srlinux1-schema-version}</arg>
+<arg>${srlinux1-schema-vendor}</arg>
+<arg>interface[name=system0]/admin-state</arg>
+<doc>Takes vendor, name, version and a path, retrieves the schema for the given path, extracts the returned must_statements and logs them.</doc>
+<kw name="GetSchema" library="client">
+<var>${schema}</var>
+<arg>${name}</arg>
+<arg>${version}</arg>
+<arg>${vendor}</arg>
+<arg>${path}</arg>
+<doc>Retrieve the schema element described by name (plattform name), version and vendor under the given path.</doc>
+<kw name="Run Process" library="Process">
+<var>${result}</var>
+<arg>${CLIENT-BIN}</arg>
+<arg>-a</arg>
+<arg>${SCHEMA-SERVER-IP}:${SCHEMA-SERVER-PORT}</arg>
+<arg>schema</arg>
+<arg>get</arg>
+<arg>--name</arg>
+<arg>${name}</arg>
+<arg>--version</arg>
+<arg>${version}</arg>
+<arg>--vendor</arg>
+<arg>${vendor}</arg>
+<arg>--path</arg>
+<arg>${path}</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<msg timestamp="20231212 13:38:29.784" level="INFO">Starting process:
+./bin/datactl -a 127.0.0.1:55000 schema get --name srl --version 22.11.2 --vendor Nokia --path interface[name=system0]/admin-state</msg>
+<msg timestamp="20231212 13:38:29.787" level="INFO">Waiting for process to complete.</msg>
+<msg timestamp="20231212 13:38:29.790" level="INFO">Process completed.</msg>
+<msg timestamp="20231212 13:38:29.791" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:38:29.783" endtime="20231212 13:38:29.791"/>
+</kw>
+<return>
+<value>${result}</value>
+<status status="PASS" starttime="20231212 13:38:29.791" endtime="20231212 13:38:29.791"/>
+</return>
+<msg timestamp="20231212 13:38:29.791" level="INFO">${schema} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:38:29.782" endtime="20231212 13:38:29.791"/>
+</kw>
+<kw name="_ExtractMustStatements" library="client">
+<var>${msts}</var>
+<arg>${schema.stdout}</arg>
+<doc>Takes a GetSchema response and extracts the must_statements of the response. Returns an array with all the must_statements as a string array.</doc>
+<kw name="Get Regexp Matches" library="String">
+<var>${matches}</var>
+<arg>${input}</arg>
+<arg>must_statements:\\s*\{[\\s\\S]*?\}</arg>
+<arg>flags=MULTILINE | IGNORECASE</arg>
+<doc>Returns a list of all non-overlapping matches in the given string.</doc>
+<msg timestamp="20231212 13:38:29.794" level="INFO">${matches} = []</msg>
+<status status="PASS" starttime="20231212 13:38:29.793" endtime="20231212 13:38:29.794"/>
+</kw>
+<return>
+<value>${matches}</value>
+<status status="PASS" starttime="20231212 13:38:29.794" endtime="20231212 13:38:29.794"/>
+</return>
+<msg timestamp="20231212 13:38:29.794" level="INFO">${msts} = []</msg>
+<status status="PASS" starttime="20231212 13:38:29.792" endtime="20231212 13:38:29.794"/>
+</kw>
+<for flavor="IN">
+<var>${item}</var>
+<value>@{msts}</value>
+<iter>
+<var name="${item}"/>
+<kw name="Log" library="BuiltIn">
+<arg>${item}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="NOT RUN" starttime="20231212 13:38:29.795" endtime="20231212 13:38:29.795"/>
+</kw>
+<status status="NOT RUN" starttime="20231212 13:38:29.795" endtime="20231212 13:38:29.795"/>
+</iter>
+<status status="NOT RUN" starttime="20231212 13:38:29.794" endtime="20231212 13:38:29.795"/>
+</for>
+<status status="PASS" starttime="20231212 13:38:29.781" endtime="20231212 13:38:29.795"/>
+</kw>
+<kw name="CreateCandidate" library="client">
+<arg>${srlinux1-name}</arg>
+<arg>${srlinux1-candidate}</arg>
+<doc>Create a new named Candidate in the given Datastore</doc>
+<kw name="Run Process" library="Process">
+<var>${result}</var>
+<arg>${CLIENT-BIN}</arg>
+<arg>-a</arg>
+<arg>${DATA-SERVER-IP}:${DATA-SERVER-PORT}</arg>
+<arg>datastore</arg>
+<arg>create</arg>
+<arg>--ds</arg>
+<arg>${datastore}</arg>
+<arg>--candidate</arg>
+<arg>${candidate}</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<msg timestamp="20231212 13:38:29.797" level="INFO">Starting process:
+./bin/datactl -a 127.0.0.1:56000 datastore create --ds srl1 --candidate default</msg>
+<msg timestamp="20231212 13:38:29.799" level="INFO">Waiting for process to complete.</msg>
+<msg timestamp="20231212 13:38:39.803" level="INFO">Process completed.</msg>
+<msg timestamp="20231212 13:38:39.804" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:38:29.796" endtime="20231212 13:38:39.804"/>
+</kw>
+<return>
+<value>${result}</value>
+<status status="PASS" starttime="20231212 13:38:39.805" endtime="20231212 13:38:39.805"/>
+</return>
+<status status="PASS" starttime="20231212 13:38:29.795" endtime="20231212 13:38:39.806"/>
+</kw>
+<kw name="Set" library="client">
+<var>${result}</var>
+<arg>${srlinux1-name}</arg>
+<arg>${srlinux1-candidate}</arg>
+<arg>interface[name=system0]/admin-state:::enable</arg>
+<doc>Applies to the candidate of the given datastore the provided update</doc>
+<kw name="Run Process" library="Process">
+<var>${result}</var>
+<arg>${CLIENT-BIN}</arg>
+<arg>-a</arg>
+<arg>${DATA-SERVER-IP}:${DATA-SERVER-PORT}</arg>
+<arg>data</arg>
+<arg>set</arg>
+<arg>--ds</arg>
+<arg>${datastore}</arg>
+<arg>--candidate</arg>
+<arg>${candidate}</arg>
+<arg>--update</arg>
+<arg>${update}</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<msg timestamp="20231212 13:38:39.810" level="INFO">Starting process:
+./bin/datactl -a 127.0.0.1:56000 data set --ds srl1 --candidate default --update interface[name=system0]/admin-state:::enable</msg>
+<msg timestamp="20231212 13:38:39.814" level="INFO">Waiting for process to complete.</msg>
+<msg timestamp="20231212 13:38:49.818" level="INFO">Process completed.</msg>
+<msg timestamp="20231212 13:38:49.819" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:38:39.808" endtime="20231212 13:38:49.819"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${result.stdout}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20231212 13:38:49.824" level="INFO"/>
+<status status="PASS" starttime="20231212 13:38:49.820" endtime="20231212 13:38:49.824"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${result.stderr}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20231212 13:38:49.828" level="INFO">Error: context deadline exceeded</msg>
+<status status="PASS" starttime="20231212 13:38:49.825" endtime="20231212 13:38:49.828"/>
+</kw>
+<return>
+<value>${result}</value>
+<status status="PASS" starttime="20231212 13:38:49.829" endtime="20231212 13:38:49.829"/>
+</return>
+<msg timestamp="20231212 13:38:49.830" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:38:39.806" endtime="20231212 13:38:49.830"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${result.rc}</arg>
+<arg>0</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<msg timestamp="20231212 13:38:49.834" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;class 'str'&gt;</msg>
+<msg timestamp="20231212 13:38:49.835" level="FAIL">1 != 0</msg>
+<status status="FAIL" starttime="20231212 13:38:49.830" endtime="20231212 13:38:49.836"/>
+</kw>
+<kw name="Commit" library="client">
+<var>${result}</var>
+<arg>${srlinux1-name}</arg>
+<arg>${srlinux1-candidate}</arg>
+<doc>Performs a commit on the given datastore/candidate and returns the Process Result object https://robotframework.org/robotframework/latest/libraries/Process.html#Result%20object</doc>
+<status status="NOT RUN" starttime="20231212 13:38:49.836" endtime="20231212 13:38:49.836"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${result.stderr}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="NOT RUN" starttime="20231212 13:38:49.837" endtime="20231212 13:38:49.837"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${result.rc}</arg>
+<arg>0</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="NOT RUN" starttime="20231212 13:38:49.837" endtime="20231212 13:38:49.838"/>
+</kw>
+<kw name="DeleteCandidate" library="client">
+<arg>${srlinux1-name}</arg>
+<arg>${srlinux1-candidate}</arg>
+<doc>Delete a named Candidate in the given Datastore</doc>
+<status status="NOT RUN" starttime="20231212 13:38:49.838" endtime="20231212 13:38:49.838"/>
+</kw>
+<status status="FAIL" starttime="20231212 13:38:29.781" endtime="20231212 13:38:49.839">1 != 0</status>
+</test>
+<test id="s1-s1-s2-s1-t4" name="Set ethernet-1/1 admin-state disable -&gt; Pass" line="70">
+<kw name="LogMustStatements" library="client">
+<arg>${srlinux1-schema-name}</arg>
+<arg>${srlinux1-schema-version}</arg>
+<arg>${srlinux1-schema-vendor}</arg>
+<arg>interface[name=system0]/admin-state</arg>
+<doc>Takes vendor, name, version and a path, retrieves the schema for the given path, extracts the returned must_statements and logs them.</doc>
+<kw name="GetSchema" library="client">
+<var>${schema}</var>
+<arg>${name}</arg>
+<arg>${version}</arg>
+<arg>${vendor}</arg>
+<arg>${path}</arg>
+<doc>Retrieve the schema element described by name (plattform name), version and vendor under the given path.</doc>
+<kw name="Run Process" library="Process">
+<var>${result}</var>
+<arg>${CLIENT-BIN}</arg>
+<arg>-a</arg>
+<arg>${SCHEMA-SERVER-IP}:${SCHEMA-SERVER-PORT}</arg>
+<arg>schema</arg>
+<arg>get</arg>
+<arg>--name</arg>
+<arg>${name}</arg>
+<arg>--version</arg>
+<arg>${version}</arg>
+<arg>--vendor</arg>
+<arg>${vendor}</arg>
+<arg>--path</arg>
+<arg>${path}</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<msg timestamp="20231212 13:38:49.849" level="INFO">Starting process:
+./bin/datactl -a 127.0.0.1:55000 schema get --name srl --version 22.11.2 --vendor Nokia --path interface[name=system0]/admin-state</msg>
+<msg timestamp="20231212 13:38:49.853" level="INFO">Waiting for process to complete.</msg>
+<msg timestamp="20231212 13:38:49.856" level="INFO">Process completed.</msg>
+<msg timestamp="20231212 13:38:49.856" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:38:49.846" endtime="20231212 13:38:49.857"/>
+</kw>
+<return>
+<value>${result}</value>
+<status status="PASS" starttime="20231212 13:38:49.857" endtime="20231212 13:38:49.857"/>
+</return>
+<msg timestamp="20231212 13:38:49.858" level="INFO">${schema} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:38:49.844" endtime="20231212 13:38:49.858"/>
+</kw>
+<kw name="_ExtractMustStatements" library="client">
+<var>${msts}</var>
+<arg>${schema.stdout}</arg>
+<doc>Takes a GetSchema response and extracts the must_statements of the response. Returns an array with all the must_statements as a string array.</doc>
+<kw name="Get Regexp Matches" library="String">
+<var>${matches}</var>
+<arg>${input}</arg>
+<arg>must_statements:\\s*\{[\\s\\S]*?\}</arg>
+<arg>flags=MULTILINE | IGNORECASE</arg>
+<doc>Returns a list of all non-overlapping matches in the given string.</doc>
+<msg timestamp="20231212 13:38:49.865" level="INFO">${matches} = []</msg>
+<status status="PASS" starttime="20231212 13:38:49.864" endtime="20231212 13:38:49.865"/>
+</kw>
+<return>
+<value>${matches}</value>
+<status status="PASS" starttime="20231212 13:38:49.866" endtime="20231212 13:38:49.866"/>
+</return>
+<msg timestamp="20231212 13:38:49.866" level="INFO">${msts} = []</msg>
+<status status="PASS" starttime="20231212 13:38:49.859" endtime="20231212 13:38:49.867"/>
+</kw>
+<for flavor="IN">
+<var>${item}</var>
+<value>@{msts}</value>
+<iter>
+<var name="${item}"/>
+<kw name="Log" library="BuiltIn">
+<arg>${item}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="NOT RUN" starttime="20231212 13:38:49.868" endtime="20231212 13:38:49.868"/>
+</kw>
+<status status="NOT RUN" starttime="20231212 13:38:49.867" endtime="20231212 13:38:49.868"/>
+</iter>
+<status status="NOT RUN" starttime="20231212 13:38:49.867" endtime="20231212 13:38:49.868"/>
+</for>
+<status status="PASS" starttime="20231212 13:38:49.842" endtime="20231212 13:38:49.869"/>
+</kw>
+<kw name="CreateCandidate" library="client">
+<arg>${srlinux1-name}</arg>
+<arg>${srlinux1-candidate}</arg>
+<doc>Create a new named Candidate in the given Datastore</doc>
+<kw name="Run Process" library="Process">
+<var>${result}</var>
+<arg>${CLIENT-BIN}</arg>
+<arg>-a</arg>
+<arg>${DATA-SERVER-IP}:${DATA-SERVER-PORT}</arg>
+<arg>datastore</arg>
+<arg>create</arg>
+<arg>--ds</arg>
+<arg>${datastore}</arg>
+<arg>--candidate</arg>
+<arg>${candidate}</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<msg timestamp="20231212 13:38:49.873" level="INFO">Starting process:
+./bin/datactl -a 127.0.0.1:56000 datastore create --ds srl1 --candidate default</msg>
+<msg timestamp="20231212 13:38:49.876" level="INFO">Waiting for process to complete.</msg>
+<msg timestamp="20231212 13:38:59.880" level="INFO">Process completed.</msg>
+<msg timestamp="20231212 13:38:59.881" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:38:49.871" endtime="20231212 13:38:59.881"/>
+</kw>
+<return>
+<value>${result}</value>
+<status status="PASS" starttime="20231212 13:38:59.882" endtime="20231212 13:38:59.882"/>
+</return>
+<status status="PASS" starttime="20231212 13:38:49.869" endtime="20231212 13:38:59.883"/>
+</kw>
+<kw name="Set" library="client">
+<var>${result}</var>
+<arg>${srlinux1-name}</arg>
+<arg>${srlinux1-candidate}</arg>
+<arg>interface[name=ethernet-1/1]/admin-state:::disable</arg>
+<doc>Applies to the candidate of the given datastore the provided update</doc>
+<kw name="Run Process" library="Process">
+<var>${result}</var>
+<arg>${CLIENT-BIN}</arg>
+<arg>-a</arg>
+<arg>${DATA-SERVER-IP}:${DATA-SERVER-PORT}</arg>
+<arg>data</arg>
+<arg>set</arg>
+<arg>--ds</arg>
+<arg>${datastore}</arg>
+<arg>--candidate</arg>
+<arg>${candidate}</arg>
+<arg>--update</arg>
+<arg>${update}</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<msg timestamp="20231212 13:38:59.888" level="INFO">Starting process:
+./bin/datactl -a 127.0.0.1:56000 data set --ds srl1 --candidate default --update interface[name=ethernet-1/1]/admin-state:::disable</msg>
+<msg timestamp="20231212 13:38:59.892" level="INFO">Waiting for process to complete.</msg>
+<msg timestamp="20231212 13:39:09.900" level="INFO">Process completed.</msg>
+<msg timestamp="20231212 13:39:09.900" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:38:59.886" endtime="20231212 13:39:09.900"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${result.stdout}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20231212 13:39:09.902" level="INFO"/>
+<status status="PASS" starttime="20231212 13:39:09.901" endtime="20231212 13:39:09.903"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${result.stderr}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20231212 13:39:09.904" level="INFO">Error: context deadline exceeded</msg>
+<status status="PASS" starttime="20231212 13:39:09.903" endtime="20231212 13:39:09.904"/>
+</kw>
+<return>
+<value>${result}</value>
+<status status="PASS" starttime="20231212 13:39:09.904" endtime="20231212 13:39:09.904"/>
+</return>
+<msg timestamp="20231212 13:39:09.905" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:38:59.884" endtime="20231212 13:39:09.905"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${result.rc}</arg>
+<arg>0</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<msg timestamp="20231212 13:39:09.906" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;class 'str'&gt;</msg>
+<msg timestamp="20231212 13:39:09.906" level="FAIL">1 != 0</msg>
+<status status="FAIL" starttime="20231212 13:39:09.905" endtime="20231212 13:39:09.907"/>
+</kw>
+<kw name="Commit" library="client">
+<var>${result}</var>
+<arg>${srlinux1-name}</arg>
+<arg>${srlinux1-candidate}</arg>
+<doc>Performs a commit on the given datastore/candidate and returns the Process Result object https://robotframework.org/robotframework/latest/libraries/Process.html#Result%20object</doc>
+<status status="NOT RUN" starttime="20231212 13:39:09.907" endtime="20231212 13:39:09.907"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${result.stderr}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="NOT RUN" starttime="20231212 13:39:09.907" endtime="20231212 13:39:09.907"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${result.rc}</arg>
+<arg>0</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="NOT RUN" starttime="20231212 13:39:09.907" endtime="20231212 13:39:09.907"/>
+</kw>
+<kw name="DeleteCandidate" library="client">
+<arg>${srlinux1-name}</arg>
+<arg>${srlinux1-candidate}</arg>
+<doc>Delete a named Candidate in the given Datastore</doc>
+<status status="NOT RUN" starttime="20231212 13:39:09.908" endtime="20231212 13:39:09.908"/>
+</kw>
+<status status="FAIL" starttime="20231212 13:38:49.840" endtime="20231212 13:39:09.908">1 != 0</status>
+</test>
+<test id="s1-s1-s2-s1-t5" name="Set lag-type without 'interface[name=xyz]/lag/lacp' existence" line="83">
+<kw name="LogMustStatements" library="client">
+<arg>${srlinux1-schema-name}</arg>
+<arg>${srlinux1-schema-version}</arg>
+<arg>${srlinux1-schema-vendor}</arg>
+<arg>interface[name=lag1]/lag/lag-type</arg>
+<doc>Takes vendor, name, version and a path, retrieves the schema for the given path, extracts the returned must_statements and logs them.</doc>
+<kw name="GetSchema" library="client">
+<var>${schema}</var>
+<arg>${name}</arg>
+<arg>${version}</arg>
+<arg>${vendor}</arg>
+<arg>${path}</arg>
+<doc>Retrieve the schema element described by name (plattform name), version and vendor under the given path.</doc>
+<kw name="Run Process" library="Process">
+<var>${result}</var>
+<arg>${CLIENT-BIN}</arg>
+<arg>-a</arg>
+<arg>${SCHEMA-SERVER-IP}:${SCHEMA-SERVER-PORT}</arg>
+<arg>schema</arg>
+<arg>get</arg>
+<arg>--name</arg>
+<arg>${name}</arg>
+<arg>--version</arg>
+<arg>${version}</arg>
+<arg>--vendor</arg>
+<arg>${vendor}</arg>
+<arg>--path</arg>
+<arg>${path}</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<msg timestamp="20231212 13:39:09.912" level="INFO">Starting process:
+./bin/datactl -a 127.0.0.1:55000 schema get --name srl --version 22.11.2 --vendor Nokia --path interface[name=lag1]/lag/lag-type</msg>
+<msg timestamp="20231212 13:39:09.914" level="INFO">Waiting for process to complete.</msg>
+<msg timestamp="20231212 13:39:09.917" level="INFO">Process completed.</msg>
+<msg timestamp="20231212 13:39:09.918" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:39:09.911" endtime="20231212 13:39:09.918"/>
+</kw>
+<return>
+<value>${result}</value>
+<status status="PASS" starttime="20231212 13:39:09.918" endtime="20231212 13:39:09.918"/>
+</return>
+<msg timestamp="20231212 13:39:09.919" level="INFO">${schema} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:39:09.910" endtime="20231212 13:39:09.919"/>
+</kw>
+<kw name="_ExtractMustStatements" library="client">
+<var>${msts}</var>
+<arg>${schema.stdout}</arg>
+<doc>Takes a GetSchema response and extracts the must_statements of the response. Returns an array with all the must_statements as a string array.</doc>
+<kw name="Get Regexp Matches" library="String">
+<var>${matches}</var>
+<arg>${input}</arg>
+<arg>must_statements:\\s*\{[\\s\\S]*?\}</arg>
+<arg>flags=MULTILINE | IGNORECASE</arg>
+<doc>Returns a list of all non-overlapping matches in the given string.</doc>
+<msg timestamp="20231212 13:39:09.922" level="INFO">${matches} = []</msg>
+<status status="PASS" starttime="20231212 13:39:09.922" endtime="20231212 13:39:09.923"/>
+</kw>
+<return>
+<value>${matches}</value>
+<status status="PASS" starttime="20231212 13:39:09.923" endtime="20231212 13:39:09.923"/>
+</return>
+<msg timestamp="20231212 13:39:09.923" level="INFO">${msts} = []</msg>
+<status status="PASS" starttime="20231212 13:39:09.919" endtime="20231212 13:39:09.923"/>
+</kw>
+<for flavor="IN">
+<var>${item}</var>
+<value>@{msts}</value>
+<iter>
+<var name="${item}"/>
+<kw name="Log" library="BuiltIn">
+<arg>${item}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="NOT RUN" starttime="20231212 13:39:09.924" endtime="20231212 13:39:09.924"/>
+</kw>
+<status status="NOT RUN" starttime="20231212 13:39:09.924" endtime="20231212 13:39:09.924"/>
+</iter>
+<status status="NOT RUN" starttime="20231212 13:39:09.923" endtime="20231212 13:39:09.924"/>
+</for>
+<status status="PASS" starttime="20231212 13:39:09.909" endtime="20231212 13:39:09.924"/>
+</kw>
+<kw name="CreateCandidate" library="client">
+<arg>${srlinux1-name}</arg>
+<arg>${srlinux1-candidate}</arg>
+<doc>Create a new named Candidate in the given Datastore</doc>
+<kw name="Run Process" library="Process">
+<var>${result}</var>
+<arg>${CLIENT-BIN}</arg>
+<arg>-a</arg>
+<arg>${DATA-SERVER-IP}:${DATA-SERVER-PORT}</arg>
+<arg>datastore</arg>
+<arg>create</arg>
+<arg>--ds</arg>
+<arg>${datastore}</arg>
+<arg>--candidate</arg>
+<arg>${candidate}</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<msg timestamp="20231212 13:39:09.927" level="INFO">Starting process:
+./bin/datactl -a 127.0.0.1:56000 datastore create --ds srl1 --candidate default</msg>
+<msg timestamp="20231212 13:39:09.929" level="INFO">Waiting for process to complete.</msg>
+<msg timestamp="20231212 13:39:19.934" level="INFO">Process completed.</msg>
+<msg timestamp="20231212 13:39:19.934" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:39:09.926" endtime="20231212 13:39:19.934"/>
+</kw>
+<return>
+<value>${result}</value>
+<status status="PASS" starttime="20231212 13:39:19.934" endtime="20231212 13:39:19.935"/>
+</return>
+<status status="PASS" starttime="20231212 13:39:09.925" endtime="20231212 13:39:19.935"/>
+</kw>
+<kw name="Set" library="client">
+<var>${result}</var>
+<arg>${srlinux1-name}</arg>
+<arg>${srlinux1-candidate}</arg>
+<arg>interface[name=lag1]/lag/lag-type:::lacp</arg>
+<doc>Applies to the candidate of the given datastore the provided update</doc>
+<kw name="Run Process" library="Process">
+<var>${result}</var>
+<arg>${CLIENT-BIN}</arg>
+<arg>-a</arg>
+<arg>${DATA-SERVER-IP}:${DATA-SERVER-PORT}</arg>
+<arg>data</arg>
+<arg>set</arg>
+<arg>--ds</arg>
+<arg>${datastore}</arg>
+<arg>--candidate</arg>
+<arg>${candidate}</arg>
+<arg>--update</arg>
+<arg>${update}</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<msg timestamp="20231212 13:39:19.937" level="INFO">Starting process:
+./bin/datactl -a 127.0.0.1:56000 data set --ds srl1 --candidate default --update interface[name=lag1]/lag/lag-type:::lacp</msg>
+<msg timestamp="20231212 13:39:19.940" level="INFO">Waiting for process to complete.</msg>
+<msg timestamp="20231212 13:39:29.945" level="INFO">Process completed.</msg>
+<msg timestamp="20231212 13:39:29.946" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:39:19.936" endtime="20231212 13:39:29.946"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${result.stdout}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20231212 13:39:29.952" level="INFO"/>
+<status status="PASS" starttime="20231212 13:39:29.947" endtime="20231212 13:39:29.952"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${result.stderr}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20231212 13:39:29.956" level="INFO">Error: context deadline exceeded</msg>
+<status status="PASS" starttime="20231212 13:39:29.952" endtime="20231212 13:39:29.956"/>
+</kw>
+<return>
+<value>${result}</value>
+<status status="PASS" starttime="20231212 13:39:29.956" endtime="20231212 13:39:29.956"/>
+</return>
+<msg timestamp="20231212 13:39:29.957" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:39:19.935" endtime="20231212 13:39:29.957"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${result.rc}</arg>
+<arg>0</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<msg timestamp="20231212 13:39:29.962" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;class 'str'&gt;</msg>
+<msg timestamp="20231212 13:39:29.962" level="FAIL">1 != 0</msg>
+<status status="FAIL" starttime="20231212 13:39:29.958" endtime="20231212 13:39:29.962"/>
+</kw>
+<kw name="Commit" library="client">
+<var>${result}</var>
+<arg>${srlinux1-name}</arg>
+<arg>${srlinux1-candidate}</arg>
+<doc>Performs a commit on the given datastore/candidate and returns the Process Result object https://robotframework.org/robotframework/latest/libraries/Process.html#Result%20object</doc>
+<status status="NOT RUN" starttime="20231212 13:39:29.963" endtime="20231212 13:39:29.963"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${result.stderr}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="NOT RUN" starttime="20231212 13:39:29.964" endtime="20231212 13:39:29.964"/>
+</kw>
+<kw name="Should Contain" library="BuiltIn">
+<arg>${result.stderr}</arg>
+<arg>lacp container must be configured when lag-type is lacp</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="NOT RUN" starttime="20231212 13:39:29.964" endtime="20231212 13:39:29.965"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${result.rc}</arg>
+<arg>1</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="NOT RUN" starttime="20231212 13:39:29.965" endtime="20231212 13:39:29.965"/>
+</kw>
+<kw name="DeleteCandidate" library="client">
+<arg>${srlinux1-name}</arg>
+<arg>${srlinux1-candidate}</arg>
+<doc>Delete a named Candidate in the given Datastore</doc>
+<status status="NOT RUN" starttime="20231212 13:39:29.966" endtime="20231212 13:39:29.966"/>
+</kw>
+<status status="FAIL" starttime="20231212 13:39:09.908" endtime="20231212 13:39:29.967">1 != 0</status>
+</test>
+<test id="s1-s1-s2-s1-t6" name="Set lag-type with 'interface[name=xyz]/lag/lacp' existence" line="97">
+<kw name="LogMustStatements" library="client">
+<arg>${srlinux1-schema-name}</arg>
+<arg>${srlinux1-schema-version}</arg>
+<arg>${srlinux1-schema-vendor}</arg>
+<arg>interface[name=lag1]/lag/lacp/admin-key</arg>
+<doc>Takes vendor, name, version and a path, retrieves the schema for the given path, extracts the returned must_statements and logs them.</doc>
+<kw name="GetSchema" library="client">
+<var>${schema}</var>
+<arg>${name}</arg>
+<arg>${version}</arg>
+<arg>${vendor}</arg>
+<arg>${path}</arg>
+<doc>Retrieve the schema element described by name (plattform name), version and vendor under the given path.</doc>
+<kw name="Run Process" library="Process">
+<var>${result}</var>
+<arg>${CLIENT-BIN}</arg>
+<arg>-a</arg>
+<arg>${SCHEMA-SERVER-IP}:${SCHEMA-SERVER-PORT}</arg>
+<arg>schema</arg>
+<arg>get</arg>
+<arg>--name</arg>
+<arg>${name}</arg>
+<arg>--version</arg>
+<arg>${version}</arg>
+<arg>--vendor</arg>
+<arg>${vendor}</arg>
+<arg>--path</arg>
+<arg>${path}</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<msg timestamp="20231212 13:39:29.977" level="INFO">Starting process:
+./bin/datactl -a 127.0.0.1:55000 schema get --name srl --version 22.11.2 --vendor Nokia --path interface[name=lag1]/lag/lacp/admin-key</msg>
+<msg timestamp="20231212 13:39:29.980" level="INFO">Waiting for process to complete.</msg>
+<msg timestamp="20231212 13:39:29.983" level="INFO">Process completed.</msg>
+<msg timestamp="20231212 13:39:29.984" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:39:29.974" endtime="20231212 13:39:29.984"/>
+</kw>
+<return>
+<value>${result}</value>
+<status status="PASS" starttime="20231212 13:39:29.984" endtime="20231212 13:39:29.984"/>
+</return>
+<msg timestamp="20231212 13:39:29.984" level="INFO">${schema} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:39:29.972" endtime="20231212 13:39:29.985"/>
+</kw>
+<kw name="_ExtractMustStatements" library="client">
+<var>${msts}</var>
+<arg>${schema.stdout}</arg>
+<doc>Takes a GetSchema response and extracts the must_statements of the response. Returns an array with all the must_statements as a string array.</doc>
+<kw name="Get Regexp Matches" library="String">
+<var>${matches}</var>
+<arg>${input}</arg>
+<arg>must_statements:\\s*\{[\\s\\S]*?\}</arg>
+<arg>flags=MULTILINE | IGNORECASE</arg>
+<doc>Returns a list of all non-overlapping matches in the given string.</doc>
+<msg timestamp="20231212 13:39:29.987" level="INFO">${matches} = []</msg>
+<status status="PASS" starttime="20231212 13:39:29.987" endtime="20231212 13:39:29.987"/>
+</kw>
+<return>
+<value>${matches}</value>
+<status status="PASS" starttime="20231212 13:39:29.987" endtime="20231212 13:39:29.987"/>
+</return>
+<msg timestamp="20231212 13:39:29.988" level="INFO">${msts} = []</msg>
+<status status="PASS" starttime="20231212 13:39:29.985" endtime="20231212 13:39:29.988"/>
+</kw>
+<for flavor="IN">
+<var>${item}</var>
+<value>@{msts}</value>
+<iter>
+<var name="${item}"/>
+<kw name="Log" library="BuiltIn">
+<arg>${item}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="NOT RUN" starttime="20231212 13:39:29.988" endtime="20231212 13:39:29.988"/>
+</kw>
+<status status="NOT RUN" starttime="20231212 13:39:29.988" endtime="20231212 13:39:29.989"/>
+</iter>
+<status status="NOT RUN" starttime="20231212 13:39:29.988" endtime="20231212 13:39:29.989"/>
+</for>
+<status status="PASS" starttime="20231212 13:39:29.970" endtime="20231212 13:39:29.989"/>
+</kw>
+<kw name="LogMustStatements" library="client">
+<arg>${srlinux1-schema-name}</arg>
+<arg>${srlinux1-schema-version}</arg>
+<arg>${srlinux1-schema-vendor}</arg>
+<arg>interface[name=lag1]/lag/lag-type</arg>
+<doc>Takes vendor, name, version and a path, retrieves the schema for the given path, extracts the returned must_statements and logs them.</doc>
+<kw name="GetSchema" library="client">
+<var>${schema}</var>
+<arg>${name}</arg>
+<arg>${version}</arg>
+<arg>${vendor}</arg>
+<arg>${path}</arg>
+<doc>Retrieve the schema element described by name (plattform name), version and vendor under the given path.</doc>
+<kw name="Run Process" library="Process">
+<var>${result}</var>
+<arg>${CLIENT-BIN}</arg>
+<arg>-a</arg>
+<arg>${SCHEMA-SERVER-IP}:${SCHEMA-SERVER-PORT}</arg>
+<arg>schema</arg>
+<arg>get</arg>
+<arg>--name</arg>
+<arg>${name}</arg>
+<arg>--version</arg>
+<arg>${version}</arg>
+<arg>--vendor</arg>
+<arg>${vendor}</arg>
+<arg>--path</arg>
+<arg>${path}</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<msg timestamp="20231212 13:39:29.992" level="INFO">Starting process:
+./bin/datactl -a 127.0.0.1:55000 schema get --name srl --version 22.11.2 --vendor Nokia --path interface[name=lag1]/lag/lag-type</msg>
+<msg timestamp="20231212 13:39:29.994" level="INFO">Waiting for process to complete.</msg>
+<msg timestamp="20231212 13:39:29.997" level="INFO">Process completed.</msg>
+<msg timestamp="20231212 13:39:29.998" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:39:29.991" endtime="20231212 13:39:29.998"/>
+</kw>
+<return>
+<value>${result}</value>
+<status status="PASS" starttime="20231212 13:39:29.998" endtime="20231212 13:39:29.998"/>
+</return>
+<msg timestamp="20231212 13:39:29.999" level="INFO">${schema} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:39:29.990" endtime="20231212 13:39:29.999"/>
+</kw>
+<kw name="_ExtractMustStatements" library="client">
+<var>${msts}</var>
+<arg>${schema.stdout}</arg>
+<doc>Takes a GetSchema response and extracts the must_statements of the response. Returns an array with all the must_statements as a string array.</doc>
+<kw name="Get Regexp Matches" library="String">
+<var>${matches}</var>
+<arg>${input}</arg>
+<arg>must_statements:\\s*\{[\\s\\S]*?\}</arg>
+<arg>flags=MULTILINE | IGNORECASE</arg>
+<doc>Returns a list of all non-overlapping matches in the given string.</doc>
+<msg timestamp="20231212 13:39:30.002" level="INFO">${matches} = []</msg>
+<status status="PASS" starttime="20231212 13:39:30.001" endtime="20231212 13:39:30.002"/>
+</kw>
+<return>
+<value>${matches}</value>
+<status status="PASS" starttime="20231212 13:39:30.003" endtime="20231212 13:39:30.003"/>
+</return>
+<msg timestamp="20231212 13:39:30.003" level="INFO">${msts} = []</msg>
+<status status="PASS" starttime="20231212 13:39:29.999" endtime="20231212 13:39:30.003"/>
+</kw>
+<for flavor="IN">
+<var>${item}</var>
+<value>@{msts}</value>
+<iter>
+<var name="${item}"/>
+<kw name="Log" library="BuiltIn">
+<arg>${item}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="NOT RUN" starttime="20231212 13:39:30.004" endtime="20231212 13:39:30.004"/>
+</kw>
+<status status="NOT RUN" starttime="20231212 13:39:30.004" endtime="20231212 13:39:30.005"/>
+</iter>
+<status status="NOT RUN" starttime="20231212 13:39:30.004" endtime="20231212 13:39:30.005"/>
+</for>
+<status status="PASS" starttime="20231212 13:39:29.989" endtime="20231212 13:39:30.005"/>
+</kw>
+<kw name="CreateCandidate" library="client">
+<arg>${srlinux1-name}</arg>
+<arg>${srlinux1-candidate}</arg>
+<doc>Create a new named Candidate in the given Datastore</doc>
+<kw name="Run Process" library="Process">
+<var>${result}</var>
+<arg>${CLIENT-BIN}</arg>
+<arg>-a</arg>
+<arg>${DATA-SERVER-IP}:${DATA-SERVER-PORT}</arg>
+<arg>datastore</arg>
+<arg>create</arg>
+<arg>--ds</arg>
+<arg>${datastore}</arg>
+<arg>--candidate</arg>
+<arg>${candidate}</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<msg timestamp="20231212 13:39:30.008" level="INFO">Starting process:
+./bin/datactl -a 127.0.0.1:56000 datastore create --ds srl1 --candidate default</msg>
+<msg timestamp="20231212 13:39:30.011" level="INFO">Waiting for process to complete.</msg>
+<msg timestamp="20231212 13:39:40.014" level="INFO">Process completed.</msg>
+<msg timestamp="20231212 13:39:40.015" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:39:30.006" endtime="20231212 13:39:40.015"/>
+</kw>
+<return>
+<value>${result}</value>
+<status status="PASS" starttime="20231212 13:39:40.015" endtime="20231212 13:39:40.015"/>
+</return>
+<status status="PASS" starttime="20231212 13:39:30.005" endtime="20231212 13:39:40.016"/>
+</kw>
+<kw name="Set" library="client">
+<var>${result}</var>
+<arg>${srlinux1-name}</arg>
+<arg>${srlinux1-candidate}</arg>
+<arg>interface[name=lag1]/lag/lacp/admin-key:::1</arg>
+<doc>Applies to the candidate of the given datastore the provided update</doc>
+<kw name="Run Process" library="Process">
+<var>${result}</var>
+<arg>${CLIENT-BIN}</arg>
+<arg>-a</arg>
+<arg>${DATA-SERVER-IP}:${DATA-SERVER-PORT}</arg>
+<arg>data</arg>
+<arg>set</arg>
+<arg>--ds</arg>
+<arg>${datastore}</arg>
+<arg>--candidate</arg>
+<arg>${candidate}</arg>
+<arg>--update</arg>
+<arg>${update}</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<msg timestamp="20231212 13:39:40.018" level="INFO">Starting process:
+./bin/datactl -a 127.0.0.1:56000 data set --ds srl1 --candidate default --update interface[name=lag1]/lag/lacp/admin-key:::1</msg>
+<msg timestamp="20231212 13:39:40.022" level="INFO">Waiting for process to complete.</msg>
+<msg timestamp="20231212 13:39:50.027" level="INFO">Process completed.</msg>
+<msg timestamp="20231212 13:39:50.028" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:39:40.017" endtime="20231212 13:39:50.028"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${result.stdout}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20231212 13:39:50.032" level="INFO"/>
+<status status="PASS" starttime="20231212 13:39:50.029" endtime="20231212 13:39:50.032"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${result.stderr}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20231212 13:39:50.035" level="INFO">Error: context deadline exceeded</msg>
+<status status="PASS" starttime="20231212 13:39:50.033" endtime="20231212 13:39:50.036"/>
+</kw>
+<return>
+<value>${result}</value>
+<status status="PASS" starttime="20231212 13:39:50.036" endtime="20231212 13:39:50.036"/>
+</return>
+<msg timestamp="20231212 13:39:50.037" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:39:40.016" endtime="20231212 13:39:50.037"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${result.rc}</arg>
+<arg>0</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<msg timestamp="20231212 13:39:50.040" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;class 'str'&gt;</msg>
+<msg timestamp="20231212 13:39:50.040" level="FAIL">1 != 0</msg>
+<status status="FAIL" starttime="20231212 13:39:50.037" endtime="20231212 13:39:50.041"/>
+</kw>
+<kw name="Set" library="client">
+<var>${result}</var>
+<arg>${srlinux1-name}</arg>
+<arg>${srlinux1-candidate}</arg>
+<arg>interface[name=lag1]/lag/lag-type:::lacp</arg>
+<doc>Applies to the candidate of the given datastore the provided update</doc>
+<status status="NOT RUN" starttime="20231212 13:39:50.041" endtime="20231212 13:39:50.041"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${result.rc}</arg>
+<arg>0</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="NOT RUN" starttime="20231212 13:39:50.042" endtime="20231212 13:39:50.042"/>
+</kw>
+<kw name="Commit" library="client">
+<var>${result}</var>
+<arg>${srlinux1-name}</arg>
+<arg>${srlinux1-candidate}</arg>
+<doc>Performs a commit on the given datastore/candidate and returns the Process Result object https://robotframework.org/robotframework/latest/libraries/Process.html#Result%20object</doc>
+<status status="NOT RUN" starttime="20231212 13:39:50.042" endtime="20231212 13:39:50.042"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${result.stderr}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="NOT RUN" starttime="20231212 13:39:50.043" endtime="20231212 13:39:50.043"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${result.rc}</arg>
+<arg>0</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="NOT RUN" starttime="20231212 13:39:50.043" endtime="20231212 13:39:50.043"/>
+</kw>
+<kw name="DeleteCandidate" library="client">
+<arg>${srlinux1-name}</arg>
+<arg>${srlinux1-candidate}</arg>
+<doc>Delete a named Candidate in the given Datastore</doc>
+<status status="NOT RUN" starttime="20231212 13:39:50.044" endtime="20231212 13:39:50.044"/>
+</kw>
+<status status="FAIL" starttime="20231212 13:39:29.968" endtime="20231212 13:39:50.044">1 != 0</status>
+</test>
+<test id="s1-s1-s2-s1-t7" name="Set auto-negotiate on non allowed interface" line="114">
+<kw name="LogMustStatements" library="client">
+<arg>${srlinux1-schema-name}</arg>
+<arg>${srlinux1-schema-version}</arg>
+<arg>${srlinux1-schema-vendor}</arg>
+<arg>interface[name=ethernet-0/1]/ethernet/auto-negotiate</arg>
+<doc>Takes vendor, name, version and a path, retrieves the schema for the given path, extracts the returned must_statements and logs them.</doc>
+<kw name="GetSchema" library="client">
+<var>${schema}</var>
+<arg>${name}</arg>
+<arg>${version}</arg>
+<arg>${vendor}</arg>
+<arg>${path}</arg>
+<doc>Retrieve the schema element described by name (plattform name), version and vendor under the given path.</doc>
+<kw name="Run Process" library="Process">
+<var>${result}</var>
+<arg>${CLIENT-BIN}</arg>
+<arg>-a</arg>
+<arg>${SCHEMA-SERVER-IP}:${SCHEMA-SERVER-PORT}</arg>
+<arg>schema</arg>
+<arg>get</arg>
+<arg>--name</arg>
+<arg>${name}</arg>
+<arg>--version</arg>
+<arg>${version}</arg>
+<arg>--vendor</arg>
+<arg>${vendor}</arg>
+<arg>--path</arg>
+<arg>${path}</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<msg timestamp="20231212 13:39:50.052" level="INFO">Starting process:
+./bin/datactl -a 127.0.0.1:55000 schema get --name srl --version 22.11.2 --vendor Nokia --path interface[name=ethernet-0/1]/ethernet/auto-negotiate</msg>
+<msg timestamp="20231212 13:39:50.055" level="INFO">Waiting for process to complete.</msg>
+<msg timestamp="20231212 13:39:50.058" level="INFO">Process completed.</msg>
+<msg timestamp="20231212 13:39:50.058" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:39:50.050" endtime="20231212 13:39:50.058"/>
+</kw>
+<return>
+<value>${result}</value>
+<status status="PASS" starttime="20231212 13:39:50.059" endtime="20231212 13:39:50.059"/>
+</return>
+<msg timestamp="20231212 13:39:50.059" level="INFO">${schema} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:39:50.048" endtime="20231212 13:39:50.059"/>
+</kw>
+<kw name="_ExtractMustStatements" library="client">
+<var>${msts}</var>
+<arg>${schema.stdout}</arg>
+<doc>Takes a GetSchema response and extracts the must_statements of the response. Returns an array with all the must_statements as a string array.</doc>
+<kw name="Get Regexp Matches" library="String">
+<var>${matches}</var>
+<arg>${input}</arg>
+<arg>must_statements:\\s*\{[\\s\\S]*?\}</arg>
+<arg>flags=MULTILINE | IGNORECASE</arg>
+<doc>Returns a list of all non-overlapping matches in the given string.</doc>
+<msg timestamp="20231212 13:39:50.062" level="INFO">${matches} = []</msg>
+<status status="PASS" starttime="20231212 13:39:50.062" endtime="20231212 13:39:50.063"/>
+</kw>
+<return>
+<value>${matches}</value>
+<status status="PASS" starttime="20231212 13:39:50.063" endtime="20231212 13:39:50.063"/>
+</return>
+<msg timestamp="20231212 13:39:50.063" level="INFO">${msts} = []</msg>
+<status status="PASS" starttime="20231212 13:39:50.060" endtime="20231212 13:39:50.063"/>
+</kw>
+<for flavor="IN">
+<var>${item}</var>
+<value>@{msts}</value>
+<iter>
+<var name="${item}"/>
+<kw name="Log" library="BuiltIn">
+<arg>${item}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="NOT RUN" starttime="20231212 13:39:50.064" endtime="20231212 13:39:50.064"/>
+</kw>
+<status status="NOT RUN" starttime="20231212 13:39:50.063" endtime="20231212 13:39:50.064"/>
+</iter>
+<status status="NOT RUN" starttime="20231212 13:39:50.063" endtime="20231212 13:39:50.064"/>
+</for>
+<status status="PASS" starttime="20231212 13:39:50.046" endtime="20231212 13:39:50.064"/>
+</kw>
+<kw name="CreateCandidate" library="client">
+<arg>${srlinux1-name}</arg>
+<arg>${srlinux1-candidate}</arg>
+<doc>Create a new named Candidate in the given Datastore</doc>
+<kw name="Run Process" library="Process">
+<var>${result}</var>
+<arg>${CLIENT-BIN}</arg>
+<arg>-a</arg>
+<arg>${DATA-SERVER-IP}:${DATA-SERVER-PORT}</arg>
+<arg>datastore</arg>
+<arg>create</arg>
+<arg>--ds</arg>
+<arg>${datastore}</arg>
+<arg>--candidate</arg>
+<arg>${candidate}</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<msg timestamp="20231212 13:39:50.066" level="INFO">Starting process:
+./bin/datactl -a 127.0.0.1:56000 datastore create --ds srl1 --candidate default</msg>
+<msg timestamp="20231212 13:39:50.068" level="INFO">Waiting for process to complete.</msg>
+<msg timestamp="20231212 13:40:00.072" level="INFO">Process completed.</msg>
+<msg timestamp="20231212 13:40:00.072" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:39:50.065" endtime="20231212 13:40:00.072"/>
+</kw>
+<return>
+<value>${result}</value>
+<status status="PASS" starttime="20231212 13:40:00.072" endtime="20231212 13:40:00.073"/>
+</return>
+<status status="PASS" starttime="20231212 13:39:50.064" endtime="20231212 13:40:00.073"/>
+</kw>
+<kw name="Set" library="client">
+<var>${result}</var>
+<arg>${srlinux1-name}</arg>
+<arg>${srlinux1-candidate}</arg>
+<arg>interface[name=ethernet-0/1]/ethernet/auto-negotiate:::true</arg>
+<doc>Applies to the candidate of the given datastore the provided update</doc>
+<kw name="Run Process" library="Process">
+<var>${result}</var>
+<arg>${CLIENT-BIN}</arg>
+<arg>-a</arg>
+<arg>${DATA-SERVER-IP}:${DATA-SERVER-PORT}</arg>
+<arg>data</arg>
+<arg>set</arg>
+<arg>--ds</arg>
+<arg>${datastore}</arg>
+<arg>--candidate</arg>
+<arg>${candidate}</arg>
+<arg>--update</arg>
+<arg>${update}</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<msg timestamp="20231212 13:40:00.076" level="INFO">Starting process:
+./bin/datactl -a 127.0.0.1:56000 data set --ds srl1 --candidate default --update interface[name=ethernet-0/1]/ethernet/auto-negotiate:::true</msg>
+<msg timestamp="20231212 13:40:00.079" level="INFO">Waiting for process to complete.</msg>
+<msg timestamp="20231212 13:40:10.083" level="INFO">Process completed.</msg>
+<msg timestamp="20231212 13:40:10.084" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:40:00.074" endtime="20231212 13:40:10.084"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${result.stdout}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20231212 13:40:10.086" level="INFO"/>
+<status status="PASS" starttime="20231212 13:40:10.084" endtime="20231212 13:40:10.086"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${result.stderr}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20231212 13:40:10.088" level="INFO">Error: context deadline exceeded</msg>
+<status status="PASS" starttime="20231212 13:40:10.086" endtime="20231212 13:40:10.088"/>
+</kw>
+<return>
+<value>${result}</value>
+<status status="PASS" starttime="20231212 13:40:10.088" endtime="20231212 13:40:10.088"/>
+</return>
+<msg timestamp="20231212 13:40:10.089" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:40:00.073" endtime="20231212 13:40:10.089"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${result.rc}</arg>
+<arg>0</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<msg timestamp="20231212 13:40:10.091" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;class 'str'&gt;</msg>
+<msg timestamp="20231212 13:40:10.091" level="FAIL">1 != 0</msg>
+<status status="FAIL" starttime="20231212 13:40:10.089" endtime="20231212 13:40:10.091"/>
+</kw>
+<kw name="Commit" library="client">
+<var>${result}</var>
+<arg>${srlinux1-name}</arg>
+<arg>${srlinux1-candidate}</arg>
+<doc>Performs a commit on the given datastore/candidate and returns the Process Result object https://robotframework.org/robotframework/latest/libraries/Process.html#Result%20object</doc>
+<status status="NOT RUN" starttime="20231212 13:40:10.092" endtime="20231212 13:40:10.092"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${result.stderr}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="NOT RUN" starttime="20231212 13:40:10.092" endtime="20231212 13:40:10.092"/>
+</kw>
+<kw name="Should Contain" library="BuiltIn">
+<arg>${result.stderr}</arg>
+<arg>auto-negotiation not supported on this interface</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="NOT RUN" starttime="20231212 13:40:10.092" endtime="20231212 13:40:10.092"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${result.rc}</arg>
+<arg>1</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="NOT RUN" starttime="20231212 13:40:10.093" endtime="20231212 13:40:10.093"/>
+</kw>
+<kw name="DeleteCandidate" library="client">
+<arg>${srlinux1-name}</arg>
+<arg>${srlinux1-candidate}</arg>
+<doc>Delete a named Candidate in the given Datastore</doc>
+<status status="NOT RUN" starttime="20231212 13:40:10.093" endtime="20231212 13:40:10.093"/>
+</kw>
+<status status="FAIL" starttime="20231212 13:39:50.045" endtime="20231212 13:40:10.093">1 != 0</status>
+</test>
+<test id="s1-s1-s2-s1-t8" name="Set auto-negotiate on allowed interface" line="129">
+<kw name="LogMustStatements" library="client">
+<arg>${srlinux1-schema-name}</arg>
+<arg>${srlinux1-schema-version}</arg>
+<arg>${srlinux1-schema-vendor}</arg>
+<arg>interface[name=ethernet-1/1]/ethernet/auto-negotiate</arg>
+<doc>Takes vendor, name, version and a path, retrieves the schema for the given path, extracts the returned must_statements and logs them.</doc>
+<kw name="GetSchema" library="client">
+<var>${schema}</var>
+<arg>${name}</arg>
+<arg>${version}</arg>
+<arg>${vendor}</arg>
+<arg>${path}</arg>
+<doc>Retrieve the schema element described by name (plattform name), version and vendor under the given path.</doc>
+<kw name="Run Process" library="Process">
+<var>${result}</var>
+<arg>${CLIENT-BIN}</arg>
+<arg>-a</arg>
+<arg>${SCHEMA-SERVER-IP}:${SCHEMA-SERVER-PORT}</arg>
+<arg>schema</arg>
+<arg>get</arg>
+<arg>--name</arg>
+<arg>${name}</arg>
+<arg>--version</arg>
+<arg>${version}</arg>
+<arg>--vendor</arg>
+<arg>${vendor}</arg>
+<arg>--path</arg>
+<arg>${path}</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<msg timestamp="20231212 13:40:10.098" level="INFO">Starting process:
+./bin/datactl -a 127.0.0.1:55000 schema get --name srl --version 22.11.2 --vendor Nokia --path interface[name=ethernet-1/1]/ethernet/auto-negotiate</msg>
+<msg timestamp="20231212 13:40:10.100" level="INFO">Waiting for process to complete.</msg>
+<msg timestamp="20231212 13:40:10.103" level="INFO">Process completed.</msg>
+<msg timestamp="20231212 13:40:10.103" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:40:10.097" endtime="20231212 13:40:10.104"/>
+</kw>
+<return>
+<value>${result}</value>
+<status status="PASS" starttime="20231212 13:40:10.104" endtime="20231212 13:40:10.104"/>
+</return>
+<msg timestamp="20231212 13:40:10.105" level="INFO">${schema} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:40:10.096" endtime="20231212 13:40:10.105"/>
+</kw>
+<kw name="_ExtractMustStatements" library="client">
+<var>${msts}</var>
+<arg>${schema.stdout}</arg>
+<doc>Takes a GetSchema response and extracts the must_statements of the response. Returns an array with all the must_statements as a string array.</doc>
+<kw name="Get Regexp Matches" library="String">
+<var>${matches}</var>
+<arg>${input}</arg>
+<arg>must_statements:\\s*\{[\\s\\S]*?\}</arg>
+<arg>flags=MULTILINE | IGNORECASE</arg>
+<doc>Returns a list of all non-overlapping matches in the given string.</doc>
+<msg timestamp="20231212 13:40:10.110" level="INFO">${matches} = []</msg>
+<status status="PASS" starttime="20231212 13:40:10.109" endtime="20231212 13:40:10.110"/>
+</kw>
+<return>
+<value>${matches}</value>
+<status status="PASS" starttime="20231212 13:40:10.110" endtime="20231212 13:40:10.110"/>
+</return>
+<msg timestamp="20231212 13:40:10.110" level="INFO">${msts} = []</msg>
+<status status="PASS" starttime="20231212 13:40:10.105" endtime="20231212 13:40:10.110"/>
+</kw>
+<for flavor="IN">
+<var>${item}</var>
+<value>@{msts}</value>
+<iter>
+<var name="${item}"/>
+<kw name="Log" library="BuiltIn">
+<arg>${item}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="NOT RUN" starttime="20231212 13:40:10.111" endtime="20231212 13:40:10.111"/>
+</kw>
+<status status="NOT RUN" starttime="20231212 13:40:10.111" endtime="20231212 13:40:10.112"/>
+</iter>
+<status status="NOT RUN" starttime="20231212 13:40:10.111" endtime="20231212 13:40:10.112"/>
+</for>
+<status status="PASS" starttime="20231212 13:40:10.095" endtime="20231212 13:40:10.112"/>
+</kw>
+<kw name="CreateCandidate" library="client">
+<arg>${srlinux1-name}</arg>
+<arg>${srlinux1-candidate}</arg>
+<doc>Create a new named Candidate in the given Datastore</doc>
+<kw name="Run Process" library="Process">
+<var>${result}</var>
+<arg>${CLIENT-BIN}</arg>
+<arg>-a</arg>
+<arg>${DATA-SERVER-IP}:${DATA-SERVER-PORT}</arg>
+<arg>datastore</arg>
+<arg>create</arg>
+<arg>--ds</arg>
+<arg>${datastore}</arg>
+<arg>--candidate</arg>
+<arg>${candidate}</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<msg timestamp="20231212 13:40:10.115" level="INFO">Starting process:
+./bin/datactl -a 127.0.0.1:56000 datastore create --ds srl1 --candidate default</msg>
+<msg timestamp="20231212 13:40:10.117" level="INFO">Waiting for process to complete.</msg>
+<msg timestamp="20231212 13:40:20.122" level="INFO">Process completed.</msg>
+<msg timestamp="20231212 13:40:20.122" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:40:10.113" endtime="20231212 13:40:20.122"/>
+</kw>
+<return>
+<value>${result}</value>
+<status status="PASS" starttime="20231212 13:40:20.123" endtime="20231212 13:40:20.123"/>
+</return>
+<status status="PASS" starttime="20231212 13:40:10.112" endtime="20231212 13:40:20.123"/>
+</kw>
+<kw name="Set" library="client">
+<var>${result}</var>
+<arg>${srlinux1-name}</arg>
+<arg>${srlinux1-candidate}</arg>
+<arg>interface[name=ethernet-1/1]/ethernet/auto-negotiate:::true</arg>
+<doc>Applies to the candidate of the given datastore the provided update</doc>
+<kw name="Run Process" library="Process">
+<var>${result}</var>
+<arg>${CLIENT-BIN}</arg>
+<arg>-a</arg>
+<arg>${DATA-SERVER-IP}:${DATA-SERVER-PORT}</arg>
+<arg>data</arg>
+<arg>set</arg>
+<arg>--ds</arg>
+<arg>${datastore}</arg>
+<arg>--candidate</arg>
+<arg>${candidate}</arg>
+<arg>--update</arg>
+<arg>${update}</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<msg timestamp="20231212 13:40:20.126" level="INFO">Starting process:
+./bin/datactl -a 127.0.0.1:56000 data set --ds srl1 --candidate default --update interface[name=ethernet-1/1]/ethernet/auto-negotiate:::true</msg>
+<msg timestamp="20231212 13:40:20.129" level="INFO">Waiting for process to complete.</msg>
+<msg timestamp="20231212 13:40:30.134" level="INFO">Process completed.</msg>
+<msg timestamp="20231212 13:40:30.135" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:40:20.125" endtime="20231212 13:40:30.135"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${result.stdout}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20231212 13:40:30.139" level="INFO"/>
+<status status="PASS" starttime="20231212 13:40:30.135" endtime="20231212 13:40:30.139"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${result.stderr}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20231212 13:40:30.142" level="INFO">Error: context deadline exceeded</msg>
+<status status="PASS" starttime="20231212 13:40:30.139" endtime="20231212 13:40:30.142"/>
+</kw>
+<return>
+<value>${result}</value>
+<status status="PASS" starttime="20231212 13:40:30.142" endtime="20231212 13:40:30.142"/>
+</return>
+<msg timestamp="20231212 13:40:30.143" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:40:20.124" endtime="20231212 13:40:30.143"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${result.rc}</arg>
+<arg>0</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<msg timestamp="20231212 13:40:30.146" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;class 'str'&gt;</msg>
+<msg timestamp="20231212 13:40:30.146" level="FAIL">1 != 0</msg>
+<status status="FAIL" starttime="20231212 13:40:30.143" endtime="20231212 13:40:30.147"/>
+</kw>
+<kw name="Commit" library="client">
+<var>${result}</var>
+<arg>${srlinux1-name}</arg>
+<arg>${srlinux1-candidate}</arg>
+<doc>Performs a commit on the given datastore/candidate and returns the Process Result object https://robotframework.org/robotframework/latest/libraries/Process.html#Result%20object</doc>
+<status status="NOT RUN" starttime="20231212 13:40:30.147" endtime="20231212 13:40:30.147"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${result.stderr}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="NOT RUN" starttime="20231212 13:40:30.147" endtime="20231212 13:40:30.148"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${result.rc}</arg>
+<arg>0</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="NOT RUN" starttime="20231212 13:40:30.148" endtime="20231212 13:40:30.148"/>
+</kw>
+<kw name="DeleteCandidate" library="client">
+<arg>${srlinux1-name}</arg>
+<arg>${srlinux1-candidate}</arg>
+<doc>Delete a named Candidate in the given Datastore</doc>
+<status status="NOT RUN" starttime="20231212 13:40:30.148" endtime="20231212 13:40:30.149"/>
+</kw>
+<status status="FAIL" starttime="20231212 13:40:10.094" endtime="20231212 13:40:30.150">1 != 0</status>
+</test>
+<test id="s1-s1-s2-s1-t9" name="Set auto-negotiation on breakout-mode port" line="143">
+<kw name="LogMustStatements" library="client">
+<arg>${srlinux1-schema-name}</arg>
+<arg>${srlinux1-schema-version}</arg>
+<arg>${srlinux1-schema-vendor}</arg>
+<arg>interface[name=ethernet-1/1]/ethernet/auto-negotiate</arg>
+<doc>Takes vendor, name, version and a path, retrieves the schema for the given path, extracts the returned must_statements and logs them.</doc>
+<kw name="GetSchema" library="client">
+<var>${schema}</var>
+<arg>${name}</arg>
+<arg>${version}</arg>
+<arg>${vendor}</arg>
+<arg>${path}</arg>
+<doc>Retrieve the schema element described by name (plattform name), version and vendor under the given path.</doc>
+<kw name="Run Process" library="Process">
+<var>${result}</var>
+<arg>${CLIENT-BIN}</arg>
+<arg>-a</arg>
+<arg>${SCHEMA-SERVER-IP}:${SCHEMA-SERVER-PORT}</arg>
+<arg>schema</arg>
+<arg>get</arg>
+<arg>--name</arg>
+<arg>${name}</arg>
+<arg>--version</arg>
+<arg>${version}</arg>
+<arg>--vendor</arg>
+<arg>${vendor}</arg>
+<arg>--path</arg>
+<arg>${path}</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<msg timestamp="20231212 13:40:30.157" level="INFO">Starting process:
+./bin/datactl -a 127.0.0.1:55000 schema get --name srl --version 22.11.2 --vendor Nokia --path interface[name=ethernet-1/1]/ethernet/auto-negotiate</msg>
+<msg timestamp="20231212 13:40:30.160" level="INFO">Waiting for process to complete.</msg>
+<msg timestamp="20231212 13:40:30.163" level="INFO">Process completed.</msg>
+<msg timestamp="20231212 13:40:30.164" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:40:30.155" endtime="20231212 13:40:30.164"/>
+</kw>
+<return>
+<value>${result}</value>
+<status status="PASS" starttime="20231212 13:40:30.164" endtime="20231212 13:40:30.165"/>
+</return>
+<msg timestamp="20231212 13:40:30.165" level="INFO">${schema} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:40:30.153" endtime="20231212 13:40:30.165"/>
+</kw>
+<kw name="_ExtractMustStatements" library="client">
+<var>${msts}</var>
+<arg>${schema.stdout}</arg>
+<doc>Takes a GetSchema response and extracts the must_statements of the response. Returns an array with all the must_statements as a string array.</doc>
+<kw name="Get Regexp Matches" library="String">
+<var>${matches}</var>
+<arg>${input}</arg>
+<arg>must_statements:\\s*\{[\\s\\S]*?\}</arg>
+<arg>flags=MULTILINE | IGNORECASE</arg>
+<doc>Returns a list of all non-overlapping matches in the given string.</doc>
+<msg timestamp="20231212 13:40:30.170" level="INFO">${matches} = []</msg>
+<status status="PASS" starttime="20231212 13:40:30.169" endtime="20231212 13:40:30.171"/>
+</kw>
+<return>
+<value>${matches}</value>
+<status status="PASS" starttime="20231212 13:40:30.171" endtime="20231212 13:40:30.171"/>
+</return>
+<msg timestamp="20231212 13:40:30.171" level="INFO">${msts} = []</msg>
+<status status="PASS" starttime="20231212 13:40:30.166" endtime="20231212 13:40:30.171"/>
+</kw>
+<for flavor="IN">
+<var>${item}</var>
+<value>@{msts}</value>
+<iter>
+<var name="${item}"/>
+<kw name="Log" library="BuiltIn">
+<arg>${item}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="NOT RUN" starttime="20231212 13:40:30.172" endtime="20231212 13:40:30.173"/>
+</kw>
+<status status="NOT RUN" starttime="20231212 13:40:30.172" endtime="20231212 13:40:30.173"/>
+</iter>
+<status status="NOT RUN" starttime="20231212 13:40:30.172" endtime="20231212 13:40:30.173"/>
+</for>
+<status status="PASS" starttime="20231212 13:40:30.152" endtime="20231212 13:40:30.173"/>
+</kw>
+<kw name="LogMustStatements" library="client">
+<arg>${srlinux1-schema-name}</arg>
+<arg>${srlinux1-schema-version}</arg>
+<arg>${srlinux1-schema-vendor}</arg>
+<arg>interface[name=ethernet-1/1]/breakout-mode/num-breakout-ports</arg>
+<doc>Takes vendor, name, version and a path, retrieves the schema for the given path, extracts the returned must_statements and logs them.</doc>
+<kw name="GetSchema" library="client">
+<var>${schema}</var>
+<arg>${name}</arg>
+<arg>${version}</arg>
+<arg>${vendor}</arg>
+<arg>${path}</arg>
+<doc>Retrieve the schema element described by name (plattform name), version and vendor under the given path.</doc>
+<kw name="Run Process" library="Process">
+<var>${result}</var>
+<arg>${CLIENT-BIN}</arg>
+<arg>-a</arg>
+<arg>${SCHEMA-SERVER-IP}:${SCHEMA-SERVER-PORT}</arg>
+<arg>schema</arg>
+<arg>get</arg>
+<arg>--name</arg>
+<arg>${name}</arg>
+<arg>--version</arg>
+<arg>${version}</arg>
+<arg>--vendor</arg>
+<arg>${vendor}</arg>
+<arg>--path</arg>
+<arg>${path}</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<msg timestamp="20231212 13:40:30.178" level="INFO">Starting process:
+./bin/datactl -a 127.0.0.1:55000 schema get --name srl --version 22.11.2 --vendor Nokia --path interface[name=ethernet-1/1]/breakout-mode/num-breakout-ports</msg>
+<msg timestamp="20231212 13:40:30.181" level="INFO">Waiting for process to complete.</msg>
+<msg timestamp="20231212 13:40:30.184" level="INFO">Process completed.</msg>
+<msg timestamp="20231212 13:40:30.184" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:40:30.176" endtime="20231212 13:40:30.184"/>
+</kw>
+<return>
+<value>${result}</value>
+<status status="PASS" starttime="20231212 13:40:30.185" endtime="20231212 13:40:30.185"/>
+</return>
+<msg timestamp="20231212 13:40:30.186" level="INFO">${schema} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:40:30.175" endtime="20231212 13:40:30.186"/>
+</kw>
+<kw name="_ExtractMustStatements" library="client">
+<var>${msts}</var>
+<arg>${schema.stdout}</arg>
+<doc>Takes a GetSchema response and extracts the must_statements of the response. Returns an array with all the must_statements as a string array.</doc>
+<kw name="Get Regexp Matches" library="String">
+<var>${matches}</var>
+<arg>${input}</arg>
+<arg>must_statements:\\s*\{[\\s\\S]*?\}</arg>
+<arg>flags=MULTILINE | IGNORECASE</arg>
+<doc>Returns a list of all non-overlapping matches in the given string.</doc>
+<msg timestamp="20231212 13:40:30.191" level="INFO">${matches} = []</msg>
+<status status="PASS" starttime="20231212 13:40:30.190" endtime="20231212 13:40:30.191"/>
+</kw>
+<return>
+<value>${matches}</value>
+<status status="PASS" starttime="20231212 13:40:30.191" endtime="20231212 13:40:30.192"/>
+</return>
+<msg timestamp="20231212 13:40:30.192" level="INFO">${msts} = []</msg>
+<status status="PASS" starttime="20231212 13:40:30.187" endtime="20231212 13:40:30.192"/>
+</kw>
+<for flavor="IN">
+<var>${item}</var>
+<value>@{msts}</value>
+<iter>
+<var name="${item}"/>
+<kw name="Log" library="BuiltIn">
+<arg>${item}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="NOT RUN" starttime="20231212 13:40:30.193" endtime="20231212 13:40:30.193"/>
+</kw>
+<status status="NOT RUN" starttime="20231212 13:40:30.193" endtime="20231212 13:40:30.193"/>
+</iter>
+<status status="NOT RUN" starttime="20231212 13:40:30.192" endtime="20231212 13:40:30.193"/>
+</for>
+<status status="PASS" starttime="20231212 13:40:30.173" endtime="20231212 13:40:30.194"/>
+</kw>
+<kw name="CreateCandidate" library="client">
+<arg>${srlinux1-name}</arg>
+<arg>${srlinux1-candidate}</arg>
+<doc>Create a new named Candidate in the given Datastore</doc>
+<kw name="Run Process" library="Process">
+<var>${result}</var>
+<arg>${CLIENT-BIN}</arg>
+<arg>-a</arg>
+<arg>${DATA-SERVER-IP}:${DATA-SERVER-PORT}</arg>
+<arg>datastore</arg>
+<arg>create</arg>
+<arg>--ds</arg>
+<arg>${datastore}</arg>
+<arg>--candidate</arg>
+<arg>${candidate}</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<msg timestamp="20231212 13:40:30.197" level="INFO">Starting process:
+./bin/datactl -a 127.0.0.1:56000 datastore create --ds srl1 --candidate default</msg>
+<msg timestamp="20231212 13:40:30.199" level="INFO">Waiting for process to complete.</msg>
+<msg timestamp="20231212 13:40:40.203" level="INFO">Process completed.</msg>
+<msg timestamp="20231212 13:40:40.204" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:40:30.195" endtime="20231212 13:40:40.204"/>
+</kw>
+<return>
+<value>${result}</value>
+<status status="PASS" starttime="20231212 13:40:40.205" endtime="20231212 13:40:40.205"/>
+</return>
+<status status="PASS" starttime="20231212 13:40:30.194" endtime="20231212 13:40:40.206"/>
+</kw>
+<kw name="Set" library="client">
+<var>${result}</var>
+<arg>${srlinux1-name}</arg>
+<arg>${srlinux1-candidate}</arg>
+<arg>interface[name=ethernet-1/1]/breakout-mode/num-breakout-ports:::4</arg>
+<doc>Applies to the candidate of the given datastore the provided update</doc>
+<kw name="Run Process" library="Process">
+<var>${result}</var>
+<arg>${CLIENT-BIN}</arg>
+<arg>-a</arg>
+<arg>${DATA-SERVER-IP}:${DATA-SERVER-PORT}</arg>
+<arg>data</arg>
+<arg>set</arg>
+<arg>--ds</arg>
+<arg>${datastore}</arg>
+<arg>--candidate</arg>
+<arg>${candidate}</arg>
+<arg>--update</arg>
+<arg>${update}</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<msg timestamp="20231212 13:40:40.210" level="INFO">Starting process:
+./bin/datactl -a 127.0.0.1:56000 data set --ds srl1 --candidate default --update interface[name=ethernet-1/1]/breakout-mode/num-breakout-ports:::4</msg>
+<msg timestamp="20231212 13:40:40.214" level="INFO">Waiting for process to complete.</msg>
+<msg timestamp="20231212 13:40:50.222" level="INFO">Process completed.</msg>
+<msg timestamp="20231212 13:40:50.222" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:40:40.208" endtime="20231212 13:40:50.222"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${result.stdout}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20231212 13:40:50.225" level="INFO"/>
+<status status="PASS" starttime="20231212 13:40:50.223" endtime="20231212 13:40:50.225"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${result.stderr}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20231212 13:40:50.227" level="INFO">Error: context deadline exceeded</msg>
+<status status="PASS" starttime="20231212 13:40:50.225" endtime="20231212 13:40:50.227"/>
+</kw>
+<return>
+<value>${result}</value>
+<status status="PASS" starttime="20231212 13:40:50.227" endtime="20231212 13:40:50.227"/>
+</return>
+<msg timestamp="20231212 13:40:50.228" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:40:40.207" endtime="20231212 13:40:50.228"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${result.rc}</arg>
+<arg>0</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<msg timestamp="20231212 13:40:50.230" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;class 'str'&gt;</msg>
+<msg timestamp="20231212 13:40:50.230" level="FAIL">1 != 0</msg>
+<status status="FAIL" starttime="20231212 13:40:50.228" endtime="20231212 13:40:50.230"/>
+</kw>
+<kw name="Set" library="client">
+<var>${result}</var>
+<arg>${srlinux1-name}</arg>
+<arg>${srlinux1-candidate}</arg>
+<arg>interface[name=ethernet-1/1]/ethernet/auto-negotiate:::true</arg>
+<doc>Applies to the candidate of the given datastore the provided update</doc>
+<status status="NOT RUN" starttime="20231212 13:40:50.231" endtime="20231212 13:40:50.231"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${result.rc}</arg>
+<arg>0</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="NOT RUN" starttime="20231212 13:40:50.231" endtime="20231212 13:40:50.231"/>
+</kw>
+<kw name="Commit" library="client">
+<var>${result}</var>
+<arg>${srlinux1-name}</arg>
+<arg>${srlinux1-candidate}</arg>
+<doc>Performs a commit on the given datastore/candidate and returns the Process Result object https://robotframework.org/robotframework/latest/libraries/Process.html#Result%20object</doc>
+<status status="NOT RUN" starttime="20231212 13:40:50.232" endtime="20231212 13:40:50.232"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${result.stderr}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="NOT RUN" starttime="20231212 13:40:50.232" endtime="20231212 13:40:50.232"/>
+</kw>
+<kw name="Should Contain" library="BuiltIn">
+<arg>${result.stderr}</arg>
+<arg>auto-negotiate not configurable when breakout-mode is enabled</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="NOT RUN" starttime="20231212 13:40:50.232" endtime="20231212 13:40:50.232"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${result.rc}</arg>
+<arg>1</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="NOT RUN" starttime="20231212 13:40:50.233" endtime="20231212 13:40:50.233"/>
+</kw>
+<kw name="DeleteCandidate" library="client">
+<arg>${srlinux1-name}</arg>
+<arg>${srlinux1-candidate}</arg>
+<doc>Delete a named Candidate in the given Datastore</doc>
+<status status="NOT RUN" starttime="20231212 13:40:50.233" endtime="20231212 13:40:50.233"/>
+</kw>
+<status status="FAIL" starttime="20231212 13:40:30.150" endtime="20231212 13:40:50.233">1 != 0</status>
+</test>
+<test id="s1-s1-s2-s1-t10" name="Set breakout-port num to 2 and port-speed to 100G" line="161">
+<kw name="LogMustStatements" library="client">
+<arg>${srlinux1-schema-name}</arg>
+<arg>${srlinux1-schema-version}</arg>
+<arg>${srlinux1-schema-vendor}</arg>
+<arg>interface[name=ethernet-1/1]/breakout-mode/breakout-port-speed</arg>
+<doc>Takes vendor, name, version and a path, retrieves the schema for the given path, extracts the returned must_statements and logs them.</doc>
+<kw name="GetSchema" library="client">
+<var>${schema}</var>
+<arg>${name}</arg>
+<arg>${version}</arg>
+<arg>${vendor}</arg>
+<arg>${path}</arg>
+<doc>Retrieve the schema element described by name (plattform name), version and vendor under the given path.</doc>
+<kw name="Run Process" library="Process">
+<var>${result}</var>
+<arg>${CLIENT-BIN}</arg>
+<arg>-a</arg>
+<arg>${SCHEMA-SERVER-IP}:${SCHEMA-SERVER-PORT}</arg>
+<arg>schema</arg>
+<arg>get</arg>
+<arg>--name</arg>
+<arg>${name}</arg>
+<arg>--version</arg>
+<arg>${version}</arg>
+<arg>--vendor</arg>
+<arg>${vendor}</arg>
+<arg>--path</arg>
+<arg>${path}</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<msg timestamp="20231212 13:40:50.238" level="INFO">Starting process:
+./bin/datactl -a 127.0.0.1:55000 schema get --name srl --version 22.11.2 --vendor Nokia --path interface[name=ethernet-1/1]/breakout-mode/breakout-port-speed</msg>
+<msg timestamp="20231212 13:40:50.241" level="INFO">Waiting for process to complete.</msg>
+<msg timestamp="20231212 13:40:50.244" level="INFO">Process completed.</msg>
+<msg timestamp="20231212 13:40:50.245" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:40:50.237" endtime="20231212 13:40:50.245"/>
+</kw>
+<return>
+<value>${result}</value>
+<status status="PASS" starttime="20231212 13:40:50.245" endtime="20231212 13:40:50.245"/>
+</return>
+<msg timestamp="20231212 13:40:50.246" level="INFO">${schema} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:40:50.236" endtime="20231212 13:40:50.246"/>
+</kw>
+<kw name="_ExtractMustStatements" library="client">
+<var>${msts}</var>
+<arg>${schema.stdout}</arg>
+<doc>Takes a GetSchema response and extracts the must_statements of the response. Returns an array with all the must_statements as a string array.</doc>
+<kw name="Get Regexp Matches" library="String">
+<var>${matches}</var>
+<arg>${input}</arg>
+<arg>must_statements:\\s*\{[\\s\\S]*?\}</arg>
+<arg>flags=MULTILINE | IGNORECASE</arg>
+<doc>Returns a list of all non-overlapping matches in the given string.</doc>
+<msg timestamp="20231212 13:40:50.249" level="INFO">${matches} = []</msg>
+<status status="PASS" starttime="20231212 13:40:50.248" endtime="20231212 13:40:50.249"/>
+</kw>
+<return>
+<value>${matches}</value>
+<status status="PASS" starttime="20231212 13:40:50.249" endtime="20231212 13:40:50.249"/>
+</return>
+<msg timestamp="20231212 13:40:50.250" level="INFO">${msts} = []</msg>
+<status status="PASS" starttime="20231212 13:40:50.246" endtime="20231212 13:40:50.250"/>
+</kw>
+<for flavor="IN">
+<var>${item}</var>
+<value>@{msts}</value>
+<iter>
+<var name="${item}"/>
+<kw name="Log" library="BuiltIn">
+<arg>${item}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="NOT RUN" starttime="20231212 13:40:50.250" endtime="20231212 13:40:50.250"/>
+</kw>
+<status status="NOT RUN" starttime="20231212 13:40:50.250" endtime="20231212 13:40:50.251"/>
+</iter>
+<status status="NOT RUN" starttime="20231212 13:40:50.250" endtime="20231212 13:40:50.251"/>
+</for>
+<status status="PASS" starttime="20231212 13:40:50.235" endtime="20231212 13:40:50.251"/>
+</kw>
+<kw name="LogMustStatements" library="client">
+<arg>${srlinux1-schema-name}</arg>
+<arg>${srlinux1-schema-version}</arg>
+<arg>${srlinux1-schema-vendor}</arg>
+<arg>interface[name=ethernet-1/1]/breakout-mode/num-breakout-ports</arg>
+<doc>Takes vendor, name, version and a path, retrieves the schema for the given path, extracts the returned must_statements and logs them.</doc>
+<kw name="GetSchema" library="client">
+<var>${schema}</var>
+<arg>${name}</arg>
+<arg>${version}</arg>
+<arg>${vendor}</arg>
+<arg>${path}</arg>
+<doc>Retrieve the schema element described by name (plattform name), version and vendor under the given path.</doc>
+<kw name="Run Process" library="Process">
+<var>${result}</var>
+<arg>${CLIENT-BIN}</arg>
+<arg>-a</arg>
+<arg>${SCHEMA-SERVER-IP}:${SCHEMA-SERVER-PORT}</arg>
+<arg>schema</arg>
+<arg>get</arg>
+<arg>--name</arg>
+<arg>${name}</arg>
+<arg>--version</arg>
+<arg>${version}</arg>
+<arg>--vendor</arg>
+<arg>${vendor}</arg>
+<arg>--path</arg>
+<arg>${path}</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<msg timestamp="20231212 13:40:50.254" level="INFO">Starting process:
+./bin/datactl -a 127.0.0.1:55000 schema get --name srl --version 22.11.2 --vendor Nokia --path interface[name=ethernet-1/1]/breakout-mode/num-breakout-ports</msg>
+<msg timestamp="20231212 13:40:50.257" level="INFO">Waiting for process to complete.</msg>
+<msg timestamp="20231212 13:40:50.260" level="INFO">Process completed.</msg>
+<msg timestamp="20231212 13:40:50.260" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:40:50.253" endtime="20231212 13:40:50.260"/>
+</kw>
+<return>
+<value>${result}</value>
+<status status="PASS" starttime="20231212 13:40:50.261" endtime="20231212 13:40:50.261"/>
+</return>
+<msg timestamp="20231212 13:40:50.261" level="INFO">${schema} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:40:50.252" endtime="20231212 13:40:50.261"/>
+</kw>
+<kw name="_ExtractMustStatements" library="client">
+<var>${msts}</var>
+<arg>${schema.stdout}</arg>
+<doc>Takes a GetSchema response and extracts the must_statements of the response. Returns an array with all the must_statements as a string array.</doc>
+<kw name="Get Regexp Matches" library="String">
+<var>${matches}</var>
+<arg>${input}</arg>
+<arg>must_statements:\\s*\{[\\s\\S]*?\}</arg>
+<arg>flags=MULTILINE | IGNORECASE</arg>
+<doc>Returns a list of all non-overlapping matches in the given string.</doc>
+<msg timestamp="20231212 13:40:50.265" level="INFO">${matches} = []</msg>
+<status status="PASS" starttime="20231212 13:40:50.264" endtime="20231212 13:40:50.265"/>
+</kw>
+<return>
+<value>${matches}</value>
+<status status="PASS" starttime="20231212 13:40:50.265" endtime="20231212 13:40:50.265"/>
+</return>
+<msg timestamp="20231212 13:40:50.265" level="INFO">${msts} = []</msg>
+<status status="PASS" starttime="20231212 13:40:50.262" endtime="20231212 13:40:50.265"/>
+</kw>
+<for flavor="IN">
+<var>${item}</var>
+<value>@{msts}</value>
+<iter>
+<var name="${item}"/>
+<kw name="Log" library="BuiltIn">
+<arg>${item}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="NOT RUN" starttime="20231212 13:40:50.266" endtime="20231212 13:40:50.266"/>
+</kw>
+<status status="NOT RUN" starttime="20231212 13:40:50.266" endtime="20231212 13:40:50.266"/>
+</iter>
+<status status="NOT RUN" starttime="20231212 13:40:50.266" endtime="20231212 13:40:50.266"/>
+</for>
+<status status="PASS" starttime="20231212 13:40:50.251" endtime="20231212 13:40:50.267"/>
+</kw>
+<kw name="CreateCandidate" library="client">
+<arg>${srlinux1-name}</arg>
+<arg>${srlinux1-candidate}</arg>
+<doc>Create a new named Candidate in the given Datastore</doc>
+<kw name="Run Process" library="Process">
+<var>${result}</var>
+<arg>${CLIENT-BIN}</arg>
+<arg>-a</arg>
+<arg>${DATA-SERVER-IP}:${DATA-SERVER-PORT}</arg>
+<arg>datastore</arg>
+<arg>create</arg>
+<arg>--ds</arg>
+<arg>${datastore}</arg>
+<arg>--candidate</arg>
+<arg>${candidate}</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<msg timestamp="20231212 13:40:50.269" level="INFO">Starting process:
+./bin/datactl -a 127.0.0.1:56000 datastore create --ds srl1 --candidate default</msg>
+<msg timestamp="20231212 13:40:50.271" level="INFO">Waiting for process to complete.</msg>
+<msg timestamp="20231212 13:41:00.274" level="INFO">Process completed.</msg>
+<msg timestamp="20231212 13:41:00.275" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:40:50.268" endtime="20231212 13:41:00.275"/>
+</kw>
+<return>
+<value>${result}</value>
+<status status="PASS" starttime="20231212 13:41:00.275" endtime="20231212 13:41:00.275"/>
+</return>
+<status status="PASS" starttime="20231212 13:40:50.267" endtime="20231212 13:41:00.276"/>
+</kw>
+<kw name="Set" library="client">
+<var>${result}</var>
+<arg>${srlinux1-name}</arg>
+<arg>${srlinux1-candidate}</arg>
+<arg>interface[name=ethernet-1/1]/breakout-mode/breakout-port-speed:::25G</arg>
+<doc>Applies to the candidate of the given datastore the provided update</doc>
+<kw name="Run Process" library="Process">
+<var>${result}</var>
+<arg>${CLIENT-BIN}</arg>
+<arg>-a</arg>
+<arg>${DATA-SERVER-IP}:${DATA-SERVER-PORT}</arg>
+<arg>data</arg>
+<arg>set</arg>
+<arg>--ds</arg>
+<arg>${datastore}</arg>
+<arg>--candidate</arg>
+<arg>${candidate}</arg>
+<arg>--update</arg>
+<arg>${update}</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<msg timestamp="20231212 13:41:00.278" level="INFO">Starting process:
+./bin/datactl -a 127.0.0.1:56000 data set --ds srl1 --candidate default --update interface[name=ethernet-1/1]/breakout-mode/breakout-port-speed:::25G</msg>
+<msg timestamp="20231212 13:41:00.280" level="INFO">Waiting for process to complete.</msg>
+<msg timestamp="20231212 13:41:10.284" level="INFO">Process completed.</msg>
+<msg timestamp="20231212 13:41:10.285" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:41:00.277" endtime="20231212 13:41:10.285"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${result.stdout}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20231212 13:41:10.287" level="INFO"/>
+<status status="PASS" starttime="20231212 13:41:10.285" endtime="20231212 13:41:10.287"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${result.stderr}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20231212 13:41:10.288" level="INFO">Error: context deadline exceeded</msg>
+<status status="PASS" starttime="20231212 13:41:10.287" endtime="20231212 13:41:10.288"/>
+</kw>
+<return>
+<value>${result}</value>
+<status status="PASS" starttime="20231212 13:41:10.288" endtime="20231212 13:41:10.288"/>
+</return>
+<msg timestamp="20231212 13:41:10.289" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:41:00.276" endtime="20231212 13:41:10.289"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${result.rc}</arg>
+<arg>0</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<msg timestamp="20231212 13:41:10.291" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;class 'str'&gt;</msg>
+<msg timestamp="20231212 13:41:10.292" level="FAIL">1 != 0</msg>
+<status status="FAIL" starttime="20231212 13:41:10.289" endtime="20231212 13:41:10.292"/>
+</kw>
+<kw name="Set" library="client">
+<var>${result}</var>
+<arg>${srlinux1-name}</arg>
+<arg>${srlinux1-candidate}</arg>
+<arg>interface[name=ethernet-1/1]/breakout-mode/num-breakout-ports:::2</arg>
+<doc>Applies to the candidate of the given datastore the provided update</doc>
+<status status="NOT RUN" starttime="20231212 13:41:10.292" endtime="20231212 13:41:10.292"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${result.rc}</arg>
+<arg>0</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="NOT RUN" starttime="20231212 13:41:10.292" endtime="20231212 13:41:10.292"/>
+</kw>
+<kw name="Commit" library="client">
+<var>${result}</var>
+<arg>${srlinux1-name}</arg>
+<arg>${srlinux1-candidate}</arg>
+<doc>Performs a commit on the given datastore/candidate and returns the Process Result object https://robotframework.org/robotframework/latest/libraries/Process.html#Result%20object</doc>
+<status status="NOT RUN" starttime="20231212 13:41:10.292" endtime="20231212 13:41:10.293"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${result.stderr}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="NOT RUN" starttime="20231212 13:41:10.293" endtime="20231212 13:41:10.293"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${result.rc}</arg>
+<arg>1</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="NOT RUN" starttime="20231212 13:41:10.293" endtime="20231212 13:41:10.293"/>
+</kw>
+<kw name="Should Contain" library="BuiltIn">
+<arg>${result.stderr}</arg>
+<arg>breakout-port-speed must be 100G when num-breakout-ports is 2</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="NOT RUN" starttime="20231212 13:41:10.293" endtime="20231212 13:41:10.293"/>
+</kw>
+<kw name="DeleteCandidate" library="client">
+<arg>${srlinux1-name}</arg>
+<arg>${srlinux1-candidate}</arg>
+<doc>Delete a named Candidate in the given Datastore</doc>
+<status status="NOT RUN" starttime="20231212 13:41:10.293" endtime="20231212 13:41:10.293"/>
+</kw>
+<status status="FAIL" starttime="20231212 13:40:50.234" endtime="20231212 13:41:10.294">1 != 0</status>
+</test>
+<test id="s1-s1-s2-s1-t11" name="Set interface ethernet l2cp-transparency lldp tunnel true" line="181">
+<kw name="LogMustStatements" library="client">
+<arg>${srlinux1-schema-name}</arg>
+<arg>${srlinux1-schema-version}</arg>
+<arg>${srlinux1-schema-vendor}</arg>
+<arg>interface[name=ethernet-1/1]/ethernet/l2cp-transparency/lldp/tunnel</arg>
+<doc>Takes vendor, name, version and a path, retrieves the schema for the given path, extracts the returned must_statements and logs them.</doc>
+<kw name="GetSchema" library="client">
+<var>${schema}</var>
+<arg>${name}</arg>
+<arg>${version}</arg>
+<arg>${vendor}</arg>
+<arg>${path}</arg>
+<doc>Retrieve the schema element described by name (plattform name), version and vendor under the given path.</doc>
+<kw name="Run Process" library="Process">
+<var>${result}</var>
+<arg>${CLIENT-BIN}</arg>
+<arg>-a</arg>
+<arg>${SCHEMA-SERVER-IP}:${SCHEMA-SERVER-PORT}</arg>
+<arg>schema</arg>
+<arg>get</arg>
+<arg>--name</arg>
+<arg>${name}</arg>
+<arg>--version</arg>
+<arg>${version}</arg>
+<arg>--vendor</arg>
+<arg>${vendor}</arg>
+<arg>--path</arg>
+<arg>${path}</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<msg timestamp="20231212 13:41:10.297" level="INFO">Starting process:
+./bin/datactl -a 127.0.0.1:55000 schema get --name srl --version 22.11.2 --vendor Nokia --path interface[name=ethernet-1/1]/ethernet/l2cp-transparency/lldp/tunnel</msg>
+<msg timestamp="20231212 13:41:10.300" level="INFO">Waiting for process to complete.</msg>
+<msg timestamp="20231212 13:41:10.303" level="INFO">Process completed.</msg>
+<msg timestamp="20231212 13:41:10.304" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:41:10.296" endtime="20231212 13:41:10.304"/>
+</kw>
+<return>
+<value>${result}</value>
+<status status="PASS" starttime="20231212 13:41:10.304" endtime="20231212 13:41:10.304"/>
+</return>
+<msg timestamp="20231212 13:41:10.304" level="INFO">${schema} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:41:10.296" endtime="20231212 13:41:10.304"/>
+</kw>
+<kw name="_ExtractMustStatements" library="client">
+<var>${msts}</var>
+<arg>${schema.stdout}</arg>
+<doc>Takes a GetSchema response and extracts the must_statements of the response. Returns an array with all the must_statements as a string array.</doc>
+<kw name="Get Regexp Matches" library="String">
+<var>${matches}</var>
+<arg>${input}</arg>
+<arg>must_statements:\\s*\{[\\s\\S]*?\}</arg>
+<arg>flags=MULTILINE | IGNORECASE</arg>
+<doc>Returns a list of all non-overlapping matches in the given string.</doc>
+<msg timestamp="20231212 13:41:10.307" level="INFO">${matches} = []</msg>
+<status status="PASS" starttime="20231212 13:41:10.306" endtime="20231212 13:41:10.307"/>
+</kw>
+<return>
+<value>${matches}</value>
+<status status="PASS" starttime="20231212 13:41:10.307" endtime="20231212 13:41:10.307"/>
+</return>
+<msg timestamp="20231212 13:41:10.307" level="INFO">${msts} = []</msg>
+<status status="PASS" starttime="20231212 13:41:10.305" endtime="20231212 13:41:10.307"/>
+</kw>
+<for flavor="IN">
+<var>${item}</var>
+<value>@{msts}</value>
+<iter>
+<var name="${item}"/>
+<kw name="Log" library="BuiltIn">
+<arg>${item}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="NOT RUN" starttime="20231212 13:41:10.308" endtime="20231212 13:41:10.308"/>
+</kw>
+<status status="NOT RUN" starttime="20231212 13:41:10.308" endtime="20231212 13:41:10.308"/>
+</iter>
+<status status="NOT RUN" starttime="20231212 13:41:10.307" endtime="20231212 13:41:10.308"/>
+</for>
+<status status="PASS" starttime="20231212 13:41:10.295" endtime="20231212 13:41:10.308"/>
+</kw>
+<kw name="CreateCandidate" library="client">
+<arg>${srlinux1-name}</arg>
+<arg>${srlinux1-candidate}</arg>
+<doc>Create a new named Candidate in the given Datastore</doc>
+<kw name="Run Process" library="Process">
+<var>${result}</var>
+<arg>${CLIENT-BIN}</arg>
+<arg>-a</arg>
+<arg>${DATA-SERVER-IP}:${DATA-SERVER-PORT}</arg>
+<arg>datastore</arg>
+<arg>create</arg>
+<arg>--ds</arg>
+<arg>${datastore}</arg>
+<arg>--candidate</arg>
+<arg>${candidate}</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<msg timestamp="20231212 13:41:10.310" level="INFO">Starting process:
+./bin/datactl -a 127.0.0.1:56000 datastore create --ds srl1 --candidate default</msg>
+<msg timestamp="20231212 13:41:10.312" level="INFO">Waiting for process to complete.</msg>
+<msg timestamp="20231212 13:41:20.316" level="INFO">Process completed.</msg>
+<msg timestamp="20231212 13:41:20.317" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:41:10.309" endtime="20231212 13:41:20.317"/>
+</kw>
+<return>
+<value>${result}</value>
+<status status="PASS" starttime="20231212 13:41:20.317" endtime="20231212 13:41:20.317"/>
+</return>
+<status status="PASS" starttime="20231212 13:41:10.308" endtime="20231212 13:41:20.318"/>
+</kw>
+<kw name="Set" library="client">
+<var>${result}</var>
+<arg>${srlinux1-name}</arg>
+<arg>${srlinux1-candidate}</arg>
+<arg>interface[name=ethernet-1/1]/ethernet/l2cp-transparency/lldp/tunnel:::true</arg>
+<doc>Applies to the candidate of the given datastore the provided update</doc>
+<kw name="Run Process" library="Process">
+<var>${result}</var>
+<arg>${CLIENT-BIN}</arg>
+<arg>-a</arg>
+<arg>${DATA-SERVER-IP}:${DATA-SERVER-PORT}</arg>
+<arg>data</arg>
+<arg>set</arg>
+<arg>--ds</arg>
+<arg>${datastore}</arg>
+<arg>--candidate</arg>
+<arg>${candidate}</arg>
+<arg>--update</arg>
+<arg>${update}</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<msg timestamp="20231212 13:41:20.322" level="INFO">Starting process:
+./bin/datactl -a 127.0.0.1:56000 data set --ds srl1 --candidate default --update interface[name=ethernet-1/1]/ethernet/l2cp-transparency/lldp/tunnel:::true</msg>
+<msg timestamp="20231212 13:41:20.326" level="INFO">Waiting for process to complete.</msg>
+<msg timestamp="20231212 13:41:30.330" level="INFO">Process completed.</msg>
+<msg timestamp="20231212 13:41:30.330" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:41:20.320" endtime="20231212 13:41:30.330"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${result.stdout}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20231212 13:41:30.333" level="INFO"/>
+<status status="PASS" starttime="20231212 13:41:30.331" endtime="20231212 13:41:30.333"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${result.stderr}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20231212 13:41:30.334" level="INFO">Error: context deadline exceeded</msg>
+<status status="PASS" starttime="20231212 13:41:30.333" endtime="20231212 13:41:30.334"/>
+</kw>
+<return>
+<value>${result}</value>
+<status status="PASS" starttime="20231212 13:41:30.334" endtime="20231212 13:41:30.334"/>
+</return>
+<msg timestamp="20231212 13:41:30.335" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:41:20.319" endtime="20231212 13:41:30.335"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${result.rc}</arg>
+<arg>0</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<msg timestamp="20231212 13:41:30.336" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;class 'str'&gt;</msg>
+<msg timestamp="20231212 13:41:30.337" level="FAIL">1 != 0</msg>
+<status status="FAIL" starttime="20231212 13:41:30.335" endtime="20231212 13:41:30.337"/>
+</kw>
+<kw name="Commit" library="client">
+<var>${result}</var>
+<arg>${srlinux1-name}</arg>
+<arg>${srlinux1-candidate}</arg>
+<doc>Performs a commit on the given datastore/candidate and returns the Process Result object https://robotframework.org/robotframework/latest/libraries/Process.html#Result%20object</doc>
+<status status="NOT RUN" starttime="20231212 13:41:30.337" endtime="20231212 13:41:30.337"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${result.stderr}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="NOT RUN" starttime="20231212 13:41:30.337" endtime="20231212 13:41:30.337"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${result.rc}</arg>
+<arg>0</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="NOT RUN" starttime="20231212 13:41:30.337" endtime="20231212 13:41:30.337"/>
+</kw>
+<kw name="DeleteCandidate" library="client">
+<arg>${srlinux1-name}</arg>
+<arg>${srlinux1-candidate}</arg>
+<doc>Delete a named Candidate in the given Datastore</doc>
+<status status="NOT RUN" starttime="20231212 13:41:30.338" endtime="20231212 13:41:30.338"/>
+</kw>
+<status status="FAIL" starttime="20231212 13:41:10.294" endtime="20231212 13:41:30.338">1 != 0</status>
+</test>
+<test id="s1-s1-s2-s1-t12" name="Set interface ethernet l2cp-transparency lldp tunnel true on lldp true interface" line="195">
+<kw name="LogMustStatements" library="client">
+<arg>${srlinux1-schema-name}</arg>
+<arg>${srlinux1-schema-version}</arg>
+<arg>${srlinux1-schema-vendor}</arg>
+<arg>interface[name=ethernet-1/1]/ethernet/l2cp-transparency/lldp/tunnel</arg>
+<doc>Takes vendor, name, version and a path, retrieves the schema for the given path, extracts the returned must_statements and logs them.</doc>
+<kw name="GetSchema" library="client">
+<var>${schema}</var>
+<arg>${name}</arg>
+<arg>${version}</arg>
+<arg>${vendor}</arg>
+<arg>${path}</arg>
+<doc>Retrieve the schema element described by name (plattform name), version and vendor under the given path.</doc>
+<kw name="Run Process" library="Process">
+<var>${result}</var>
+<arg>${CLIENT-BIN}</arg>
+<arg>-a</arg>
+<arg>${SCHEMA-SERVER-IP}:${SCHEMA-SERVER-PORT}</arg>
+<arg>schema</arg>
+<arg>get</arg>
+<arg>--name</arg>
+<arg>${name}</arg>
+<arg>--version</arg>
+<arg>${version}</arg>
+<arg>--vendor</arg>
+<arg>${vendor}</arg>
+<arg>--path</arg>
+<arg>${path}</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<msg timestamp="20231212 13:41:30.342" level="INFO">Starting process:
+./bin/datactl -a 127.0.0.1:55000 schema get --name srl --version 22.11.2 --vendor Nokia --path interface[name=ethernet-1/1]/ethernet/l2cp-transparency/lldp/tunnel</msg>
+<msg timestamp="20231212 13:41:30.345" level="INFO">Waiting for process to complete.</msg>
+<msg timestamp="20231212 13:41:30.347" level="INFO">Process completed.</msg>
+<msg timestamp="20231212 13:41:30.348" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:41:30.341" endtime="20231212 13:41:30.348"/>
+</kw>
+<return>
+<value>${result}</value>
+<status status="PASS" starttime="20231212 13:41:30.348" endtime="20231212 13:41:30.348"/>
+</return>
+<msg timestamp="20231212 13:41:30.348" level="INFO">${schema} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:41:30.340" endtime="20231212 13:41:30.348"/>
+</kw>
+<kw name="_ExtractMustStatements" library="client">
+<var>${msts}</var>
+<arg>${schema.stdout}</arg>
+<doc>Takes a GetSchema response and extracts the must_statements of the response. Returns an array with all the must_statements as a string array.</doc>
+<kw name="Get Regexp Matches" library="String">
+<var>${matches}</var>
+<arg>${input}</arg>
+<arg>must_statements:\\s*\{[\\s\\S]*?\}</arg>
+<arg>flags=MULTILINE | IGNORECASE</arg>
+<doc>Returns a list of all non-overlapping matches in the given string.</doc>
+<msg timestamp="20231212 13:41:30.351" level="INFO">${matches} = []</msg>
+<status status="PASS" starttime="20231212 13:41:30.350" endtime="20231212 13:41:30.351"/>
+</kw>
+<return>
+<value>${matches}</value>
+<status status="PASS" starttime="20231212 13:41:30.351" endtime="20231212 13:41:30.351"/>
+</return>
+<msg timestamp="20231212 13:41:30.351" level="INFO">${msts} = []</msg>
+<status status="PASS" starttime="20231212 13:41:30.349" endtime="20231212 13:41:30.351"/>
+</kw>
+<for flavor="IN">
+<var>${item}</var>
+<value>@{msts}</value>
+<iter>
+<var name="${item}"/>
+<kw name="Log" library="BuiltIn">
+<arg>${item}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="NOT RUN" starttime="20231212 13:41:30.352" endtime="20231212 13:41:30.352"/>
+</kw>
+<status status="NOT RUN" starttime="20231212 13:41:30.352" endtime="20231212 13:41:30.352"/>
+</iter>
+<status status="NOT RUN" starttime="20231212 13:41:30.352" endtime="20231212 13:41:30.352"/>
+</for>
+<status status="PASS" starttime="20231212 13:41:30.339" endtime="20231212 13:41:30.352"/>
+</kw>
+<kw name="CreateCandidate" library="client">
+<arg>${srlinux1-name}</arg>
+<arg>${srlinux1-candidate}</arg>
+<doc>Create a new named Candidate in the given Datastore</doc>
+<kw name="Run Process" library="Process">
+<var>${result}</var>
+<arg>${CLIENT-BIN}</arg>
+<arg>-a</arg>
+<arg>${DATA-SERVER-IP}:${DATA-SERVER-PORT}</arg>
+<arg>datastore</arg>
+<arg>create</arg>
+<arg>--ds</arg>
+<arg>${datastore}</arg>
+<arg>--candidate</arg>
+<arg>${candidate}</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<msg timestamp="20231212 13:41:30.354" level="INFO">Starting process:
+./bin/datactl -a 127.0.0.1:56000 datastore create --ds srl1 --candidate default</msg>
+<msg timestamp="20231212 13:41:30.356" level="INFO">Waiting for process to complete.</msg>
+<msg timestamp="20231212 13:41:40.360" level="INFO">Process completed.</msg>
+<msg timestamp="20231212 13:41:40.360" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:41:30.353" endtime="20231212 13:41:40.361"/>
+</kw>
+<return>
+<value>${result}</value>
+<status status="PASS" starttime="20231212 13:41:40.361" endtime="20231212 13:41:40.361"/>
+</return>
+<status status="PASS" starttime="20231212 13:41:30.352" endtime="20231212 13:41:40.361"/>
+</kw>
+<kw name="Set" library="client">
+<var>${result}</var>
+<arg>${srlinux1-name}</arg>
+<arg>${srlinux1-candidate}</arg>
+<arg>/system/lldp/interface[name=ethernet-1/1]/admin-state:::enable</arg>
+<doc>Applies to the candidate of the given datastore the provided update</doc>
+<kw name="Run Process" library="Process">
+<var>${result}</var>
+<arg>${CLIENT-BIN}</arg>
+<arg>-a</arg>
+<arg>${DATA-SERVER-IP}:${DATA-SERVER-PORT}</arg>
+<arg>data</arg>
+<arg>set</arg>
+<arg>--ds</arg>
+<arg>${datastore}</arg>
+<arg>--candidate</arg>
+<arg>${candidate}</arg>
+<arg>--update</arg>
+<arg>${update}</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<msg timestamp="20231212 13:41:40.363" level="INFO">Starting process:
+./bin/datactl -a 127.0.0.1:56000 data set --ds srl1 --candidate default --update /system/lldp/interface[name=ethernet-1/1]/admin-state:::enable</msg>
+<msg timestamp="20231212 13:41:40.366" level="INFO">Waiting for process to complete.</msg>
+<msg timestamp="20231212 13:41:50.370" level="INFO">Process completed.</msg>
+<msg timestamp="20231212 13:41:50.371" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:41:40.362" endtime="20231212 13:41:50.371"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${result.stdout}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20231212 13:41:50.373" level="INFO"/>
+<status status="PASS" starttime="20231212 13:41:50.371" endtime="20231212 13:41:50.374"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${result.stderr}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20231212 13:41:50.376" level="INFO">Error: context deadline exceeded</msg>
+<status status="PASS" starttime="20231212 13:41:50.374" endtime="20231212 13:41:50.376"/>
+</kw>
+<return>
+<value>${result}</value>
+<status status="PASS" starttime="20231212 13:41:50.376" endtime="20231212 13:41:50.376"/>
+</return>
+<msg timestamp="20231212 13:41:50.377" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:41:40.362" endtime="20231212 13:41:50.377"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${result.rc}</arg>
+<arg>0</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<msg timestamp="20231212 13:41:50.379" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;class 'str'&gt;</msg>
+<msg timestamp="20231212 13:41:50.379" level="FAIL">1 != 0</msg>
+<status status="FAIL" starttime="20231212 13:41:50.377" endtime="20231212 13:41:50.379"/>
+</kw>
+<kw name="Set" library="client">
+<var>${result}</var>
+<arg>${srlinux1-name}</arg>
+<arg>${srlinux1-candidate}</arg>
+<arg>/interface[name=ethernet-1/1]/ethernet/l2cp-transparency/lldp/tunnel:::true</arg>
+<doc>Applies to the candidate of the given datastore the provided update</doc>
+<status status="NOT RUN" starttime="20231212 13:41:50.380" endtime="20231212 13:41:50.380"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${result.rc}</arg>
+<arg>0</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="NOT RUN" starttime="20231212 13:41:50.380" endtime="20231212 13:41:50.380"/>
+</kw>
+<kw name="Commit" library="client">
+<var>${result}</var>
+<arg>${srlinux1-name}</arg>
+<arg>${srlinux1-candidate}</arg>
+<doc>Performs a commit on the given datastore/candidate and returns the Process Result object https://robotframework.org/robotframework/latest/libraries/Process.html#Result%20object</doc>
+<status status="NOT RUN" starttime="20231212 13:41:50.380" endtime="20231212 13:41:50.380"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${result.stderr}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="NOT RUN" starttime="20231212 13:41:50.381" endtime="20231212 13:41:50.381"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${result.rc}</arg>
+<arg>1</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="NOT RUN" starttime="20231212 13:41:50.381" endtime="20231212 13:41:50.381"/>
+</kw>
+<kw name="Should Contain" library="BuiltIn">
+<arg>${result.stderr}</arg>
+<arg>this interface must not have lldp enabled</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="NOT RUN" starttime="20231212 13:41:50.381" endtime="20231212 13:41:50.381"/>
+</kw>
+<kw name="DeleteCandidate" library="client">
+<arg>${srlinux1-name}</arg>
+<arg>${srlinux1-candidate}</arg>
+<doc>Delete a named Candidate in the given Datastore</doc>
+<status status="NOT RUN" starttime="20231212 13:41:50.382" endtime="20231212 13:41:50.382"/>
+</kw>
+<status status="FAIL" starttime="20231212 13:41:30.338" endtime="20231212 13:41:50.382">1 != 0</status>
+</test>
+<test id="s1-s1-s2-s1-t13" name="Set bfd for non existing subinterface" line="213">
+<kw name="LogMustStatements" library="client">
+<arg>${srlinux1-schema-name}</arg>
+<arg>${srlinux1-schema-version}</arg>
+<arg>${srlinux1-schema-vendor}</arg>
+<arg>/bfd/subinterface/id</arg>
+<doc>Takes vendor, name, version and a path, retrieves the schema for the given path, extracts the returned must_statements and logs them.</doc>
+<kw name="GetSchema" library="client">
+<var>${schema}</var>
+<arg>${name}</arg>
+<arg>${version}</arg>
+<arg>${vendor}</arg>
+<arg>${path}</arg>
+<doc>Retrieve the schema element described by name (plattform name), version and vendor under the given path.</doc>
+<kw name="Run Process" library="Process">
+<var>${result}</var>
+<arg>${CLIENT-BIN}</arg>
+<arg>-a</arg>
+<arg>${SCHEMA-SERVER-IP}:${SCHEMA-SERVER-PORT}</arg>
+<arg>schema</arg>
+<arg>get</arg>
+<arg>--name</arg>
+<arg>${name}</arg>
+<arg>--version</arg>
+<arg>${version}</arg>
+<arg>--vendor</arg>
+<arg>${vendor}</arg>
+<arg>--path</arg>
+<arg>${path}</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<msg timestamp="20231212 13:41:50.387" level="INFO">Starting process:
+./bin/datactl -a 127.0.0.1:55000 schema get --name srl --version 22.11.2 --vendor Nokia --path /bfd/subinterface/id</msg>
+<msg timestamp="20231212 13:41:50.390" level="INFO">Waiting for process to complete.</msg>
+<msg timestamp="20231212 13:41:50.393" level="INFO">Process completed.</msg>
+<msg timestamp="20231212 13:41:50.394" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:41:50.386" endtime="20231212 13:41:50.394"/>
+</kw>
+<return>
+<value>${result}</value>
+<status status="PASS" starttime="20231212 13:41:50.394" endtime="20231212 13:41:50.394"/>
+</return>
+<msg timestamp="20231212 13:41:50.395" level="INFO">${schema} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:41:50.385" endtime="20231212 13:41:50.395"/>
+</kw>
+<kw name="_ExtractMustStatements" library="client">
+<var>${msts}</var>
+<arg>${schema.stdout}</arg>
+<doc>Takes a GetSchema response and extracts the must_statements of the response. Returns an array with all the must_statements as a string array.</doc>
+<kw name="Get Regexp Matches" library="String">
+<var>${matches}</var>
+<arg>${input}</arg>
+<arg>must_statements:\\s*\{[\\s\\S]*?\}</arg>
+<arg>flags=MULTILINE | IGNORECASE</arg>
+<doc>Returns a list of all non-overlapping matches in the given string.</doc>
+<msg timestamp="20231212 13:41:50.398" level="INFO">${matches} = []</msg>
+<status status="PASS" starttime="20231212 13:41:50.398" endtime="20231212 13:41:50.398"/>
+</kw>
+<return>
+<value>${matches}</value>
+<status status="PASS" starttime="20231212 13:41:50.399" endtime="20231212 13:41:50.399"/>
+</return>
+<msg timestamp="20231212 13:41:50.399" level="INFO">${msts} = []</msg>
+<status status="PASS" starttime="20231212 13:41:50.395" endtime="20231212 13:41:50.399"/>
+</kw>
+<for flavor="IN">
+<var>${item}</var>
+<value>@{msts}</value>
+<iter>
+<var name="${item}"/>
+<kw name="Log" library="BuiltIn">
+<arg>${item}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="NOT RUN" starttime="20231212 13:41:50.400" endtime="20231212 13:41:50.400"/>
+</kw>
+<status status="NOT RUN" starttime="20231212 13:41:50.400" endtime="20231212 13:41:50.400"/>
+</iter>
+<status status="NOT RUN" starttime="20231212 13:41:50.399" endtime="20231212 13:41:50.400"/>
+</for>
+<status status="PASS" starttime="20231212 13:41:50.384" endtime="20231212 13:41:50.400"/>
+</kw>
+<kw name="CreateCandidate" library="client">
+<arg>${srlinux1-name}</arg>
+<arg>${srlinux1-candidate}</arg>
+<doc>Create a new named Candidate in the given Datastore</doc>
+<kw name="Run Process" library="Process">
+<var>${result}</var>
+<arg>${CLIENT-BIN}</arg>
+<arg>-a</arg>
+<arg>${DATA-SERVER-IP}:${DATA-SERVER-PORT}</arg>
+<arg>datastore</arg>
+<arg>create</arg>
+<arg>--ds</arg>
+<arg>${datastore}</arg>
+<arg>--candidate</arg>
+<arg>${candidate}</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<msg timestamp="20231212 13:41:50.402" level="INFO">Starting process:
+./bin/datactl -a 127.0.0.1:56000 datastore create --ds srl1 --candidate default</msg>
+<msg timestamp="20231212 13:41:50.405" level="INFO">Waiting for process to complete.</msg>
+<msg timestamp="20231212 13:42:00.409" level="INFO">Process completed.</msg>
+<msg timestamp="20231212 13:42:00.410" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:41:50.401" endtime="20231212 13:42:00.410"/>
+</kw>
+<return>
+<value>${result}</value>
+<status status="PASS" starttime="20231212 13:42:00.411" endtime="20231212 13:42:00.411"/>
+</return>
+<status status="PASS" starttime="20231212 13:41:50.400" endtime="20231212 13:42:00.412"/>
+</kw>
+<kw name="Set" library="client">
+<var>${result}</var>
+<arg>${srlinux1-name}</arg>
+<arg>${srlinux1-candidate}</arg>
+<arg>/bfd/subinterface/id:::ethernet-1/1.26</arg>
+<doc>Applies to the candidate of the given datastore the provided update</doc>
+<kw name="Run Process" library="Process">
+<var>${result}</var>
+<arg>${CLIENT-BIN}</arg>
+<arg>-a</arg>
+<arg>${DATA-SERVER-IP}:${DATA-SERVER-PORT}</arg>
+<arg>data</arg>
+<arg>set</arg>
+<arg>--ds</arg>
+<arg>${datastore}</arg>
+<arg>--candidate</arg>
+<arg>${candidate}</arg>
+<arg>--update</arg>
+<arg>${update}</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<msg timestamp="20231212 13:42:00.418" level="INFO">Starting process:
+./bin/datactl -a 127.0.0.1:56000 data set --ds srl1 --candidate default --update /bfd/subinterface/id:::ethernet-1/1.26</msg>
+<msg timestamp="20231212 13:42:00.422" level="INFO">Waiting for process to complete.</msg>
+<msg timestamp="20231212 13:42:10.425" level="INFO">Process completed.</msg>
+<msg timestamp="20231212 13:42:10.426" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:42:00.416" endtime="20231212 13:42:10.426"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${result.stdout}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20231212 13:42:10.431" level="INFO"/>
+<status status="PASS" starttime="20231212 13:42:10.427" endtime="20231212 13:42:10.431"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${result.stderr}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20231212 13:42:10.434" level="INFO">Error: context deadline exceeded</msg>
+<status status="PASS" starttime="20231212 13:42:10.431" endtime="20231212 13:42:10.435"/>
+</kw>
+<return>
+<value>${result}</value>
+<status status="PASS" starttime="20231212 13:42:10.435" endtime="20231212 13:42:10.435"/>
+</return>
+<msg timestamp="20231212 13:42:10.436" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:42:00.413" endtime="20231212 13:42:10.436"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${result.rc}</arg>
+<arg>0</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<msg timestamp="20231212 13:42:10.440" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;class 'str'&gt;</msg>
+<msg timestamp="20231212 13:42:10.440" level="FAIL">1 != 0</msg>
+<status status="FAIL" starttime="20231212 13:42:10.436" endtime="20231212 13:42:10.440"/>
+</kw>
+<kw name="Commit" library="client">
+<var>${result}</var>
+<arg>${srlinux1-name}</arg>
+<arg>${srlinux1-candidate}</arg>
+<doc>Performs a commit on the given datastore/candidate and returns the Process Result object https://robotframework.org/robotframework/latest/libraries/Process.html#Result%20object</doc>
+<status status="NOT RUN" starttime="20231212 13:42:10.441" endtime="20231212 13:42:10.441"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${result.stderr}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="NOT RUN" starttime="20231212 13:42:10.442" endtime="20231212 13:42:10.442"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${result.rc}</arg>
+<arg>1</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="NOT RUN" starttime="20231212 13:42:10.442" endtime="20231212 13:42:10.442"/>
+</kw>
+<kw name="Should Contain" library="BuiltIn">
+<arg>${result.stderr}</arg>
+<arg>Must be an existing subinterface name</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="NOT RUN" starttime="20231212 13:42:10.443" endtime="20231212 13:42:10.443"/>
+</kw>
+<kw name="DeleteCandidate" library="client">
+<arg>${srlinux1-name}</arg>
+<arg>${srlinux1-candidate}</arg>
+<doc>Delete a named Candidate in the given Datastore</doc>
+<status status="NOT RUN" starttime="20231212 13:42:10.443" endtime="20231212 13:42:10.443"/>
+</kw>
+<status status="FAIL" starttime="20231212 13:41:50.383" endtime="20231212 13:42:10.444">1 != 0</status>
+</test>
+<test id="s1-s1-s2-s1-t14" name="Check LAG interface member speed is set" line="228">
+<kw name="LogMustStatements" library="client">
+<arg>${srlinux1-schema-name}</arg>
+<arg>${srlinux1-schema-version}</arg>
+<arg>${srlinux1-schema-vendor}</arg>
+<arg>interface[name=ethernet-1/1]/ethernet/aggregate-id</arg>
+<doc>Takes vendor, name, version and a path, retrieves the schema for the given path, extracts the returned must_statements and logs them.</doc>
+<kw name="GetSchema" library="client">
+<var>${schema}</var>
+<arg>${name}</arg>
+<arg>${version}</arg>
+<arg>${vendor}</arg>
+<arg>${path}</arg>
+<doc>Retrieve the schema element described by name (plattform name), version and vendor under the given path.</doc>
+<kw name="Run Process" library="Process">
+<var>${result}</var>
+<arg>${CLIENT-BIN}</arg>
+<arg>-a</arg>
+<arg>${SCHEMA-SERVER-IP}:${SCHEMA-SERVER-PORT}</arg>
+<arg>schema</arg>
+<arg>get</arg>
+<arg>--name</arg>
+<arg>${name}</arg>
+<arg>--version</arg>
+<arg>${version}</arg>
+<arg>--vendor</arg>
+<arg>${vendor}</arg>
+<arg>--path</arg>
+<arg>${path}</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<msg timestamp="20231212 13:42:10.453" level="INFO">Starting process:
+./bin/datactl -a 127.0.0.1:55000 schema get --name srl --version 22.11.2 --vendor Nokia --path interface[name=ethernet-1/1]/ethernet/aggregate-id</msg>
+<msg timestamp="20231212 13:42:10.456" level="INFO">Waiting for process to complete.</msg>
+<msg timestamp="20231212 13:42:10.459" level="INFO">Process completed.</msg>
+<msg timestamp="20231212 13:42:10.460" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:42:10.450" endtime="20231212 13:42:10.460"/>
+</kw>
+<return>
+<value>${result}</value>
+<status status="PASS" starttime="20231212 13:42:10.460" endtime="20231212 13:42:10.461"/>
+</return>
+<msg timestamp="20231212 13:42:10.462" level="INFO">${schema} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:42:10.449" endtime="20231212 13:42:10.462"/>
+</kw>
+<kw name="_ExtractMustStatements" library="client">
+<var>${msts}</var>
+<arg>${schema.stdout}</arg>
+<doc>Takes a GetSchema response and extracts the must_statements of the response. Returns an array with all the must_statements as a string array.</doc>
+<kw name="Get Regexp Matches" library="String">
+<var>${matches}</var>
+<arg>${input}</arg>
+<arg>must_statements:\\s*\{[\\s\\S]*?\}</arg>
+<arg>flags=MULTILINE | IGNORECASE</arg>
+<doc>Returns a list of all non-overlapping matches in the given string.</doc>
+<msg timestamp="20231212 13:42:10.467" level="INFO">${matches} = []</msg>
+<status status="PASS" starttime="20231212 13:42:10.466" endtime="20231212 13:42:10.467"/>
+</kw>
+<return>
+<value>${matches}</value>
+<status status="PASS" starttime="20231212 13:42:10.467" endtime="20231212 13:42:10.467"/>
+</return>
+<msg timestamp="20231212 13:42:10.468" level="INFO">${msts} = []</msg>
+<status status="PASS" starttime="20231212 13:42:10.462" endtime="20231212 13:42:10.468"/>
+</kw>
+<for flavor="IN">
+<var>${item}</var>
+<value>@{msts}</value>
+<iter>
+<var name="${item}"/>
+<kw name="Log" library="BuiltIn">
+<arg>${item}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="NOT RUN" starttime="20231212 13:42:10.468" endtime="20231212 13:42:10.468"/>
+</kw>
+<status status="NOT RUN" starttime="20231212 13:42:10.468" endtime="20231212 13:42:10.468"/>
+</iter>
+<status status="NOT RUN" starttime="20231212 13:42:10.468" endtime="20231212 13:42:10.468"/>
+</for>
+<status status="PASS" starttime="20231212 13:42:10.447" endtime="20231212 13:42:10.469"/>
+</kw>
+<kw name="CreateCandidate" library="client">
+<arg>${srlinux1-name}</arg>
+<arg>${srlinux1-candidate}</arg>
+<doc>Create a new named Candidate in the given Datastore</doc>
+<kw name="Run Process" library="Process">
+<var>${result}</var>
+<arg>${CLIENT-BIN}</arg>
+<arg>-a</arg>
+<arg>${DATA-SERVER-IP}:${DATA-SERVER-PORT}</arg>
+<arg>datastore</arg>
+<arg>create</arg>
+<arg>--ds</arg>
+<arg>${datastore}</arg>
+<arg>--candidate</arg>
+<arg>${candidate}</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<msg timestamp="20231212 13:42:10.470" level="INFO">Starting process:
+./bin/datactl -a 127.0.0.1:56000 datastore create --ds srl1 --candidate default</msg>
+<msg timestamp="20231212 13:42:10.473" level="INFO">Waiting for process to complete.</msg>
+<msg timestamp="20231212 13:42:20.477" level="INFO">Process completed.</msg>
+<msg timestamp="20231212 13:42:20.477" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:42:10.469" endtime="20231212 13:42:20.477"/>
+</kw>
+<return>
+<value>${result}</value>
+<status status="PASS" starttime="20231212 13:42:20.477" endtime="20231212 13:42:20.477"/>
+</return>
+<status status="PASS" starttime="20231212 13:42:10.469" endtime="20231212 13:42:20.478"/>
+</kw>
+<kw name="Set" library="client">
+<var>${result}</var>
+<arg>${srlinux1-name}</arg>
+<arg>${srlinux1-candidate}</arg>
+<arg>interface[name=ethernet-1/1]/ethernet/aggregate-id:::lag1</arg>
+<doc>Applies to the candidate of the given datastore the provided update</doc>
+<kw name="Run Process" library="Process">
+<var>${result}</var>
+<arg>${CLIENT-BIN}</arg>
+<arg>-a</arg>
+<arg>${DATA-SERVER-IP}:${DATA-SERVER-PORT}</arg>
+<arg>data</arg>
+<arg>set</arg>
+<arg>--ds</arg>
+<arg>${datastore}</arg>
+<arg>--candidate</arg>
+<arg>${candidate}</arg>
+<arg>--update</arg>
+<arg>${update}</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<msg timestamp="20231212 13:42:20.480" level="INFO">Starting process:
+./bin/datactl -a 127.0.0.1:56000 data set --ds srl1 --candidate default --update interface[name=ethernet-1/1]/ethernet/aggregate-id:::lag1</msg>
+<msg timestamp="20231212 13:42:20.483" level="INFO">Waiting for process to complete.</msg>
+<msg timestamp="20231212 13:42:30.487" level="INFO">Process completed.</msg>
+<msg timestamp="20231212 13:42:30.488" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:42:20.479" endtime="20231212 13:42:30.488"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${result.stdout}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20231212 13:42:30.490" level="INFO"/>
+<status status="PASS" starttime="20231212 13:42:30.488" endtime="20231212 13:42:30.490"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${result.stderr}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20231212 13:42:30.491" level="INFO">Error: context deadline exceeded</msg>
+<status status="PASS" starttime="20231212 13:42:30.490" endtime="20231212 13:42:30.491"/>
+</kw>
+<return>
+<value>${result}</value>
+<status status="PASS" starttime="20231212 13:42:30.491" endtime="20231212 13:42:30.492"/>
+</return>
+<msg timestamp="20231212 13:42:30.492" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:42:20.478" endtime="20231212 13:42:30.492"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${result.rc}</arg>
+<arg>0</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<msg timestamp="20231212 13:42:30.494" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;class 'str'&gt;</msg>
+<msg timestamp="20231212 13:42:30.494" level="FAIL">1 != 0</msg>
+<status status="FAIL" starttime="20231212 13:42:30.492" endtime="20231212 13:42:30.494"/>
+</kw>
+<kw name="Commit" library="client">
+<var>${result}</var>
+<arg>${srlinux1-name}</arg>
+<arg>${srlinux1-candidate}</arg>
+<doc>Performs a commit on the given datastore/candidate and returns the Process Result object https://robotframework.org/robotframework/latest/libraries/Process.html#Result%20object</doc>
+<status status="NOT RUN" starttime="20231212 13:42:30.494" endtime="20231212 13:42:30.494"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${result.stderr}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="NOT RUN" starttime="20231212 13:42:30.494" endtime="20231212 13:42:30.494"/>
+</kw>
+<kw name="Should Contain" library="BuiltIn">
+<arg>${result.stderr}</arg>
+<arg>member-speed must be configured on associated aggregate-id interface</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="NOT RUN" starttime="20231212 13:42:30.495" endtime="20231212 13:42:30.495"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${result.rc}</arg>
+<arg>1</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="NOT RUN" starttime="20231212 13:42:30.495" endtime="20231212 13:42:30.495"/>
+</kw>
+<kw name="DeleteCandidate" library="client">
+<arg>${srlinux1-name}</arg>
+<arg>${srlinux1-candidate}</arg>
+<doc>Delete a named Candidate in the given Datastore</doc>
+<status status="NOT RUN" starttime="20231212 13:42:30.495" endtime="20231212 13:42:30.495"/>
+</kw>
+<status status="FAIL" starttime="20231212 13:42:10.445" endtime="20231212 13:42:30.495">1 != 0</status>
+</test>
+<test id="s1-s1-s2-s1-t15" name="Check LAG interface vlan-tagging not set on member" line="242">
+<kw name="LogMustStatements" library="client">
+<arg>${srlinux1-schema-name}</arg>
+<arg>${srlinux1-schema-version}</arg>
+<arg>${srlinux1-schema-vendor}</arg>
+<arg>interface[name=ethernet-1/1]/ethernet/aggregate-id</arg>
+<doc>Takes vendor, name, version and a path, retrieves the schema for the given path, extracts the returned must_statements and logs them.</doc>
+<kw name="GetSchema" library="client">
+<var>${schema}</var>
+<arg>${name}</arg>
+<arg>${version}</arg>
+<arg>${vendor}</arg>
+<arg>${path}</arg>
+<doc>Retrieve the schema element described by name (plattform name), version and vendor under the given path.</doc>
+<kw name="Run Process" library="Process">
+<var>${result}</var>
+<arg>${CLIENT-BIN}</arg>
+<arg>-a</arg>
+<arg>${SCHEMA-SERVER-IP}:${SCHEMA-SERVER-PORT}</arg>
+<arg>schema</arg>
+<arg>get</arg>
+<arg>--name</arg>
+<arg>${name}</arg>
+<arg>--version</arg>
+<arg>${version}</arg>
+<arg>--vendor</arg>
+<arg>${vendor}</arg>
+<arg>--path</arg>
+<arg>${path}</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<msg timestamp="20231212 13:42:30.499" level="INFO">Starting process:
+./bin/datactl -a 127.0.0.1:55000 schema get --name srl --version 22.11.2 --vendor Nokia --path interface[name=ethernet-1/1]/ethernet/aggregate-id</msg>
+<msg timestamp="20231212 13:42:30.502" level="INFO">Waiting for process to complete.</msg>
+<msg timestamp="20231212 13:42:30.505" level="INFO">Process completed.</msg>
+<msg timestamp="20231212 13:42:30.505" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:42:30.498" endtime="20231212 13:42:30.505"/>
+</kw>
+<return>
+<value>${result}</value>
+<status status="PASS" starttime="20231212 13:42:30.505" endtime="20231212 13:42:30.505"/>
+</return>
+<msg timestamp="20231212 13:42:30.506" level="INFO">${schema} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:42:30.498" endtime="20231212 13:42:30.506"/>
+</kw>
+<kw name="_ExtractMustStatements" library="client">
+<var>${msts}</var>
+<arg>${schema.stdout}</arg>
+<doc>Takes a GetSchema response and extracts the must_statements of the response. Returns an array with all the must_statements as a string array.</doc>
+<kw name="Get Regexp Matches" library="String">
+<var>${matches}</var>
+<arg>${input}</arg>
+<arg>must_statements:\\s*\{[\\s\\S]*?\}</arg>
+<arg>flags=MULTILINE | IGNORECASE</arg>
+<doc>Returns a list of all non-overlapping matches in the given string.</doc>
+<msg timestamp="20231212 13:42:30.508" level="INFO">${matches} = []</msg>
+<status status="PASS" starttime="20231212 13:42:30.508" endtime="20231212 13:42:30.508"/>
+</kw>
+<return>
+<value>${matches}</value>
+<status status="PASS" starttime="20231212 13:42:30.509" endtime="20231212 13:42:30.509"/>
+</return>
+<msg timestamp="20231212 13:42:30.509" level="INFO">${msts} = []</msg>
+<status status="PASS" starttime="20231212 13:42:30.506" endtime="20231212 13:42:30.509"/>
+</kw>
+<for flavor="IN">
+<var>${item}</var>
+<value>@{msts}</value>
+<iter>
+<var name="${item}"/>
+<kw name="Log" library="BuiltIn">
+<arg>${item}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="NOT RUN" starttime="20231212 13:42:30.509" endtime="20231212 13:42:30.510"/>
+</kw>
+<status status="NOT RUN" starttime="20231212 13:42:30.509" endtime="20231212 13:42:30.510"/>
+</iter>
+<status status="NOT RUN" starttime="20231212 13:42:30.509" endtime="20231212 13:42:30.510"/>
+</for>
+<status status="PASS" starttime="20231212 13:42:30.497" endtime="20231212 13:42:30.510"/>
+</kw>
+<kw name="CreateCandidate" library="client">
+<arg>${srlinux1-name}</arg>
+<arg>${srlinux1-candidate}</arg>
+<doc>Create a new named Candidate in the given Datastore</doc>
+<kw name="Run Process" library="Process">
+<var>${result}</var>
+<arg>${CLIENT-BIN}</arg>
+<arg>-a</arg>
+<arg>${DATA-SERVER-IP}:${DATA-SERVER-PORT}</arg>
+<arg>datastore</arg>
+<arg>create</arg>
+<arg>--ds</arg>
+<arg>${datastore}</arg>
+<arg>--candidate</arg>
+<arg>${candidate}</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<msg timestamp="20231212 13:42:30.511" level="INFO">Starting process:
+./bin/datactl -a 127.0.0.1:56000 datastore create --ds srl1 --candidate default</msg>
+<msg timestamp="20231212 13:42:30.513" level="INFO">Waiting for process to complete.</msg>
+<msg timestamp="20231212 13:42:40.517" level="INFO">Process completed.</msg>
+<msg timestamp="20231212 13:42:40.518" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:42:30.511" endtime="20231212 13:42:40.518"/>
+</kw>
+<return>
+<value>${result}</value>
+<status status="PASS" starttime="20231212 13:42:40.518" endtime="20231212 13:42:40.519"/>
+</return>
+<status status="PASS" starttime="20231212 13:42:30.510" endtime="20231212 13:42:40.520"/>
+</kw>
+<kw name="Set" library="client">
+<var>${result}</var>
+<arg>${srlinux1-name}</arg>
+<arg>${srlinux1-candidate}</arg>
+<arg>interface[name=ethernet-1/1]/vlan-tagging:::true</arg>
+<doc>Applies to the candidate of the given datastore the provided update</doc>
+<kw name="Run Process" library="Process">
+<var>${result}</var>
+<arg>${CLIENT-BIN}</arg>
+<arg>-a</arg>
+<arg>${DATA-SERVER-IP}:${DATA-SERVER-PORT}</arg>
+<arg>data</arg>
+<arg>set</arg>
+<arg>--ds</arg>
+<arg>${datastore}</arg>
+<arg>--candidate</arg>
+<arg>${candidate}</arg>
+<arg>--update</arg>
+<arg>${update}</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<msg timestamp="20231212 13:42:40.524" level="INFO">Starting process:
+./bin/datactl -a 127.0.0.1:56000 data set --ds srl1 --candidate default --update interface[name=ethernet-1/1]/vlan-tagging:::true</msg>
+<msg timestamp="20231212 13:42:40.528" level="INFO">Waiting for process to complete.</msg>
+<msg timestamp="20231212 13:42:50.532" level="INFO">Process completed.</msg>
+<msg timestamp="20231212 13:42:50.532" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:42:40.522" endtime="20231212 13:42:50.532"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${result.stdout}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20231212 13:42:50.534" level="INFO"/>
+<status status="PASS" starttime="20231212 13:42:50.533" endtime="20231212 13:42:50.534"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${result.stderr}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20231212 13:42:50.536" level="INFO">Error: context deadline exceeded</msg>
+<status status="PASS" starttime="20231212 13:42:50.535" endtime="20231212 13:42:50.536"/>
+</kw>
+<return>
+<value>${result}</value>
+<status status="PASS" starttime="20231212 13:42:50.536" endtime="20231212 13:42:50.536"/>
+</return>
+<msg timestamp="20231212 13:42:50.536" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" starttime="20231212 13:42:40.520" endtime="20231212 13:42:50.537"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${result.rc}</arg>
+<arg>0</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<msg timestamp="20231212 13:42:50.538" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;class 'str'&gt;</msg>
+<msg timestamp="20231212 13:42:50.538" level="FAIL">1 != 0</msg>
+<status status="FAIL" starttime="20231212 13:42:50.537" endtime="20231212 13:42:50.538"/>
+</kw>
+<kw name="Set" library="client">
+<var>${result}</var>
+<arg>${srlinux1-name}</arg>
+<arg>${srlinux1-candidate}</arg>
+<arg>interface[name=ethernet-1/1]/ethernet/port-speed:::10G</arg>
+<doc>Applies to the candidate of the given datastore the provided update</doc>
+<status status="NOT RUN" starttime="20231212 13:42:50.539" endtime="20231212 13:42:50.539"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${result.rc}</arg>
+<arg>0</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="NOT RUN" starttime="20231212 13:42:50.539" endtime="20231212 13:42:50.539"/>
+</kw>
+<kw name="Set" library="client">
+<var>${result}</var>
+<arg>${srlinux1-name}</arg>
+<arg>${srlinux1-candidate}</arg>
+<arg>interface[name=ethernet-1/1]/ethernet/aggregate-id:::lag1</arg>
+<doc>Applies to the candidate of the given datastore the provided update</doc>
+<status status="NOT RUN" starttime="20231212 13:42:50.539" endtime="20231212 13:42:50.539"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${result.rc}</arg>
+<arg>0</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="NOT RUN" starttime="20231212 13:42:50.539" endtime="20231212 13:42:50.540"/>
+</kw>
+<kw name="Commit" library="client">
+<var>${result}</var>
+<arg>${srlinux1-name}</arg>
+<arg>${srlinux1-candidate}</arg>
+<doc>Performs a commit on the given datastore/candidate and returns the Process Result object https://robotframework.org/robotframework/latest/libraries/Process.html#Result%20object</doc>
+<status status="NOT RUN" starttime="20231212 13:42:50.540" endtime="20231212 13:42:50.540"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${result.stderr}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="NOT RUN" starttime="20231212 13:42:50.540" endtime="20231212 13:42:50.540"/>
+</kw>
+<kw name="Should Contain" library="BuiltIn">
+<arg>${result.stderr}</arg>
+<arg>vlan-tagging and aggregate-id can not be configured together</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="NOT RUN" starttime="20231212 13:42:50.540" endtime="20231212 13:42:50.540"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${result.rc}</arg>
+<arg>1</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="NOT RUN" starttime="20231212 13:42:50.540" endtime="20231212 13:42:50.541"/>
+</kw>
+<kw name="DeleteCandidate" library="client">
+<arg>${srlinux1-name}</arg>
+<arg>${srlinux1-candidate}</arg>
+<doc>Delete a named Candidate in the given Datastore</doc>
+<status status="NOT RUN" starttime="20231212 13:42:50.541" endtime="20231212 13:42:50.541"/>
+</kw>
+<status status="FAIL" starttime="20231212 13:42:30.496" endtime="20231212 13:42:50.541">1 != 0</status>
+</test>
+<status status="FAIL" starttime="20231212 13:38:09.722" endtime="20231212 13:42:50.542"/>
+</suite>
+<status status="FAIL" starttime="20231212 13:38:09.719" endtime="20231212 13:42:50.545"/>
+</suite>
+<status status="FAIL" starttime="20231212 13:37:29.398" endtime="20231212 13:42:50.548"/>
+</suite>
+<status status="FAIL" starttime="20231212 13:37:29.341" endtime="20231212 13:42:50.552"/>
+</suite>
+<statistics>
+<total>
+<stat pass="0" fail="17" skip="0">All Tests</stat>
+</total>
+<tag>
+</tag>
+<suite>
+<stat pass="0" fail="17" skip="0" id="s1" name="Robot">Robot</stat>
+<stat pass="0" fail="17" skip="0" id="s1-s1" name="Tests">Robot.Tests</stat>
+<stat pass="0" fail="2" skip="0" id="s1-s1-s1" name="Leafref">Robot.Tests.Leafref</stat>
+<stat pass="0" fail="2" skip="0" id="s1-s1-s1-s1" name="Leafref Statements">Robot.Tests.Leafref.Leafref Statements</stat>
+<stat pass="0" fail="15" skip="0" id="s1-s1-s2" name="Must">Robot.Tests.Must</stat>
+<stat pass="0" fail="15" skip="0" id="s1-s1-s2-s1" name="Must Statements">Robot.Tests.Must.Must Statements</stat>
+</suite>
+</statistics>
+<errors>
+</errors>
+</robot>
