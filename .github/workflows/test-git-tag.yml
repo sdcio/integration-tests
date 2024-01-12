@@ -37,7 +37,7 @@ jobs:
         with:
           path: integration-tests
       - name: echo output
-        run: echo '${{ toJSON(needs.git-tag.outputs) }}'
+        run: echo '${{ toJSON(needs.git-tag.output) }}'
       - name: Debug 1
         run: ls -al
       - name: Debug 2
