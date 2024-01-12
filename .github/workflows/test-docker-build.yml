@@ -59,7 +59,6 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
-          context: data-server
           push: true
           tags: ghcr.io/iptecharch/test-image:v0.0.0-${{ needs.get-tag.outputs.git_tag }}
           ssh: |
