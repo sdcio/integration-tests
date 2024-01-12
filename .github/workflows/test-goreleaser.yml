@@ -1,0 +1,60 @@
+name: dev-build
+
+on: workflow_dispatch
+
+env:
+  GOVER: 1.21.4
+
+jobs:
+  get-tag:
+    runs-on: iptecharch-action-runners
+    outputs:
+      git_tag: ${{ steps.git_tag.outputs.git_tag }}
+    steps:
+      - name: Checkout data-server
+        uses: actions/checkout@v4
+        with:
+          repository: iptecharch/data-server
+          token: ${{ secrets.GH_PAT }} # `GH_PAT` is a secret that contains your PAT
+          fetch-depth: 0
+
+      - name: Get git tag
+        id: git_tag
+        run: |
+          #echo "git_tag=$(git describe --tags --long --candidates 100)" >> $GITHUB_OUTPUT
+          echo "git_tag=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+          echo ${{ steps.git_tag.outputs.git_tag }}
+
+  docker-build:
+    needs: get-tag
+    if: ${{ needs.get-tag.outputs.git_tag != '' }}
+    runs-on: iptecharch-action-runners
+    steps:
+      - name: Checkout data-server
+        uses: actions/checkout@v4
+        with:
+          repository: iptecharch/data-server
+          token: ${{ secrets.GH_PAT }} # `GH_PAT` is a secret that contains your PAT
+          fetch-depth: 0
+
+      # Make sure the @v0.8.0 matches the current version of the action
+      - uses: webfactory/ssh-agent@v0.8.0
+        with:
+            ssh-private-key: ${{ secrets.IPTECHARCH_SSH_KEY }}
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: iptecharch-builder
+          password: ${{ secrets.GH_PAT }}
+
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v5
+        with:
+          # either 'goreleaser' (default) or 'goreleaser-pro'
+          distribution: goreleaser
+          version: v0.0.0-${{ needs.get-tag.outputs.git_tag }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+          SSH_AUTH_SOCK: ${{ env.SSH_AUTH_SOCK }}
+
