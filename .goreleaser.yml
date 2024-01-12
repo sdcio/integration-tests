@@ -10,7 +10,7 @@ dockers:
     ids:
       - data-server
     image_templates:
-      - "ghcr.io/iptecharch/test-image:{{ .Version }}"
+      - "ghcr.io/iptecharch/test-image:{{ .Env.VERSION }}"
     dockerfile: Dockerfile
     skip_push: false
   - goos: linux
@@ -18,7 +18,7 @@ dockers:
     ids:
       - data-server
     image_templates:
-      - "registry.k8s.hans.io/iptecharch/data-server:{{ .Version }}"
+      - "registry.k8s.hans.io/iptecharch/data-server:{{ .Env.VERSION }}"
     dockerfile: Dockerfile
     skip_push: false
     push_flags:

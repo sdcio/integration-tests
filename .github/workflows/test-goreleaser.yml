@@ -53,8 +53,9 @@ jobs:
         with:
           # either 'goreleaser' (default) or 'goreleaser-pro'
           distribution: goreleaser
-          version: v0.0.0-${{ needs.get-tag.outputs.git_tag }}
+          version: latest
         env:
           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
           SSH_AUTH_SOCK: ${{ env.SSH_AUTH_SOCK }}
+          VERSION: v0.0.0-${{ needs.get-tag.outputs.git_tag }}
 
