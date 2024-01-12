@@ -10,7 +10,7 @@ dockers:
     ids:
       - data-server
     image_templates:
-      - "ghcr.io/iptecharch/test-image:{{ .Env.VERSION }}"
+      - 'ghcr.io/iptecharch/test-image:v{{ .Version }}'
     dockerfile: Dockerfile
     skip_push: false
   - goos: linux
@@ -18,8 +18,13 @@ dockers:
     ids:
       - data-server
     image_templates:
-      - "registry.k8s.hans.io/iptecharch/data-server:{{ .Env.VERSION }}"
+      - 'registry.k8s.hans.io/iptecharch/data-server:v{{ .Version }}'
     dockerfile: Dockerfile
     skip_push: false
     push_flags:
       - --tls-verify=false
+nightly:
+  name_template: 'v0.0.0-{{ .ShortCommit }}'
+  tag_name: devel
+  publish_release: false
+  keep_single_release: false
