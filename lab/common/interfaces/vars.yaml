@@ -1,3 +1,0 @@
-interfaces:
-  - name: ethernet-1/1
-    num_subinterfaces: 10
