@@ -31,9 +31,6 @@ jobs:
     runs-on: iptecharch-action-runners
     needs:
       - get-tag
-    strategy:
-      matrix:
-        repository: ${{ needs.git-tag.outputs.* }}
     steps:
       - name: Checkout integration-tests
         uses: actions/checkout@v4
