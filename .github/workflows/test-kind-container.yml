@@ -9,6 +9,13 @@ jobs:
       image: docker:dind
       ports:
         - 6443
+      args:
+       - dockerd
+       - --host=unix:///run/docker/docker.sock
+       - --group=$(DOCKER_GROUP_GID)
+      env:
+       - name: DOCKER_GROUP_GID
+         value: "123"
     steps:
       - name: Create k8s Kind Cluster
         uses: helm/kind-action@v1.8.0
