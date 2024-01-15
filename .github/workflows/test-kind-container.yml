@@ -5,7 +5,10 @@ on: workflow_dispatch
 jobs:
   create-cluster:
     runs-on: iptecharch-action-runners
-    container: docker:dind
+    container: 
+      image: docker:dind
+      ports:
+        - 6443
     steps:
       - name: Create k8s Kind Cluster
         uses: helm/kind-action@v1.8.0
