@@ -55,12 +55,10 @@ jobs:
           registry: registry.k8s.hans.io
           username: iptecharch-builder
           password: ${{ secrets.K8S_REGISTRY_HANS }}
-          
-      - name: debug
-        run: sleep 600
 
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v5
+        continue-on-error: true
         with:
           # either 'goreleaser' (default) or 'goreleaser-pro'
           distribution: goreleaser
@@ -68,3 +66,5 @@ jobs:
           args: release --clean -f .goreleaser.nightlies.yml --skip=validate
         env:
           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+      - name: debug
+        run: sleep 600
