@@ -12,10 +12,6 @@ jobs:
   dev-release:
     runs-on: iptecharch-action-runners
     steps:
-      - uses: actions/setup-go@v5
-        with:
-          go-version: ${{ env.GOVER }}
-
       - name: Checkout
         uses: actions/checkout@v4
         with:
@@ -27,6 +23,10 @@ jobs:
       - uses: webfactory/ssh-agent@v0.8.0
         with:
             ssh-private-key: ${{ secrets.IPTECHARCH_SSH_KEY }}
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GOVER }}
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
