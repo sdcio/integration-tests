@@ -23,7 +23,10 @@ jobs:
       - uses: webfactory/ssh-agent@v0.8.0
         with:
             ssh-private-key: ${{ secrets.IPTECHARCH_SSH_KEY }}
-
+        
+      - name: Setup Git config
+        run: git config --global url."ssh://git@github.com/".insteadOf "https://github.com/"
+        
       - uses: actions/setup-go@v5
         with:
           go-version: ${{ env.GOVER }}
@@ -43,7 +46,7 @@ jobs:
           password: ${{ secrets.K8S_REGISTRY_HANS }}
 
       - name: debug
-        run: sleep 3600
+        run: sleep 600
         
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v5
