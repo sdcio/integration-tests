@@ -54,6 +54,9 @@ jobs:
           registry: registry.k8s.hans.io
           username: iptecharch-builder
           password: ${{ secrets.K8S_REGISTRY_HANS }}
+          
+      - name: debug
+        run: sleep 600
 
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v5
