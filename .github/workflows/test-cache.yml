@@ -39,6 +39,7 @@ jobs:
           driver: kubernetes
           driver-opts: |
             namespace=github-actions-runners
+            image=registry.k8s.hans.io/actions/buildkit:buildx-stable-1
             replicas=1
           install: true
 
