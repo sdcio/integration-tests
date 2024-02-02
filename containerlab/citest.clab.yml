@@ -20,12 +20,12 @@ topology:
 
     sr1:
       kind: vr-sros
-      mgmt-ipv4: 172.20.20.11
-      mgmt-ipv6: 2001:172:20:20::11
+      mgmt-ipv4: 172.21.1.11
+      mgmt-ipv6: 2001:172:21:1::11
     sr2:
       kind: vr-sros
-      mgmt-ipv4: 172.20.20.12
-      mgmt-ipv6: 2001:172:20:20::12
+      mgmt-ipv4: 172.21.1.12
+      mgmt-ipv6: 2001:172:21:1::12
 
   links:
     - endpoints: ["srl3:e1-1", "srl1:e1-1"]
