@@ -32,8 +32,33 @@ env:
   PY_VER: "3.10"
 
 jobs:
+  setup-clab:
+    runs-on: kind
+    steps:
+      - name: Checkout integration-tests
+        uses: actions/checkout@v4
+      - name: Set SROS License
+        env:
+          SROS_LICENSE: ${{ secrets.SROS23_LICENSE }}
+        run: |
+          echo $SROS_LICENSE | tee containerlab/license-sros23.txt
+      - name: Deploy CI-Test-Containerlab
+        run: |
+          sudo containerlab deploy -t containerlab/citest.clab.yml --reconfigure
+
+  destroy-clab:
+    runs-on: kind
+    if: ${{ always() }}
+    needs: [setup-clab, create-cluster]
+    steps:
+      - name: Checkout integration-tests
+        uses: actions/checkout@v4
+      - name: Deploy CI-Test-Containerlab
+        run: |
+          sudo containerlab destroy -t containerlab/citest.clab.yml 
   create-cluster:
     runs-on: iptecharch-action-runners
+    needs: setup-clab
     steps:
       - name: Set env vars
         run: |
