@@ -28,6 +28,9 @@ on:
         required: true
         type: string
         default: v1.13.3
+env:
+  PY_VER: 3.10
+
 jobs:
   create-cluster:
     runs-on: iptecharch-action-runners
@@ -62,19 +65,27 @@ jobs:
           repository: iptecharch/artifacts
           token: ${{ secrets.GH_PAT }} # `GH_PAT` is a secret that contains your PAT
 
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PY_VER }}
+          cache: pip
+          cache-dependency-path: "integration-tests/tests/requirements.txt"
+
+      - name: Install robotframework
+        run: |
+          pip install -r integration-tests/tests/requirements.txt
+
       - name: Create k8s Kind Cluster
         uses: helm/kind-action@v1.8.0
         with:
           cluster_name: ci-kind-${{ github.actor }}
           config: ./integration-tests/k8s/kind-config.yml
-      - name: output job id
-        run: echo ${{ job }}
+
       - name: Install CRDs
         run: |
           ./integration-tests/k8s/patch-kind-registry.sh ci-kind-${{ github.actor }}
+          kubectl config set-context --current --namespace=default
           kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/${{ env.CERT_MANAGER_VERSION}}/cert-manager.yaml
-          sleep 7200
-          ##
           kubectl apply -f ./config-server/artifacts/out/artifacts.yaml
           sleep 60
           kubectl apply -f ./artifacts/schemas/schema-srl-23.10.1.yaml
