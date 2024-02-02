@@ -84,15 +84,6 @@ jobs:
           path: config-server
           repository: iptecharch/config-server
           token: ${{ secrets.GH_PAT }} # `GH_PAT` is a secret that contains your PAT
-          fetch-depth: 0
-
-      - name: Checkout artifacts
-        uses: actions/checkout@v4
-        with:
-          ref: kind-ci
-          path: artifacts
-          repository: iptecharch/artifacts
-          token: ${{ secrets.GH_PAT }} # `GH_PAT` is a secret that contains your PAT
 
       - uses: actions/setup-python@v5
         with:
@@ -110,17 +101,17 @@ jobs:
           cluster_name: ci-kind-${{ github.actor }}
           config: ./integration-tests/k8s/kind-config.yml
 
-      - name: Install CRDs
+      - name: Install collocated config-server
         run: |
           ./integration-tests/k8s/patch-kind-registry.sh ci-kind-${{ github.actor }}
           kubectl config set-context --current --namespace=default
           kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/${{ env.CERT_MANAGER_VERSION}}/cert-manager.yaml
           kubectl apply -f ./config-server/artifacts/out/artifacts.yaml
-          sleep 60
-          kubectl apply -f ./artifacts/schemas/schema-srl-23.10.1.yaml
-          kubectl apply -f ./artifacts/schemas/schema-sros-23.10.yaml
-          sleep 120
-          kubectl apply -f ./artifacts/inventory/profiles/
-          kubectl apply -f ./artifacts/inventory/dr-static.yaml
-          kubectl apply -f ./artifacts/inventory/dr-dynamic.yaml
+      - name: Install Schema, Target Profiles and Discovery Rules.
+        run: |
+          kubectl apply -f ./integration-tests/artifacts/schemas/schema-srl-23.10.1.yaml
+          kubectl apply -f ./integration-tests/artifacts/schemas/schema-sros-23.10.yaml
+          kubectl apply -f ./integration-tests/artifacts/inventory/profiles/
+          kubectl apply -f ./integration-tests/artifacts/inventory/dr-static.yaml
+          kubectl apply -f ./integration-tests/artifacts/inventory/dr-dynamic.yaml
           sleep 600

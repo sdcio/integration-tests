@@ -1,0 +1,26 @@
+apiVersion: inv.sdcio.dev/v1alpha1
+kind: DiscoveryRule
+metadata:
+  name: dr-static
+  namespace: default
+spec:
+  period: 1m
+  concurrentScans: 2
+  defaultSchema:
+    provider: sros.nokia.sdcio.dev  
+    version: 23.10.1
+  addresses:
+  - address: 172.21.1.11
+    hostName: sr1
+  - address: 172.21.1.12
+    hostName: sr2
+  targetConnectionProfiles:
+  - credentials: sros.nokia.sdcio.dev 
+    connectionProfile: netconf
+    syncProfile: netconf-getconfig
+  targetTemplate:
+    labels:
+      sdcio.dev/region: eu-east
+      scdio.dev/env: ci-test
+      sdcio.dev/device: sros
+    
