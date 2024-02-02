@@ -75,7 +75,7 @@ jobs:
 
       - uses: actions/setup-python@v5
         with:
-          python-version: ${{ env.py_ver }}
+          python-version: ${{ env.PY_VER }}
           cache: pip
           cache-dependency-path: "tests/requirements.txt"
 
