@@ -114,7 +114,7 @@ jobs:
           kubectl apply -f ./integration-tests/artifacts/inventory/profiles/
           kubectl apply -f ./integration-tests/artifacts/inventory/dr-static.yaml
           kubectl apply -f ./integration-tests/artifacts/inventory/dr-dynamic.yaml
-          sleep 600
+          sleep 180
       - name: Run Robot Tests
         run: |
-          robot --consolecolors on -r none -l ./tests/out/01-crud-log --output ./tests/out/01-crud-out.xml ./tests/01-crud/01*.robot
+          robot --consolecolors on -r none -l ./integration-tests/tests/out/01-crud-log --output ./integration-tests/tests/out/01-crud-out.xml ./integration-tests/tests/01-crud/01*.robot
