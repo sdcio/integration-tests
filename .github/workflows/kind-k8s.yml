@@ -43,6 +43,8 @@ jobs:
         run: |
           echo $SROS_LICENSE | tee containerlab/license-sros23.txt
       - name: Deploy CI-Test-Containerlab
+        env:
+          CLAB_LABDIR_BASE: "/home/iptecharch-builder/_clab"
         run: |
           sudo containerlab deploy -t containerlab/citest.clab.yml --reconfigure
 
@@ -54,8 +56,10 @@ jobs:
       - name: Checkout integration-tests
         uses: actions/checkout@v4
       - name: Deploy CI-Test-Containerlab
+        env:
+          CLAB_LABDIR_BASE: "/home/iptecharch-builder/_clab"
         run: |
-          sudo containerlab destroy -t containerlab/citest.clab.yml 
+          sudo containerlab destroy -t containerlab/citest.clab.yml --cleanup 
   create-cluster:
     runs-on: iptecharch-action-runners
     needs: setup-clab
