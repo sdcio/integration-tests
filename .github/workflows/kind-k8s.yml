@@ -73,7 +73,8 @@ jobs:
         run: |
           ./integration-tests/k8s/patch-kind-registry.sh ci-kind-${{ github.actor }}
           kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/${{ env.CERT_MANAGER_VERSION}}/cert-manager.yaml
-          sleep 60
+          sleep 7200
+          ##
           kubectl apply -f ./config-server/artifacts/out/artifacts.yaml
           sleep 60
           kubectl apply -f ./artifacts/schemas/schema-srl-23.10.1.yaml
