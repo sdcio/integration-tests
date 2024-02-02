@@ -1,0 +1,100 @@
+name: run test on kind
+
+on: 
+  workflow_dispatch:
+    inputs:
+      schemaserver_version:
+        description: "schema-server semver release (vX.Y.Z)"
+        required: true
+        type: string
+        default: v0.0.13
+      dataserver_version:
+        description: "data-server semver release (vX.Y.Z)"
+        required: true
+        type: string
+        default: v0.0.26
+      cache_version:
+        description: "cache semver release (vX.Y.Z)"
+        required: true
+        type: string
+        default: v0.0.29
+      configserver_version:
+        description: "config-server semver release (vX.Y.Z)"
+        required: true
+        type: string
+        default: v0.0.3
+      certmanager_version:
+        description: "cert-manager release (vX.Y.Z)"
+        required: true
+        type: string
+        default: v1.13.3
+env:
+  PY_VER: "3.10"
+
+jobs:
+  create-cluster:
+    runs-on: kind
+    steps:
+      - name: Set env vars
+        run: |
+          echo "SCHEMA_VERSION=${{ inputs.schemaserver_version }}" >> $GITHUB_ENV
+          echo "DATA_VERSION=${{ inputs.dataserver_version }}" >> $GITHUB_ENV
+          echo "CACHE_VERSION=${{ inputs.cache_version }}" >> $GITHUB_ENV
+          echo "CONFIG_VERSION=${{ inputs.configserver_version }}" >> $GITHUB_ENV
+          echo "CERT_MANAGER_VERSION=${{ inputs.certmanager_version }}" >> $GITHUB_ENV
+
+      - name: Checkout integration-tests
+        uses: actions/checkout@v4
+        with:
+          path: integration-tests
+
+      - name: Checkout config-server
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.CONFIG_VERSION }}
+          path: config-server
+          repository: iptecharch/config-server
+          token: ${{ secrets.GH_PAT }} # `GH_PAT` is a secret that contains your PAT
+          fetch-depth: 0
+
+      - name: Checkout artifacts
+        uses: actions/checkout@v4
+        with:
+          ref: kind-ci
+          path: artifacts
+          repository: iptecharch/artifacts
+          token: ${{ secrets.GH_PAT }} # `GH_PAT` is a secret that contains your PAT
+
+      - name: Create k8s Kind Cluster
+        uses: helm/kind-action@v1.8.0
+        with:
+          cluster_name: ci-kind-${{ github.actor }}
+          config: ./integration-tests/k8s/kind-config.yml
+      - name: output job id
+        run: echo ${{ job }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.py_ver }}
+          cache: pip
+          cache-dependency-path: "tests/requirements.txt"
+
+      - name: Install robotframework
+        run: |
+          pip install -r tests/requirements.txt
+
+      - name: Install CRDs
+        run: |
+          ./integration-tests/k8s/patch-kind-registry.sh ci-kind-${{ github.actor }}
+          kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/${{ env.CERT_MANAGER_VERSION}}/cert-manager.yaml
+          sleep 60
+          kubectl apply -f ./config-server/artifacts/out/artifacts.yaml
+          sleep 60
+          kubectl apply -f ./artifacts/schemas/schema-srl-23.10.1.yaml
+          kubectl apply -f ./artifacts/schemas/schema-sros-23.10.yaml
+          sleep 120
+          kubectl apply -f ./artifacts/inventory/profiles/
+          kubectl apply -f ./artifacts/inventory/dr-static.yaml
+          kubectl apply -f ./artifacts/inventory/dr-dynamic.yaml
+          sleep 600
+          robot --version
