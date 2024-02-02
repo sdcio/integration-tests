@@ -46,7 +46,7 @@ jobs:
         env:
           CLAB_LABDIR_BASE: "/home/iptecharch-builder/_clab"
         run: |
-          sudo containerlab deploy -t containerlab/citest.clab.yml --reconfigure
+          sudo -E containerlab deploy -t containerlab/citest.clab.yml --reconfigure
 
   destroy-clab:
     runs-on: kind
@@ -59,7 +59,7 @@ jobs:
         env:
           CLAB_LABDIR_BASE: "/home/iptecharch-builder/_clab"
         run: |
-          sudo containerlab destroy -t containerlab/citest.clab.yml --cleanup 
+          sudo -E containerlab destroy -t containerlab/citest.clab.yml --cleanup 
   create-cluster:
     runs-on: iptecharch-action-runners
     needs: setup-clab
