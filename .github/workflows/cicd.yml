@@ -119,11 +119,19 @@ jobs:
         with:
           go-version: ${{ env.GO_VER }}
 
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: iptecharch-builder
+          password: ${{ secrets.GH_PAT }}
+
       - name: Set the versions to test
         run: |
           sudo apt-get update -y 
           sudo apt-get install gettext-base make -y
           cat integration-tests/artifacts/kform/configmap-input-vars.yaml.tmpl | envsubst > config-server/artifacts/in/configmap-input-vars.yaml
+          cat integration-tests/k8s/kind-config.yml.tmpl | envsubst > integration-tests/k8s/kind-config.yml
           cd config-server
           make artifacts
           cd ..
