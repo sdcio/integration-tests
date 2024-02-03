@@ -66,8 +66,12 @@ jobs:
     needs: setup-clab
     strategy:
       matrix:
-        config-server: ['inputs.configserver_version', 'v0.0.0-dev-latest']
-        data-server: ['inputs.dataserver_version', 'v0.0.0-dev-latest']
+        config-server: 
+          - "${{ inputs.configserver_version }}"
+          - "v0.0.0-dev-latest"
+        data-server: 
+          - "${{ inputs.dataserver_version }}"
+          - "v0.0.0-dev-latest"
       fail-fast: false
       max-parallel: 1
     steps:
