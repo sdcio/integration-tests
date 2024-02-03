@@ -78,7 +78,7 @@ jobs:
       - name: Set env vars
         run: |
           echo "SCHEMA_VERSION=${{ inputs.schemaserver_version }}" >> $GITHUB_ENV
-          echo "DATA_VERSION=${{ matrix.data-server }}" >> $GITHUB_ENV
+          echo "DATA_VERSION=${{ inputs.schemaserver_version }}" >> $GITHUB_ENV
           echo "CACHE_VERSION=${{ inputs.cache_version }}" >> $GITHUB_ENV
           echo "CONFIG_VERSION=${{ matrix.config-server }}" >> $GITHUB_ENV
           echo "CERT_MANAGER_VERSION=${{ inputs.certmanager_version }}" >> $GITHUB_ENV
@@ -90,8 +90,17 @@ jobs:
 
       - name: Checkout config-server
         uses: actions/checkout@v4
+        if: !contains(env.CONFIG_VERSION, 'v0.0.0-dev-latest')
         with:
           ref: ${{ env.CONFIG_VERSION }}
+          path: config-server
+          repository: iptecharch/config-server
+          token: ${{ secrets.GH_PAT }} # `GH_PAT` is a secret that contains your PAT
+
+      - name: Checkout config-server
+        uses: actions/checkout@v4
+        if: contains(env.CONFIG_VERSION, 'v0.0.0-dev-latest')
+        with:
           path: config-server
           repository: iptecharch/config-server
           token: ${{ secrets.GH_PAT }} # `GH_PAT` is a secret that contains your PAT
