@@ -113,7 +113,7 @@ jobs:
       - name: Set the versions to test
         run: |
           sudo apt-get update -y 
-          sudo apt-get install gettext-base -y
+          sudo apt-get install gettext-base make -y
           cat integration-tests/artifacts/kform/configmap-input-vars.yaml.tmpl | envsubst > config-server/artifacts/in/configmap-input-vars.yaml
           cd config-server
           make artifacts
