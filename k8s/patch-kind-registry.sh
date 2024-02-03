@@ -9,4 +9,5 @@ for node in $(kind get nodes -n $1); do
   capabilities = ["pull", "resolve"]
   skip_verify = true
 EOF
+  docker exec "${node}" systemctl restart containerd
 done
