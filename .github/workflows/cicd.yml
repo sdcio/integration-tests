@@ -1,0 +1,140 @@
+name: cicd integration-tests
+
+on: 
+  workflow_dispatch:
+    inputs:
+      schemaserver_version:
+        description: "schema-server semver release (vX.Y.Z)"
+        required: true
+        type: string
+        default: v0.0.14
+      dataserver_version:
+        description: "data-server semver release (vX.Y.Z)"
+        required: true
+        type: string
+        default: v0.0.29
+      cache_version:
+        description: "cache semver release (vX.Y.Z)"
+        required: true
+        type: string
+        default: v0.0.30
+      configserver_version:
+        description: "config-server semver release (vX.Y.Z)"
+        required: true
+        type: string
+        default: v0.0.9
+      certmanager_version:
+        description: "cert-manager release (vX.Y.Z)"
+        required: true
+        type: string
+        default: v1.13.3
+env:
+  PY_VER: "3.10"
+  GO_VER: "1.21.4"
+
+jobs:
+  setup-clab:
+    runs-on: kind
+    steps:
+      - name: Checkout integration-tests
+        uses: actions/checkout@v4
+      - name: Set SROS License
+        env:
+          SROS_LICENSE: ${{ secrets.SROS23_LICENSE }}
+        run: |
+          echo $SROS_LICENSE | tee containerlab/license-sros23.txt
+      - name: Deploy CI-Test-Containerlab
+        env:
+          CLAB_LABDIR_BASE: "/home/iptecharch-builder/_clab"
+        run: |
+          sudo -E containerlab deploy -t containerlab/citest.clab.yml --reconfigure
+
+  destroy-clab:
+    runs-on: kind
+    if: ${{ always() }}
+    needs: [setup-clab, create-cluster]
+    steps:
+      - name: Checkout integration-tests
+        uses: actions/checkout@v4
+      - name: Deploy CI-Test-Containerlab
+        env:
+          CLAB_LABDIR_BASE: "/home/iptecharch-builder/_clab"
+        run: |
+          sudo -E containerlab destroy -t containerlab/citest.clab.yml --cleanup 
+  create-cluster:
+    runs-on: iptecharch-action-runners
+    needs: setup-clab
+    strategy:
+      matrix:
+        config-server: ['inputs.configserver_version', 'v0.0.0-dev-latest']
+        data-server: ['inputs.dataserver_version', 'v0.0.0-dev-latest']
+      fail-fast: false
+      max-parallel: 1
+    steps:
+      - name: Set env vars
+        run: |
+          echo "SCHEMA_VERSION=${{ inputs.schemaserver_version }}" >> $GITHUB_ENV
+          echo "DATA_VERSION=${{ matrix.data-server }}" >> $GITHUB_ENV
+          echo "CACHE_VERSION=${{ inputs.cache_version }}" >> $GITHUB_ENV
+          echo "CONFIG_VERSION=${{ matrix.config-server }}" >> $GITHUB_ENV
+          echo "CERT_MANAGER_VERSION=${{ inputs.certmanager_version }}" >> $GITHUB_ENV
+
+      - name: Checkout integration-tests
+        uses: actions/checkout@v4
+        with:
+          path: integration-tests
+
+      - name: Checkout config-server
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.CONFIG_VERSION }}
+          path: config-server
+          repository: iptecharch/config-server
+          token: ${{ secrets.GH_PAT }} # `GH_PAT` is a secret that contains your PAT
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PY_VER }}
+          cache: pip
+          cache-dependency-path: "integration-tests/tests/requirements.txt"
+
+      - name: Install robotframework
+        run: |
+          pip install -r integration-tests/tests/requirements.txt
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VER }}
+
+      - name: Set the versions to test
+        run: |
+          cat integration-tests/artifacts/kform/configmap-input-vars.yaml.tmpl | envsubst > config-server/artifacts/in/configmap-input-vars.yaml
+          cd config-server
+          make artifacts
+          cd ..
+
+      - name: Create k8s Kind Cluster
+        uses: helm/kind-action@v1.8.0
+        with:
+          cluster_name: ci-kind-${{ github.actor }}
+          config: ./integration-tests/k8s/kind-config.yml
+
+      - name: Install collocated config-server
+        run: |
+          ./integration-tests/k8s/patch-kind-registry.sh ci-kind-${{ github.actor }}
+          kubectl config set-context --current --namespace=default
+          kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/${{ env.CERT_MANAGER_VERSION}}/cert-manager.yaml
+          kubectl apply -f ./config-server/artifacts/out/artifacts.yaml
+      - name: Install Schema, Target Profiles and Discovery Rules.
+        run: |
+          kubectl apply -f ./integration-tests/artifacts/schemas/schema-srl-23.10.1.yaml
+          kubectl apply -f ./integration-tests/artifacts/schemas/schema-sros-23.10.yaml
+          kubectl apply -f ./integration-tests/artifacts/inventory/profiles/
+          kubectl apply -f ./integration-tests/artifacts/inventory/dr-static.yaml
+          kubectl apply -f ./integration-tests/artifacts/inventory/dr-dynamic.yaml
+      - name: Converge sleep 180s
+        run: |
+          sleep 180
+      - name: Run Robot Tests
+        run: |
+          robot --consolecolors on -r none -l ./integration-tests/tests/out/01-crud-log --output ./integration-tests/tests/out/01-crud-out.xml ./integration-tests/tests/01-crud/01*.robot

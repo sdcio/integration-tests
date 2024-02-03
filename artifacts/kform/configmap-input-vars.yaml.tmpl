@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: context
+data: 
+  configServerImage: ghcr.io/iptecharch/config-server:${CONFIG_VERSION}
+  dataServerImage: ghcr.io/iptecharch/data-server:${DATA_VERSION}

@@ -25,3 +25,4 @@ Setup
 
 Cleanup
     Run    echo 'cleanup executed'
+    Run    kubectl delete -f ${CURDIR}/intent1-sros.yaml
