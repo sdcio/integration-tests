@@ -90,7 +90,7 @@ jobs:
 
       - name: Checkout config-server
         uses: actions/checkout@v4
-        if: !contains(env.CONFIG_VERSION, 'v0.0.0-dev-latest')
+        if: "!contains(env.CONFIG_VERSION, 'v0.0.0-dev-latest')"
         with:
           ref: ${{ env.CONFIG_VERSION }}
           path: config-server
@@ -99,7 +99,7 @@ jobs:
 
       - name: Checkout config-server
         uses: actions/checkout@v4
-        if: contains(env.CONFIG_VERSION, 'v0.0.0-dev-latest')
+        if: "contains(env.CONFIG_VERSION, 'v0.0.0-dev-latest')"
         with:
           path: config-server
           repository: iptecharch/config-server
