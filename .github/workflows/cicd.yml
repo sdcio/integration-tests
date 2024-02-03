@@ -110,9 +110,13 @@ jobs:
         with:
           go-version: ${{ env.GO_VER }}
 
+      - uses: danielr1996/envsubst-action@1.0.0
+        with:
+          input: integration-tests/artifacts/kform/configmap-input-vars.yaml.tmpl
+          output: config-server/artifacts/in/configmap-input-vars.yaml
+
       - name: Set the versions to test
         run: |
-          cat integration-tests/artifacts/kform/configmap-input-vars.yaml.tmpl | envsubst > config-server/artifacts/in/configmap-input-vars.yaml
           cd config-server
           make artifacts
           cd ..
