@@ -25,4 +25,5 @@ Setup
 
 Cleanup
     Run    echo 'cleanup executed'
-    Run    kubectl delete -f ${CURDIR}/intent1-sros.yaml
+    Run    gnmic -a 172.21.1.11 -p 57400 --insecure -u admin -p admin set --delete "/configure/service/vprn[service-name=vprn123]"
+    Run    gnmic -a 172.21.1.12 -p 57400 --insecure -u admin -p admin set --delete "/configure/service/vprn[service-name=vprn123]"

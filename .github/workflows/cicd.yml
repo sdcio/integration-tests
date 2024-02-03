@@ -115,6 +115,10 @@ jobs:
         run: |
           pip install -r integration-tests/tests/requirements.txt
 
+      - name: Install gNMIc
+        run: |
+          bash -c "$(curl -sL https://get-gnmic.openconfig.net)"
+
       - uses: actions/setup-go@v5
         with:
           go-version: ${{ env.GO_VER }}
@@ -141,10 +145,13 @@ jobs:
           cluster_name: ci-kind-${{ github.actor }}
           config: ./integration-tests/k8s/kind-config.yml
 
-      - name: Install collocated config-server
+      - name: Patch kind registry to trust registry.k8s.hans.io
         run: |
           ./integration-tests/k8s/patch-kind-registry.sh ci-kind-${{ github.actor }}
           kubectl config set-context --current --namespace=default
+
+      - name: Install collocated config-server
+        run: |
           kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/${{ env.CERT_MANAGER_VERSION}}/cert-manager.yaml
           kubectl apply -f ./config-server/artifacts/out/artifacts.yaml
       - name: Install Schema, Target Profiles and Discovery Rules.
