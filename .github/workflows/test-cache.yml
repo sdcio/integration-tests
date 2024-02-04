@@ -1,8 +1,6 @@
 name: dev-build-nightlies
 
 on:
-  schedule:
-    - cron: "5 20 * * *"
   workflow_dispatch:
 
 env:
