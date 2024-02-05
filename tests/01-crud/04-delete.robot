@@ -12,7 +12,7 @@ ${lab-name}         01-crud
 ${null}             "configure/service/vprn": null
 
 *** Test Cases ***
-Deploy ${lab-name} Removew ConfigSet intent1 on sr1,sr2
+Remove - ${lab-name} ConfigSet intent1 on sr1,sr2
     Log    ${CURDIR}
     ${rc}    ${output} =    Run And Return Rc And Output
     ...    kubectl delete -f ${CURDIR}/intent1-sros.yaml
@@ -20,19 +20,19 @@ Deploy ${lab-name} Removew ConfigSet intent1 on sr1,sr2
     Should Be Equal As Integers    ${rc}    0
     Sleep  5s
 
-Verify ${lab-name} ConfigSet intent1 on sr1
+Remove - verify ${lab-name} ConfigSet intent1 on sr1
     ${rc}    ${output} =    Run And Return Rc And Output
     ...    gnmic -a ${sr1} -p 57400 --insecure -u ${SROS_USERNAME} -p ${SROS_PASSWORD} get --path "/configure/service/vprn[service-name=vprn123]"
     Log    ${output}
     Should Contain    ${output}    ${null}
 
-Verify ${lab-name} ConfigSet intent1 on sr2
+Remove - verify ${lab-name} ConfigSet intent1 on sr2
     ${rc}    ${output} =    Run And Return Rc And Output
     ...    gnmic -a ${sr2} -p 57400 --insecure -u ${SROS_USERNAME} -p ${SROS_PASSWORD} get --path "/configure/service/vprn[service-name=vprn123]"
     Log    ${output}
     Should Contain    ${output}    ${null}
 
-Deploy ${lab-name} ConfigSet intent2 on sr1,sr2
+Remove - ${lab-name} ConfigSet intent2 on sr1,sr2
     Log    ${CURDIR}
     ${rc}    ${output} =    Run And Return Rc And Output
     ...    kubectl delete -f ${CURDIR}/intent2-sros.yaml
@@ -40,19 +40,19 @@ Deploy ${lab-name} ConfigSet intent2 on sr1,sr2
     Should Be Equal As Integers    ${rc}    0
     Sleep  5s
 
-Verify ${lab-name} ConfigSet intent2 on sr1
+Remove - verify ${lab-name} ConfigSet intent2 on sr1
     ${rc}    ${output} =    Run And Return Rc And Output
     ...    gnmic -a ${sr1} -p 57400 --insecure -u ${SROS_USERNAME} -p ${SROS_PASSWORD} get --path "/configure/service/vprn[service-name=vprn234]"
     Log    ${output}
     Should Contain    ${output}    ${null}
 
-Verify ${lab-name} ConfigSet intent2 on sr2
+Remove - verify ${lab-name} ConfigSet intent2 on sr2
     ${rc}    ${output} =    Run And Return Rc And Output
     ...    gnmic -a ${sr2} -p 57400 --insecure -u ${SROS_USERNAME} -p ${SROS_PASSWORD} get --path "/configure/service/vprn[service-name=vprn234]"
     Log    ${output}
     Should Contain    ${output}    ${null}
 
-Deploy ${lab-name} ConfigSet intent3 on sr1
+Remove - ${lab-name} ConfigSet intent3 on sr1
     Log    ${CURDIR}
     ${rc}    ${output} =    Run And Return Rc And Output
     ...    kubectl delete -f ${CURDIR}/intent3-sros.yaml
@@ -60,13 +60,13 @@ Deploy ${lab-name} ConfigSet intent3 on sr1
     Should Be Equal As Integers    ${rc}    0
     Sleep  5s
 
-Verify ${lab-name} ConfigSet intent3 on sr1
+Remove - verify ${lab-name} ConfigSet intent3 on sr1
     ${rc}    ${output} =    Run And Return Rc And Output
     ...    gnmic -a ${sr1} -p 57400 --insecure -u ${SROS_USERNAME} -p ${SROS_PASSWORD} get --path "/configure/service/vprn[service-name=vprn789]"
     Log    ${output}
     Should Contain    ${output}    ${null}
 
-Deploy ${lab-name} ConfigSet intent4 on sr1
+Remove - ${lab-name} ConfigSet intent4 on sr1
     Log    ${CURDIR}
     ${rc}    ${output} =    Run And Return Rc And Output
     ...    kubectl delete -f ${CURDIR}/intent4-sros.yaml
@@ -74,7 +74,7 @@ Deploy ${lab-name} ConfigSet intent4 on sr1
     Should Be Equal As Integers    ${rc}    0
     Sleep  5s
 
-Verify ${lab-name} ConfigSet intent4 on sr2
+Remove - verify ${lab-name} ConfigSet intent4 on sr2
     ${rc}    ${output} =    Run And Return Rc And Output
     ...    gnmic -a ${sr2} -p 57400 --insecure -u ${SROS_USERNAME} -p ${SROS_PASSWORD} get --path "/configure/service/vprn[service-name=vprn987]"
     Log    ${output}
