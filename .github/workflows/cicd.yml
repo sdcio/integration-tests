@@ -166,7 +166,7 @@ jobs:
           sleep 180
       - name: Run Robot Tests
         run: |
-          robot --consolecolors on -r none -l ./integration-tests/tests/out/01-crud-log --output ./integration-tests/tests/out/01-crud-out.xml ./integration-tests/tests/01-crud/01*.robot
+          robot --consolecolors on -r none -l ./integration-tests/tests/out/01-crud-log --output ./integration-tests/tests/out/01-crud-out.xml ./integration-tests/tests/01-crud/*.robot
       # upload test reports as a zip file
       - name: Upload test reports
         uses: actions/upload-artifact@v4
