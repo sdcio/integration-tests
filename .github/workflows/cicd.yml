@@ -173,5 +173,4 @@ jobs:
         if: always()
         with:
           name: 01-crud-log-config-server_${{ matrix.config-server }}-data-server_${{ matrix.data-server }}
-          path: ./tests/out/*.html
-
+          path: ./integration-tests/tests/out/*.html
