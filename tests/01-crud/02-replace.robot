@@ -20,7 +20,7 @@ ${intent4}          "service-name": "vprn1987"
 ${adminstate}       "admin-state": "enable"
 
 *** Test Cases ***
-${operation} - ConfigSet intent1-replace on sr1,sr2
+${operation} - ConfigSet intent1 on sr1,sr2
     Log    ${CURDIR}
     ${rc}    ${output} =    Run And Return Rc And Output
     ...    kubectl apply -f ${CURDIR}/intent1-sros-replace.yaml
@@ -28,7 +28,7 @@ ${operation} - ConfigSet intent1-replace on sr1,sr2
     Should Be Equal As Integers    ${rc}    0
     Sleep  5s
 
-Verify - ${operation} ConfigSet intent1-replace on sr1
+Verify - ${operation} ConfigSet intent1 on sr1
     ${rc}    ${output} =    Run And Return Rc And Output
     ...    gnmic -a ${sr1} -p 57400 --insecure -u ${SROS_USERNAME} -p ${SROS_PASSWORD} get --path "/configure/service/vprn[service-name=vprn1123]"
     Log    ${output}
@@ -41,7 +41,7 @@ Verify - ${operation} ConfigSet intent1 on sr1 no longer exists
     Log    ${output}
     Should Not Contain    ${output}    ${intent1-orig}
 
-Verify - ${operation} ConfigSet intent1-replace on sr2
+Verify - ${operation} ConfigSet intent1 on sr2
     ${rc}    ${output} =    Run And Return Rc And Output
     ...    gnmic -a ${sr2} -p 57400 --insecure -u ${SROS_USERNAME} -p ${SROS_PASSWORD} get --path "/configure/service/vprn[service-name=vprn1123]"
     Log    ${output}
@@ -54,7 +54,7 @@ Verify - ${operation} ConfigSet intent2 on sr3 no longer exists
     Log    ${output}
     Should Not Contain    ${output}    ${intent2-orig}
 
-${operation} - ConfigSet intent2-replace on sr1,sr2
+${operation} - ConfigSet intent2 on sr1,sr2
     Log    ${CURDIR}
     ${rc}    ${output} =    Run And Return Rc And Output
     ...    kubectl apply -f ${CURDIR}/intent2-sros-replace.yaml
@@ -62,7 +62,7 @@ ${operation} - ConfigSet intent2-replace on sr1,sr2
     Should Be Equal As Integers    ${rc}    0
     Sleep  5s
 
-Verify - ${operation} ConfigSet intent2-replace on sr1
+Verify - ${operation} ConfigSet intent2 on sr1
     ${rc}    ${output} =    Run And Return Rc And Output
     ...    gnmic -a ${sr1} -p 57400 --insecure -u ${SROS_USERNAME} -p ${SROS_PASSWORD} get --path "/configure/service/vprn[service-name=vprn1234]"
     Log    ${output}
@@ -75,7 +75,7 @@ Verify - ${operation} ConfigSet intent2 on sr1 no longer exists
     Log    ${output}
     Should Not Contain    ${output}    ${intent2-orig}
 
-Verify - ${operation} ConfigSet intent2-replace on sr2
+Verify - ${operation} ConfigSet intent2 on sr2
     ${rc}    ${output} =    Run And Return Rc And Output
     ...    gnmic -a ${sr2} -p 57400 --insecure -u ${SROS_USERNAME} -p ${SROS_PASSWORD} get --path "/configure/service/vprn[service-name=vprn1234]"
     Log    ${output}
@@ -88,7 +88,7 @@ Verify - ${operation} ConfigSet intent2 on sr2 no longer exists
     Log    ${output}
     Should Not Contain    ${output}    ${intent2-orig}
 
-${operation} - Config intent3-replace on sr1
+${operation} - Config intent3 on sr1
     Log    ${CURDIR}
     ${rc}    ${output} =    Run And Return Rc And Output
     ...    kubectl apply -f ${CURDIR}/intent3-sros-replace.yaml
@@ -96,7 +96,7 @@ ${operation} - Config intent3-replace on sr1
     Should Be Equal As Integers    ${rc}    0
     Sleep  5s
 
-Verify - ${operation} Config intent3-replace on sr1
+Verify - ${operation} Config intent3 on sr1
     ${rc}    ${output} =    Run And Return Rc And Output
     ...    gnmic -a ${sr1} -p 57400 --insecure -u ${SROS_USERNAME} -p ${SROS_PASSWORD} get --path "/configure/service/vprn[service-name=vprn1789]"
     Log    ${output}
@@ -109,7 +109,7 @@ Verify - ${operation} Config intent3 on sr1 no longer exists
     Log    ${output}
     Should Not Contain    ${output}    ${intent3-orig}
 
-${operation} - Config intent4-replace on sr2
+${operation} - Config intent4 on sr2
     Log    ${CURDIR}
     ${rc}    ${output} =    Run And Return Rc And Output
     ...    kubectl apply -f ${CURDIR}/intent4-sros-replace.yaml
@@ -117,7 +117,7 @@ ${operation} - Config intent4-replace on sr2
     Should Be Equal As Integers    ${rc}    0
     Sleep  5s
 
-Verify - ${operation} Config intent4-replace on sr2
+Verify - ${operation} Config intent4 on sr2
     ${rc}    ${output} =    Run And Return Rc And Output
     ...    gnmic -a ${sr2} -p 57400 --insecure -u ${SROS_USERNAME} -p ${SROS_PASSWORD} get --path "/configure/service/vprn[service-name=vprn1987]"
     Log    ${output}
