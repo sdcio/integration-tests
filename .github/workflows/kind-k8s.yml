@@ -163,5 +163,5 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: 01-crud-log-config_server${{ env.CONFIG_VERSION }}-data_server${{ env.DATA_VERSION }}
+          name: 01-crud-log-config-server_${{ env.CONFIG_VERSION }}-data-server_${{ env.DATA_VERSION }}
           path: ./integration-tests/tests/out/*.html

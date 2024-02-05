@@ -14,7 +14,7 @@ spec:
       configure:
         service:
           vprn:
-            service-name: "vprn987"
+            service-name: "vprn1987"
             customer: "1"
             service-id: "104"
             admin-state: "enable"

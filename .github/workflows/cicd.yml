@@ -172,6 +172,6 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: 01-crud-log-${{ matrix.config-server }}-${{ matrix.data-server }}
+          name: 01-crud-log-config-server_${{ matrix.config-server }}-data-server_${{ matrix.data-server }}
           path: ./tests/out/*.html
 
