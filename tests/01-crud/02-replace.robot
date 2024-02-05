@@ -151,3 +151,4 @@ Cleanup
     Run    gnmic -a ${sr1} -p 57400 --insecure -u ${SROS_USERNAME} -p ${SROS_PASSWORD} set --delete "/configure/service/vprn[service-name=vprn1789]"
     Run    kubectl delete -f ${CURDIR}/intent4-sros-replace.yaml
     Run    gnmic -a ${sr2} -p 57400 --insecure -u ${SROS_USERNAME} -p ${SROS_PASSWORD} set --delete "/configure/service/vprn[service-name=vprn1987]"
+    Sleep  10s
