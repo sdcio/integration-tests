@@ -8,7 +8,7 @@ Suite Teardown      Run Keyword    Cleanup
 
 
 *** Variables ***
-${lab-name}         01-crud
+${operation}        Update
 ${intent1}          "service-name": "vprn123"
 ${intent2}          "service-name": "vprn234"
 ${intent3}          "service-name": "vprn789"
@@ -16,7 +16,7 @@ ${intent4}          "service-name": "vprn987"
 ${adminstate}       "admin-state": "disable"
 
 *** Test Cases ***
-Update - deploy ${lab-name} ConfigSet intent1 on sr1,sr2
+${operation} - ConfigSet intent1 on sr1,sr2
     Log    ${CURDIR}
     ${rc}    ${output} =    Run And Return Rc And Output
     ...    kubectl apply -f ${CURDIR}/intent1-sros-update.yaml
@@ -24,7 +24,7 @@ Update - deploy ${lab-name} ConfigSet intent1 on sr1,sr2
     Should Be Equal As Integers    ${rc}    0
     Sleep  5s
 
-Update - verify ${lab-name} ConfigSet intent1 on sr1
+Verify - ${operation} ConfigSet intent1 on sr1
     ${rc}    ${output} =    Run And Return Rc And Output
     ...    gnmic -a ${sr1} -p 57400 --insecure -u ${SROS_USERNAME} -p ${SROS_PASSWORD} get --path "/configure/service/vprn[service-name=vprn123]"
     Log    ${output}
@@ -32,7 +32,7 @@ Update - verify ${lab-name} ConfigSet intent1 on sr1
     Should Contain    ${output}    ${adminstate}
     #Should Be Equal As Strings    ${output}    ${n2-ipv6}
 
-Update - verify ${lab-name} ConfigSet intent1 on sr2
+Verify - ${operation} ConfigSet intent1 on sr2
     ${rc}    ${output} =    Run And Return Rc And Output
     ...    gnmic -a ${sr2} -p 57400 --insecure -u ${SROS_USERNAME} -p ${SROS_PASSWORD} get --path "/configure/service/vprn[service-name=vprn123]"
     Log    ${output}
@@ -40,7 +40,7 @@ Update - verify ${lab-name} ConfigSet intent1 on sr2
     Should Contain    ${output}    ${adminstate}
     #Should Be Equal As Strings    ${output}    ${n2-ipv6}
 
-Update - deploy ${lab-name} ConfigSet intent2 on sr1,sr2
+${operation} - ConfigSet intent2 on sr1,sr2
     Log    ${CURDIR}
     ${rc}    ${output} =    Run And Return Rc And Output
     ...    kubectl apply -f ${CURDIR}/intent2-sros-update.yaml
@@ -48,21 +48,21 @@ Update - deploy ${lab-name} ConfigSet intent2 on sr1,sr2
     Should Be Equal As Integers    ${rc}    0
     Sleep  5s
 
-Update - verify ${lab-name} ConfigSet intent2 on sr1
+Verify - ${operation} ConfigSet intent2 on sr1
     ${rc}    ${output} =    Run And Return Rc And Output
     ...    gnmic -a ${sr1} -p 57400 --insecure -u ${SROS_USERNAME} -p ${SROS_PASSWORD} get --path "/configure/service/vprn[service-name=vprn234]"
     Log    ${output}
     Should Contain    ${output}    ${intent2}
     Should Contain    ${output}    ${adminstate}
 
-Update - verify ${lab-name} ConfigSet intent2 on sr2
+Verify - ${operation} ConfigSet intent2 on sr2
     ${rc}    ${output} =    Run And Return Rc And Output
     ...    gnmic -a ${sr2} -p 57400 --insecure -u ${SROS_USERNAME} -p ${SROS_PASSWORD} get --path "/configure/service/vprn[service-name=vprn234]"
     Log    ${output}
     Should Contain    ${output}    ${intent2}
     Should Contain    ${output}    ${adminstate}
 
-Update - deploy ${lab-name} Config intent3 on sr1
+${operation} - Config intent3 on sr1
     Log    ${CURDIR}
     ${rc}    ${output} =    Run And Return Rc And Output
     ...    kubectl apply -f ${CURDIR}/intent3-sros-update.yaml
@@ -70,14 +70,14 @@ Update - deploy ${lab-name} Config intent3 on sr1
     Should Be Equal As Integers    ${rc}    0
     Sleep  5s
 
-Update - verify ${lab-name} Config intent3 on sr1
+Verify - ${operation} Config intent3 on sr1
     ${rc}    ${output} =    Run And Return Rc And Output
     ...    gnmic -a ${sr1} -p 57400 --insecure -u ${SROS_USERNAME} -p ${SROS_PASSWORD} get --path "/configure/service/vprn[service-name=vprn789]"
     Log    ${output}
     Should Contain    ${output}    ${intent3}
     Should Contain    ${output}    ${adminstate}
 
-Update - deploy ${lab-name} Config intent4 on sr2
+${operation} - Config intent4 on sr2
     Log    ${CURDIR}
     ${rc}    ${output} =    Run And Return Rc And Output
     ...    kubectl apply -f ${CURDIR}/intent4-sros-update.yaml
@@ -85,7 +85,7 @@ Update - deploy ${lab-name} Config intent4 on sr2
     Should Be Equal As Integers    ${rc}    0
     Sleep  5s
 
-Update - verify ${lab-name} Config intent4 on sr2
+Verify - ${operation} Config intent4 on sr2
     ${rc}    ${output} =    Run And Return Rc And Output
     ...    gnmic -a ${sr2} -p 57400 --insecure -u ${SROS_USERNAME} -p ${SROS_PASSWORD} get --path "/configure/service/vprn[service-name=vprn987]"
     Log    ${output}
