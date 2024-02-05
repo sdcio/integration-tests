@@ -150,7 +150,8 @@ jobs:
           kubectl apply -f ./integration-tests/artifacts/schemas/schema-srl-23.10.1.yaml
           kubectl apply -f ./integration-tests/artifacts/schemas/schema-sros-23.10.yaml
           kubectl apply -f ./integration-tests/artifacts/inventory/profiles/
-          kubectl apply -f ./integration-tests/artifacts/inventory/dr-static.yaml
+          kubectl apply -f ./integration-tests/artifacts/inventory/dr-sros-netconf.yaml
+          kubectl apply -f ./integration-tests/artifacts/inventory/dr-sros-gnmi.yaml
           kubectl apply -f ./integration-tests/artifacts/inventory/dr-dynamic.yaml
       - name: Converge sleep 180s
         run: |
