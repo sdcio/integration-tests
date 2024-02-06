@@ -60,7 +60,8 @@ jobs:
         env:
           CLAB_LABDIR_BASE: "/home/iptecharch-builder/_clab"
         run: |
-          sudo -E containerlab destroy -t containerlab/citest.clab.yml --cleanup 
+          sudo -E containerlab destroy -t containerlab/citest.clab.yml --cleanup
+
   create-cluster:
     runs-on: iptecharch-action-runners
     needs: setup-clab
@@ -156,9 +157,17 @@ jobs:
           kubectl apply -f ./config-server/artifacts/out/artifacts.yaml
       - name: Install Schema, Target Profiles and Discovery Rules.
         run: |
-          kubectl apply -f ./integration-tests/artifacts/schemas/schema-srl-23.10.1.yaml
-          kubectl apply -f ./integration-tests/artifacts/schemas/schema-sros-23.10.yaml
-          kubectl apply -f ./integration-tests/artifacts/inventory/profiles/
+          kubectl apply -f ./config-server/example/schemas/schema-nokia-srl-23.10.1.yaml
+          kubectl apply -f ./config-server/example/schemas/schema-nokia-sros-23.10.yaml
+          kubectl apply -f ./config-server/example/connection-profiles/target-conn-profile-gnmi.yaml
+          kubectl apply -f ./config-server/example/connection-profiles/target-conn-profile-netconf.yaml
+          kubectl apply -f ./config-server/example/connection-profiles/target-conn-profile-noop.yaml
+          kubectl apply -f ./config-server/example/discovery-rule/discovery_address.yaml
+          kubectl apply -f ./config-server/example/discovery-rule/discovery_prefix.yaml
+          kubectl apply -f ./config-server/example/discovery-rule/nodiscovery.yaml
+          kubectl apply -f ./config-server/example/sync-profiles/
+          # TODO:
+          # CAN THESE BE REMOVED? ARE THEY COVERED BY THE ABOVE?
           kubectl apply -f ./integration-tests/artifacts/inventory/dr-sros-netconf.yaml
           kubectl apply -f ./integration-tests/artifacts/inventory/dr-sros-gnmi.yaml
           kubectl apply -f ./integration-tests/artifacts/inventory/dr-dynamic.yaml
