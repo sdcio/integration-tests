@@ -7,5 +7,5 @@ spec:
   port: 57400
   protocol: gnmi
   encoding: ASCII
-  skipVerify: true
+  skipVerify: false
   insecure: true
