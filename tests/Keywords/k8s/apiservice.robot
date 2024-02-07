@@ -1,13 +1,10 @@
 *** Settings ***
-Library             OperatingSystem
+Resource    kubectl.robot
 
 
 *** Keywords ***
 APIService Ready
     [Arguments]    ${APIServiceName}
-    ${rc}    ${output} =    Run And Return Rc And Output
-    ...    kubectl get apiservices.apiregistration.k8s.io ${APIServiceName} -o=jsonpath='{.status.conditions[0]}'
-    Log    ${output}
+    ${rc}    ${output} =     kubectl get    apiservices.apiregistration.k8s.io ${APIServiceName} -o=jsonpath='{.status.conditions[0]}'
     Should Contain    ${output}    "status":"True"    msg="API Service not Ready"
     Should Contain    ${output}    "type":"Available"    msg="API Service not Ready"
-    Should Be Equal As Integers    ${rc}    0

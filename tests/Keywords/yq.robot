@@ -8,16 +8,16 @@ YQ file
     ${rc}    ${output} =    Run And Return Rc And Output
     ...    yq ${expression} ${file}
     Log    ${output}
-    [Return]    ${output}
+    [Return]    ${rc}    ${output}
 
 YQ extract metadata.name from file
     [Documentation]     Takes a krm yaml file and returns the metadata.name attribute
     [Arguments]    ${file}
-    YQ file    ${file}    '.metadata.name'
+    ${rc}    ${output} =    YQ file    ${file}    '.metadata.name'
     [Return]    ${output}
 
 YQ extract metadata.namespace from file
     [Documentation]     Takes a krm yaml file and returns the metadata.namespace attribute
     [Arguments]    ${file}
-    YQ file    ${file}    '.metadata.namespace'
+    ${rc}    ${output} =    YQ file    ${file}    '.metadata.namespace'
     [Return]    ${output}

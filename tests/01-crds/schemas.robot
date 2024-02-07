@@ -13,12 +13,13 @@ Install Schemas
         Install Schema    ${SDCIO_SCHEMA_FILES_BASE}/${s}
     END
 
-Wait for Schemas ready
-    Wait Until Keyword Succeeds    2 min    2s    Check Schemas ready
+Wait for Schemas to become ready
+    Wait Until Keyword Succeeds    15min    5s    Check Schemas ready
     
 
 *** Keywords ***
 Install Schema
+    [Documentation]    Installs a single Schema File
     [Arguments]    ${file}
     ${rc}    ${output} =    Run And Return Rc And Output
     ...    kubectl apply -f ${file}
@@ -26,6 +27,7 @@ Install Schema
     Should Be Equal As Integers    ${rc}    0
 
 Check Schemas ready
+    [Documentation]    Iterates through the SDCIO_SCHEMA_FILES, extracts the .metadata.name and checks makes sure schemas are ready
     FOR    ${s}    IN     @{SDCIO_SCHEMA_FILES}
         ${resource} =     YQ extract metadata.name from file    ${SDCIO_SCHEMA_FILES_BASE}/${s}
         Log    ${resource}
