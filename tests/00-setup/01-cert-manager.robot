@@ -11,7 +11,3 @@ Install Cert-Manager
     ...    kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/${ CERT_MANAGER_VERSION }/cert-manager.yaml
     Log    ${output}
     Should Be Equal As Integers    ${rc}    0
-
-Make sure cert-manager is ready
-    Wait until Cert-Manger Ready
-
