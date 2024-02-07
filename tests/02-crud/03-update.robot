@@ -1,21 +1,25 @@
 *** Settings ***
 Library             OperatingSystem
 Library             Process
-Resource            ../common.robot
+Resource            ../variables.robot
 
 Suite Setup         Setup
 Suite Teardown      Run Keyword    Cleanup
 
 
 *** Variables ***
-${operation}        Delete
-${null}             "configure/service/vprn": null
+${operation}        Update
+${intent1}          "service-name": "vprn123"
+${intent2}          "service-name": "vprn234"
+${intent3}          "service-name": "vprn789"
+${intent4}          "service-name": "vprn987"
+${adminstate}       "admin-state": "disable"
 
 *** Test Cases ***
 ${operation} - ConfigSet intent1 on sr1,sr2
     Log    ${CURDIR}
     ${rc}    ${output} =    Run And Return Rc And Output
-    ...    kubectl delete -f ${CURDIR}/intent1-sros.yaml
+    ...    kubectl apply -f ${CURDIR}/intent1-sros-update.yaml
     Log    ${output}
     Should Be Equal As Integers    ${rc}    0
     Sleep  5s
@@ -24,18 +28,22 @@ Verify - ${operation} ConfigSet intent1 on sr1
     ${rc}    ${output} =    Run And Return Rc And Output
     ...    gnmic -a ${sr1} -p 57400 --insecure -u ${SROS_USERNAME} -p ${SROS_PASSWORD} get --path "/configure/service/vprn[service-name=vprn123]"
     Log    ${output}
-    Should Contain    ${output}    ${null}
+    Should Contain    ${output}    ${intent1}
+    Should Contain    ${output}    ${adminstate}
+    #Should Be Equal As Strings    ${output}    ${n2-ipv6}
 
 Verify - ${operation} ConfigSet intent1 on sr2
     ${rc}    ${output} =    Run And Return Rc And Output
     ...    gnmic -a ${sr2} -p 57400 --insecure -u ${SROS_USERNAME} -p ${SROS_PASSWORD} get --path "/configure/service/vprn[service-name=vprn123]"
     Log    ${output}
-    Should Contain    ${output}    ${null}
+    Should Contain    ${output}    ${intent1}
+    Should Contain    ${output}    ${adminstate}
+    #Should Be Equal As Strings    ${output}    ${n2-ipv6}
 
 ${operation} - ConfigSet intent2 on sr1,sr2
     Log    ${CURDIR}
     ${rc}    ${output} =    Run And Return Rc And Output
-    ...    kubectl delete -f ${CURDIR}/intent2-sros.yaml
+    ...    kubectl apply -f ${CURDIR}/intent2-sros-update.yaml
     Log    ${output}
     Should Be Equal As Integers    ${rc}    0
     Sleep  5s
@@ -44,41 +52,45 @@ Verify - ${operation} ConfigSet intent2 on sr1
     ${rc}    ${output} =    Run And Return Rc And Output
     ...    gnmic -a ${sr1} -p 57400 --insecure -u ${SROS_USERNAME} -p ${SROS_PASSWORD} get --path "/configure/service/vprn[service-name=vprn234]"
     Log    ${output}
-    Should Contain    ${output}    ${null}
+    Should Contain    ${output}    ${intent2}
+    Should Contain    ${output}    ${adminstate}
 
 Verify - ${operation} ConfigSet intent2 on sr2
     ${rc}    ${output} =    Run And Return Rc And Output
     ...    gnmic -a ${sr2} -p 57400 --insecure -u ${SROS_USERNAME} -p ${SROS_PASSWORD} get --path "/configure/service/vprn[service-name=vprn234]"
     Log    ${output}
-    Should Contain    ${output}    ${null}
+    Should Contain    ${output}    ${intent2}
+    Should Contain    ${output}    ${adminstate}
 
-${operation} - ConfigSet intent3 on sr1
+${operation} - Config intent3 on sr1
     Log    ${CURDIR}
     ${rc}    ${output} =    Run And Return Rc And Output
-    ...    kubectl delete -f ${CURDIR}/intent3-sros.yaml
+    ...    kubectl apply -f ${CURDIR}/intent3-sros-update.yaml
     Log    ${output}
     Should Be Equal As Integers    ${rc}    0
     Sleep  5s
 
-Verify - ${operation} ConfigSet intent3 on sr1
+Verify - ${operation} Config intent3 on sr1
     ${rc}    ${output} =    Run And Return Rc And Output
     ...    gnmic -a ${sr1} -p 57400 --insecure -u ${SROS_USERNAME} -p ${SROS_PASSWORD} get --path "/configure/service/vprn[service-name=vprn789]"
     Log    ${output}
-    Should Contain    ${output}    ${null}
+    Should Contain    ${output}    ${intent3}
+    Should Contain    ${output}    ${adminstate}
 
-${operation} - ConfigSet intent4 on sr1
+${operation} - Config intent4 on sr2
     Log    ${CURDIR}
     ${rc}    ${output} =    Run And Return Rc And Output
-    ...    kubectl delete -f ${CURDIR}/intent4-sros.yaml
+    ...    kubectl apply -f ${CURDIR}/intent4-sros-update.yaml
     Log    ${output}
     Should Be Equal As Integers    ${rc}    0
     Sleep  5s
 
-Verify - ${operation} ConfigSet intent4 on sr2
+Verify - ${operation} Config intent4 on sr2
     ${rc}    ${output} =    Run And Return Rc And Output
     ...    gnmic -a ${sr2} -p 57400 --insecure -u ${SROS_USERNAME} -p ${SROS_PASSWORD} get --path "/configure/service/vprn[service-name=vprn987]"
     Log    ${output}
-    Should Contain    ${output}    ${null}
+    Should Contain    ${output}    ${intent4}
+    Should Contain    ${output}    ${adminstate}
 
 *** Keywords ***
 Setup
@@ -91,10 +103,14 @@ Setup
 
 Cleanup
     Run    echo 'cleanup executed'
+    Run    kubectl delete -f ${CURDIR}/intent1-sros.yaml
     Run    gnmic -a ${sr1} -p 57400 --insecure -u ${SROS_USERNAME} -p ${SROS_PASSWORD} set --delete "/configure/service/vprn[service-name=vprn123]"
     Run    gnmic -a ${sr2} -p 57400 --insecure -u ${SROS_USERNAME} -p ${SROS_PASSWORD} set --delete "/configure/service/vprn[service-name=vprn123]"
+    Run    kubectl delete -f ${CURDIR}/intent2-sros.yaml
     Run    gnmic -a ${sr1} -p 57400 --insecure -u ${SROS_USERNAME} -p ${SROS_PASSWORD} set --delete "/configure/service/vprn[service-name=vprn234]"
     Run    gnmic -a ${sr2} -p 57400 --insecure -u ${SROS_USERNAME} -p ${SROS_PASSWORD} set --delete "/configure/service/vprn[service-name=vprn234]"
+    Run    kubectl delete -f ${CURDIR}/intent3-sros.yaml
     Run    gnmic -a ${sr1} -p 57400 --insecure -u ${SROS_USERNAME} -p ${SROS_PASSWORD} set --delete "/configure/service/vprn[service-name=vprn789]"
+    Run    kubectl delete -f ${CURDIR}/intent4-sros.yaml
     Run    gnmic -a ${sr2} -p 57400 --insecure -u ${SROS_USERNAME} -p ${SROS_PASSWORD} set --delete "/configure/service/vprn[service-name=vprn987]"
     Sleep  10s

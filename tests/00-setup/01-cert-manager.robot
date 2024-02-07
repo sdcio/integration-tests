@@ -1,7 +1,6 @@
 *** Settings ***
 Library             OperatingSystem
 Library             Process
-Resource            ../common.robot
 Resource            ../Keywords/cert-manager.robot
 Resource            ../variables.robot
 

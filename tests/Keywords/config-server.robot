@@ -8,15 +8,16 @@ Resource    k8s/services.robot
 Wait until Config-Server Ready
     [Documentation]     Aggregated check for the availability of the Config Server
     Config-Server until config-Server deployment ready
+    Config-Server until Service Endpoints
     Config-Server until APIService ready
 
 Config-Server until config-Server deployment ready
     [Documentation]     Will wait for the Colocated Deployment to become available
-    Wait Until Keyword Succeeds    3 min    2 sec  Deployment AvailableReplicas    ${SDCIO_NAMESPACE}    ${SDCIO_COLOCATED_DEPLOYMENT}
+    Wait Until Keyword Succeeds    3 min    2 sec  Deployment AvailableReplicas    ${SDCIO_SYSTEM_NAMESPACE}    ${SDCIO_COLOCATED_DEPLOYMENT}
 
-Config-Server Service Endpoints
+Config-Server until Service Endpoints
     [Documentation]    Checks that the Servie endpoints are registered for the API Aggregation Service
-    Wait Until Keyword Succeeds    1 min    2 sec    Endpoints amount of Pods registered    ${SDCIO_NAMESPACE}    ${SDCIO_COLOCATED_DEPLOYMENT}
+    Wait Until Keyword Succeeds    1 min    2 sec    Endpoints amount of Pods registered    ${SDCIO_SYSTEM_NAMESPACE}    ${SDCIO_COLOCATED_DEPLOYMENT}
 
 Config-Server until APIService ready
     [Documentation]     Will wait for all the SDCIO_APIServices defined in the variables file to become available.

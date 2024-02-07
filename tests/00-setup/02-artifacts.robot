@@ -1,7 +1,5 @@
 *** Settings ***
 Library             OperatingSystem
-Library             Process
-Resource            ../common.robot
 Resource            ../variables.robot
 Resource            ../Keywords/config-server.robot
 
