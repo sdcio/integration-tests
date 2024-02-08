@@ -22,5 +22,5 @@ Config-Server until Service Endpoints
 Config-Server until APIService ready
     [Documentation]     Will wait for all the SDCIO_APIServices defined in the variables file to become available.
     FOR    ${s}    IN     @{SDCIO_APIServices}
-        Wait Until Keyword Succeeds    1 min    2 sec    APIService Ready    ${s}   
+        Wait Until Keyword Succeeds    1 min    2 sec    APIService Ready    ${s}
     END

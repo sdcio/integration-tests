@@ -14,6 +14,7 @@ YQ extract metadata.name from file
     [Documentation]     Takes a krm yaml file and returns the metadata.name attribute
     [Arguments]    ${file}
     ${rc}    ${output} =    YQ file    ${file}    '.metadata.name'
+    Log    ${output}
     [Return]    ${output}
 
 YQ extract metadata.namespace from file

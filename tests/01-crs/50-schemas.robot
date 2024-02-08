@@ -1,10 +1,9 @@
 *** Settings ***
-Library             OperatingSystem
-Library             Process
 Library             Collections
 Resource            ../variables.robot
 Resource            ../Keywords/schemas.robot
 Resource            ../Keywords/yq.robot
+Resource            ../Keywords/k8s/kubectl.robot
 
 
 *** Test Cases ***
@@ -20,7 +19,7 @@ Install Schemas
 
     # Install the schemas
     FOR    ${s}    IN     @{SDCIO_SCHEMA_FILES_ABSOLUTE}
-        Install Schema    ${s}
+        ${rc}    ${output} =    kubectl apply    ${s}
     END
 
     # export the variable
@@ -30,18 +29,9 @@ Wait for Schemas to become ready
     Wait Until Keyword Succeeds    15min    5s    Check Schemas ready
     
 *** Keywords ***
-Install Schema
-    [Documentation]    Installs a single Schema File
-    [Arguments]    ${file}
-    ${rc}    ${output} =    Run And Return Rc And Output
-    ...    kubectl apply -f ${file}
-    Log    ${output}
-    Should Be Equal As Integers    ${rc}    0
-
 Check Schemas ready
     [Documentation]    Iterates through the SDCIO_SCHEMA_FILES, extracts the .metadata.name and checks makes sure schemas are ready
     FOR    ${s}    IN     @{SDCIO_SCHEMA_FILES_ABSOLUTE}
         ${resource} =     YQ extract metadata.name from file    ${s}
-        Log    ${resource}
         Schemas Check Loaded    ${SDCIO_RESOURCE_NAMESPACE}    ${resource}
     END

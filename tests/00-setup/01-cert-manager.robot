@@ -1,6 +1,4 @@
 *** Settings ***
-Library             OperatingSystem
-Library             Process
 Resource            ../Keywords/k8s/kubectl.robot
 Resource            ../variables.robot
 
