@@ -52,7 +52,7 @@ jobs:
   destroy-clab:
     runs-on: containerlab
     if: ${{ always() }}
-    needs: [setup-clab, create-cluster]
+    needs: [setup-clab, setup-cluster-and-test]
     steps:
       - name: Checkout integration-tests
         uses: actions/checkout@v4

@@ -52,7 +52,7 @@ jobs:
   destroy-clab:
     runs-on: containerlab
     if: ${{ always() }}
-    needs: [setup-clab, create-cluster]
+    needs: [setup-clab, setup-cluster-and-test]
     steps:
       - name: Checkout integration-tests
         uses: actions/checkout@v4
@@ -61,7 +61,7 @@ jobs:
           CLAB_LABDIR_BASE: "/home/iptecharch-builder/_clab"
         run: |
           sudo -E containerlab destroy -t containerlab/citest.clab.yml --cleanup 
-  create-cluster:
+  setup-cluster-and-test:
     runs-on: sdcio-action-runners
     needs: setup-clab
     steps:
