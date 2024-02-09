@@ -148,13 +148,19 @@ jobs:
           # ./integration-tests/k8s/patch-kind-registry.sh ci-kind-${{ github.actor }}
           kubectl config set-context --current --namespace=default
 
-      - name: Run Robot Tests
+      - name: Run Robot Tests 00
         run: |
           robot --consolecolors on -r none -l ./integration-tests/tests/out/00-setup-log --output ./integration-tests/tests/out/00-setup-out.xml ./integration-tests/tests/00-setup/
+
+      - name: Run Robot Tests 02
+        run: |
           robot --consolecolors on -r none -l ./integration-tests/tests/out/01-crs-log --output ./integration-tests/tests/out/01-crs-out.xml ./integration-tests/tests/01-crs/
+
+      - name: Run Robot Tests 02
+        run: |
           robot --consolecolors on -r none -l ./integration-tests/tests/out/02-crud-log --output ./integration-tests/tests/out/02-crud-out.xml ./integration-tests/tests/02-crud/
 
-          # upload test reports as a zip file
+      # upload test reports as a zip file
       - name: Upload test reports
         uses: actions/upload-artifact@v4
         if: always()
