@@ -1,4 +1,4 @@
-name: run kind on k8s 
+name: specific-release integration-tests
 
 on: 
   workflow_dispatch:
@@ -34,7 +34,7 @@ env:
 
 jobs:
   setup-clab:
-    runs-on: kind
+    runs-on: containerlab
     steps:
       - name: Checkout integration-tests
         uses: actions/checkout@v4
@@ -50,7 +50,7 @@ jobs:
           sudo -E containerlab deploy -t containerlab/citest.clab.yml --reconfigure
 
   destroy-clab:
-    runs-on: kind
+    runs-on: containerlab
     if: ${{ always() }}
     needs: [setup-clab, create-cluster]
     steps:
@@ -62,7 +62,7 @@ jobs:
         run: |
           sudo -E containerlab destroy -t containerlab/citest.clab.yml --cleanup 
   create-cluster:
-    runs-on: iptecharch-action-runners
+    runs-on: sdcio-action-runners
     needs: setup-clab
     steps:
       - name: Set env vars
@@ -122,8 +122,6 @@ jobs:
 
       - name: Set the versions to test
         run: |
-          sudo apt-get update -y
-          sudo apt-get install gettext-base make -y
           cat integration-tests/artifacts/kform/configmap-input-vars.yaml.tmpl | envsubst > config-server/artifacts/in/configmap-input-vars.yaml
           cd config-server
           make artifacts
@@ -133,36 +131,23 @@ jobs:
         uses: helm/kind-action@v1.8.0
         with:
           cluster_name: ci-kind-${{ github.actor }}
-          config: ./integration-tests/k8s/kind-config.yml
+          #config: ./integration-tests/k8s/kind-config.yml
 
-      - name: Patch kind registry to trust registry.k8s.hans.io
+      - name: Make sure the default context is set
         run: |
-          ./integration-tests/k8s/patch-kind-registry.sh ci-kind-${{ github.actor }}
+          #./integration-tests/k8s/patch-kind-registry.sh ci-kind-${{ github.actor }}
           kubectl config set-context --current --namespace=default
 
-      - name: Install collocated config-server
-        run: |
-          kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/${{ env.CERT_MANAGER_VERSION}}/cert-manager.yaml
-          kubectl apply -f ./config-server/artifacts/out/artifacts.yaml
-
-      - name: Install Schema, Target Profiles and Discovery Rules.
-        run: |
-          kubectl apply -f ./integration-tests/artifacts/schemas/schema-srl-23.10.1.yaml
-          kubectl apply -f ./integration-tests/artifacts/schemas/schema-sros-23.10.yaml
-          kubectl apply -f ./integration-tests/artifacts/inventory/profiles/
-          kubectl apply -f ./integration-tests/artifacts/inventory/dr-sros-netconf.yaml
-          kubectl apply -f ./integration-tests/artifacts/inventory/dr-sros-gnmi.yaml
-          kubectl apply -f ./integration-tests/artifacts/inventory/dr-dynamic.yaml
-      - name: Converge sleep 180s
-        run: |
-          sleep 180
       - name: Run Robot Tests
         run: |
-          robot --consolecolors on -r none -l ./integration-tests/tests/out/01-crud-log --output ./integration-tests/tests/out/01-crud-out.xml ./integration-tests/tests/01-crud/*.robot
-      # upload test reports as a zip file
+          robot --consolecolors on -r none -l ./integration-tests/tests/out/00-setup-log --output ./integration-tests/tests/out/00-setup-out.xml ./integration-tests/tests/00-setup/
+          robot --consolecolors on -r none -l ./integration-tests/tests/out/01-crs-log --output ./integration-tests/tests/out/01-crs-out.xml ./integration-tests/tests/01-crs/
+          robot --consolecolors on -r none -l ./integration-tests/tests/out/02-crud-log --output ./integration-tests/tests/out/02-crud-out.xml ./integration-tests/tests/02-crud/
+
+          # upload test reports as a zip file
       - name: Upload test reports
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: 01-crud-log-config-server_${{ env.CONFIG_VERSION }}-data-server_${{ env.DATA_VERSION }}
+          name: single-robot-tests-log-config-server_${{ matrix.config-server }}-data-server_${{ matrix.data-server }}
           path: ./integration-tests/tests/out/*.html
