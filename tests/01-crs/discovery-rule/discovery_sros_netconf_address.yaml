@@ -20,6 +20,6 @@ spec:
     syncProfile: test-sros-netconf-getconfig
   targetTemplate:
     labels:
-      sdcio.dev/region: eu-east
+      sdcio.dev/region: eu-west
       scdio.dev/env: ci-test
       sdcio.dev/device: sros
