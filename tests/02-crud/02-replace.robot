@@ -1,7 +1,7 @@
 *** Settings ***
 Library             OperatingSystem
 Library             Process
-Resource            ../common.robot
+Resource            ../variables.robot
 
 Suite Setup         Setup
 Suite Teardown      Run Keyword    Cleanup
