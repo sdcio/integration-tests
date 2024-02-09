@@ -1,7 +1,7 @@
 *** Settings ***
-Library             Collections
-Resource            ../variables.robot
-Resource            ../Keywords/k8s/kubectl.robot
+Library     Collections
+Resource    ../variables.robot
+Resource    ../Keywords/k8s/kubectl.robot
 
 
 *** Test Cases ***
@@ -11,14 +11,23 @@ Install TargetConnectionProfiles
     @{SDCIO_TARGETCONNECTIONPROFILE_FILES_ABSOLUTE}=    Create List
 
     # Build the full paths for install and later checks
-    FOR    ${s}    IN     @{SDCIO_TARGETCONNECTIONPROFILE_FILES}
-        Append To List    ${SDCIO_TARGETCONNECTIONPROFILE_FILES_ABSOLUTE}     ${SDCIO_CONFIG_SERVER_REPO_PATH}/${SDCIO_TARGETCONNECTIONPROFILE_FILES_BASE}/${s}
+    # for loop is sourced from the config-server repository.
+    FOR    ${s}    IN    @{SDCIO_CONFIG_SERVER_TARGETCONNECTIONPROFILE_FILES}
+        Append To List
+        ...    ${SDCIO_TARGETCONNECTIONPROFILE_FILES_ABSOLUTE}
+        ...    ${SDCIO_CONFIG_SERVER_TARGETCONNECTIONPROFILE_FILES_BASE}/${s}
+    END
+    # for loop is sourced from this repository.
+    FOR    ${s}    IN    @{SDCIO_INTEGRATION_TESTS_TARGETCONNECTIONPROFILE_FILES}
+        Append To List
+        ...    ${SDCIO_TARGETCONNECTIONPROFILE_FILES_ABSOLUTE}
+        ...    ${SDCIO_INTEGRATION_TESTS_TARGETCONNECTIONPROFILE_FILES_BASE}/${s}
     END
 
     # Install the TARGETCONNECTIONPROFILE
-    FOR    ${s}    IN     @{SDCIO_TARGETCONNECTIONPROFILE_FILES_ABSOLUTE}
-        ${rc}    ${output} =    kubectl apply    ${s}
+    FOR    ${s}    IN    @{SDCIO_TARGETCONNECTIONPROFILE_FILES_ABSOLUTE}
+        ${rc}    ${output}=    kubectl apply    ${s}
     END
 
     # export the variable
-    Set Suite Variable    ${SDCIO_TARGETCONNECTIONPROFILE_FILES_ABSOLUTE}  
+    Set Suite Variable    ${SDCIO_TARGETCONNECTIONPROFILE_FILES_ABSOLUTE}
