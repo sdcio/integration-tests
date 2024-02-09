@@ -95,6 +95,8 @@ Verify - ${operation} Config intent4 on sr2
 *** Keywords ***
 Setup
     Run    echo 'setup executed'
+    # Wait for targets to converge, fix this by implementing keywords to wait for target.
+    Sleep  30s
 
 Cleanup
     Run    echo 'cleanup executed'
