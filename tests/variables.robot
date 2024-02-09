@@ -9,11 +9,11 @@ ${SDCIO_CONFIG_SERVER_REPO_PATH}                                    ./config-ser
 # Secrets
 ${SDCIO_CONFIG_SERVER_SECRETS_FILES_BASE}                           ${SDCIO_CONFIG_SERVER_REPO_PATH}/example/secrets
 # This is intentionally left empty as there are no custom schema's to be tested yet.
-@{SDCIO_CONFIG_SERVER_SECRETS_FILES}                                secret-srl.yaml secret-sros.yaml
+@{SDCIO_CONFIG_SERVER_SECRETS_FILES}                                @{EMPTY}
 
-${SDCIO_INTEGRATION_TESTS_SECRETS_FILES_BASE}                       ${CURDIR}/schema
+${SDCIO_INTEGRATION_TESTS_SECRETS_FILES_BASE}                       ${CURDIR}/01-crs/secrets
 # This is intentionally left empty as there are no custom schema's to be tested yet.
-@{SDCIO_INTEGRATION_TESTS_SECRETS_FILES}                            @{EMPTY}
+@{SDCIO_INTEGRATION_TESTS_SECRETS_FILES}                            secret-srl.yaml    secret-sros.yaml
 
 # Schemas
 ${SDCIO_CONFIG_SERVER_SCHEMA_FILES_BASE}                            ${SDCIO_CONFIG_SERVER_REPO_PATH}/example/schemas
@@ -21,7 +21,7 @@ ${SDCIO_CONFIG_SERVER_SCHEMA_FILES_BASE}                            ${SDCIO_CONF
 ...                                                                 schema-nokia-sros-23.10.yaml
 ...                                                                 schema-nokia-srl-23.10.1.yaml
 
-${SDCIO_INTEGRATION_TESTS_SCHEMA_FILES_BASE}                        ${CURDIR}/schema
+${SDCIO_INTEGRATION_TESTS_SCHEMA_FILES_BASE}                        ${CURDIR}/01-crs/schema
 # This is intentionally left empty as there are no custom schema's to be tested yet.
 @{SDCIO_INTEGRATION_TESTS_SCHEMA_FILES}                             @{EMPTY}
 
@@ -31,7 +31,7 @@ ${SDCIO_CONFIG_SERVER_TARGETCONNECTIONPROFILE_FILES_BASE}           ${SDCIO_CONF
 ...                                                                 target-conn-profile-gnmi.yaml
 ...                                                                 target-conn-profile-netconf.yaml
 ...                                                                 target-conn-profile-noop.yaml
-${SDCIO_INTEGRATION_TESTS_TARGETCONNECTIONPROFILE_FILES_BASE}       ${CURDIR}/connection-profiles
+${SDCIO_INTEGRATION_TESTS_TARGETCONNECTIONPROFILE_FILES_BASE}       ${CURDIR}/01-crs/connection-profiles
 @{SDCIO_INTEGRATION_TESTS_TARGETCONNECTIONPROFILE_FILES}            conn_profile_sros_netconf.yaml
 
 # TargetSyncProfiles
@@ -40,7 +40,7 @@ ${SDCIO_CONFIG_SERVER_TARGETSYNCPROFILE_FILES_BASE}                 ${SDCIO_CONF
 ...                                                                 target-sync-profile-netconf.yaml
 ...                                                                 target-sync-profile-gnmi.yaml
 ...                                                                 target-sync-profile-gnmi-once-and-onchange.yaml
-${SDCIO_INTEGRATION_TESTS_TARGETSYNCPROFILE_FILES_BASE}             ${CURDIR}/sync-profiles
+${SDCIO_INTEGRATION_TESTS_TARGETSYNCPROFILE_FILES_BASE}             ${CURDIR}/01-crs/sync-profiles
 @{SDCIO_INTEGRATION_TESTS_TARGETSYNCPROFILE_FILES}                  sync_profile_sros_netconf.yaml
 
 # DiscoveryRules
@@ -48,8 +48,8 @@ ${SDCIO_CONFIG_SERVER_DISCOVERYRULE_FILES_BASE}                     ${SDCIO_CONF
 @{SDCIO_CONFIG_SERVER_DISCOVERYRULE_FILES}
 ...                                                                 discovery_address.yaml
 ...                                                                 discovery_prefix.yaml
-...                                                                 nodiscovery.
-${SDCIO_INTEGRATION_TESTS_DISCOVERYRULE_FILES_BASE}                 ${CURDIR}/discovery-rule
+...                                                                 nodiscovery.yaml
+${SDCIO_INTEGRATION_TESTS_DISCOVERYRULE_FILES_BASE}                 ${CURDIR}/01-crs/discovery-rule
 @{SDCIO_INTEGRATION_TESTS_DISCOVERYRULE_FILES}                      discovery_sros_netconf_address.yaml
 
 ### CURRENTLY USED BY 02-CRUD.
