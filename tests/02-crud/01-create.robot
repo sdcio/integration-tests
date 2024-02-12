@@ -104,6 +104,7 @@ Verify Config on node
     Should Contain    ${output}    ${adminstate}
 
 Setup
+    Run    echo 'setup executed'
     Wait Until Keyword Succeeds    15min    5s    Targets Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    sr1
     Wait Until Keyword Succeeds    15min    5s    Targets Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    sr2
 
