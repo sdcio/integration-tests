@@ -2,6 +2,8 @@
 Library             OperatingSystem
 Library             Process
 Resource            ../variables.robot
+Resource            ../Keywords/k8s/kubectl.robot
+Resource            ../Keywords/config.robot
 
 Suite Setup         Setup
 Suite Teardown      Run Keyword    Cleanup
@@ -15,11 +17,7 @@ ${null}                 "configure/service/vprn": null
 
 *** Test Cases ***
 ${operation} - ConfigSet intent1 on ${SDCIO_SROS_NODES}
-    Log    ${CURDIR}
-    ${rc}    ${output} =    Run And Return Rc And Output
-    ...    kubectl delete -f ${CURDIR}/intent1-sros.yaml
-    Log    ${output}
-    Should Be Equal As Integers    ${rc}    0
+    ${rc}    ${output} =    Delete ConfigSet    ${SDCIO_RESOURCE_NAMESPACE}    "intent1-sros"
 
 Verify - ${operation} ConfigSet intent1 on ${SDCIO_SROS_NODES}
     Wait Until Keyword Succeeds
@@ -30,11 +28,7 @@ Verify - ${operation} ConfigSet intent1 on ${SDCIO_SROS_NODES}
     ...    ${null}
 
 ${operation} - ConfigSet intent2 on ${SDCIO_SROS_NODES}
-    Log    ${CURDIR}
-    ${rc}    ${output} =    Run And Return Rc And Output
-    ...    kubectl delete -f ${CURDIR}/intent2-sros.yaml
-    Log    ${output}
-    Should Be Equal As Integers    ${rc}    0
+    ${rc}    ${output} =    Delete ConfigSet    ${SDCIO_RESOURCE_NAMESPACE}    "intent2-sros"
 
 Verify - ${operation} ConfigSet intent2 on ${SDCIO_SROS_NODES}
     Wait Until Keyword Succeeds
@@ -45,11 +39,7 @@ Verify - ${operation} ConfigSet intent2 on ${SDCIO_SROS_NODES}
     ...    ${null}
 
 ${operation} - Config intent3 on sr1
-    Log    ${CURDIR}
-    ${rc}    ${output} =    Run And Return Rc And Output
-    ...    kubectl delete -f ${CURDIR}/intent3-sros.yaml
-    Log    ${output}
-    Should Be Equal As Integers    ${rc}    0
+    ${rc}    ${output} =    Delete Config    ${SDCIO_RESOURCE_NAMESPACE}    "intent3-sros"
 
 Verify - ${operation} Config intent3 on sr1
     Wait Until Keyword Succeeds
@@ -61,11 +51,7 @@ Verify - ${operation} Config intent3 on sr1
     ...    ${null}
 
 ${operation} - Config intent4 on sr2
-    Log    ${CURDIR}
-    ${rc}    ${output} =    Run And Return Rc And Output
-    ...    kubectl delete -f ${CURDIR}/intent4-sros.yaml
-    Log    ${output}
-    Should Be Equal As Integers    ${rc}    0
+    ${rc}    ${output} =    Delete Config    ${SDCIO_RESOURCE_NAMESPACE}    "intent4-sros"
 
 Verify - ${operation} Config intent4 on sr2
     Wait Until Keyword Succeeds
@@ -95,11 +81,14 @@ Verify Config on node
 
 Setup
     Run    echo 'setup executed'
-    Run    kubectl apply -f ${CURDIR}/intent1-sros.yaml
-    Run    kubectl apply -f ${CURDIR}/intent2-sros.yaml
-    Run    kubectl apply -f ${CURDIR}/intent3-sros.yaml
-    Run    kubectl apply -f ${CURDIR}/intent4-sros.yaml
-    Sleep    5s
+    kubectl apply    ${CURDIR}/intent1-sros.yaml
+    Wait Until Keyword Succeeds    1min    5s    ConfigSet Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    "intent1-sros"
+    kubectl apply    ${CURDIR}/intent2-sros.yaml
+    Wait Until Keyword Succeeds    1min    5s    ConfigSet Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    "intent2-sros"
+    kubectl apply    ${CURDIR}/intent3-sros.yaml
+    Wait Until Keyword Succeeds    1min    5s    Config Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    "intent3-sros"
+    kubectl apply    ${CURDIR}/intent4-sros.yaml
+    Wait Until Keyword Succeeds    1min    5s    Config Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    "intent4-sros"
 
 Cleanup
     Run    echo 'cleanup executed'
@@ -115,4 +104,4 @@ Cleanup
     ...    gnmic -a ${sr1} -p 57400 --insecure -u ${SROS_USERNAME} -p ${SROS_PASSWORD} set --delete "/configure/service/vprn[service-name=vprn789]"
     Run
     ...    gnmic -a ${sr2} -p 57400 --insecure -u ${SROS_USERNAME} -p ${SROS_PASSWORD} set --delete "/configure/service/vprn[service-name=vprn987]"
-    Sleep    10s
+    Sleep    5s

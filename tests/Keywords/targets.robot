@@ -5,7 +5,7 @@ Library     RPA.JSON
 
 *** Keywords ***
 Targets Check Ready
-    [Documentation]    Make sure the referenced schemas is being loaded properly
+    [Documentation]    Make sure the discovered Targets are ready
     [Arguments]    ${namespace}    ${node}
 
     ${rc}    ${output} =    kubectl get    -n ${namespace} targets.inv.sdcio.dev -o=jsonpath='{.status}' ${node}
