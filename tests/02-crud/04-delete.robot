@@ -4,7 +4,6 @@ Library             Process
 Resource            ../variables.robot
 Resource            ../Keywords/k8s/kubectl.robot
 Resource            ../Keywords/config.robot
-Resource            ../Keywords/targets.robot
 
 Suite Setup         Setup
 Suite Teardown      Run Keyword    Cleanup
@@ -14,11 +13,6 @@ Suite Teardown      Run Keyword    Cleanup
 @{SDCIO_SROS_NODES}     sr1    sr2
 ${operation}            Delete
 ${null}                 "configure/service/vprn": null
-
-# ❯ kubectl get config -n default intent1-sros
-# Error from server (NotFound): configs.config.sdcio.dev "intent1-sros" not found
-# ❯ kubectl get configset -n default intent1-sros
-# Error from server (NotFound): configsets.config.sdcio.dev "intent1-sros" not found
 
 
 *** Test Cases ***
@@ -87,9 +81,6 @@ Verify Config on node
 
 Setup
     Run    echo 'setup executed'
-    Wait Until Keyword Succeeds    15min    5s    Targets Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    sr1
-    Wait Until Keyword Succeeds    15min    5s    Targets Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    sr2
-
     kubectl apply    ${CURDIR}/intent1-sros.yaml
     Wait Until Keyword Succeeds    1min    5s    ConfigSet Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    "intent1-sros"
     kubectl apply    ${CURDIR}/intent2-sros.yaml
@@ -101,11 +92,6 @@ Setup
 
 Cleanup
     Run    echo 'cleanup executed'
-    kubectl delete    -n ${SDCIO_RESOURCE_NAMESPACE} configs.config.sdcio.dev --all
-    kubectl delete    -n ${SDCIO_RESOURCE_NAMESPACE} configsets.config.sdcio.dev --all
-    kubectl delete    -n ${SDCIO_RESOURCE_NAMESPACE} targets.inv.sdcio.dev --all
-    kubectl delete    -n ${SDCIO_RESOURCE_NAMESPACE} configs.config.sdcio.dev --all
-    kubectl delete    -n ${SDCIO_RESOURCE_NAMESPACE} configsets.config.sdcio.dev --all
     Run
     ...    gnmic -a ${sr1} -p 57400 --insecure -u ${SROS_USERNAME} -p ${SROS_PASSWORD} set --delete "/configure/service/vprn[service-name=vprn123]"
     Run

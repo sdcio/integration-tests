@@ -4,7 +4,6 @@ Library             Process
 Resource            ../variables.robot
 Resource            ../Keywords/k8s/kubectl.robot
 Resource            ../Keywords/config.robot
-Resource            ../Keywords/targets.robot
 
 Suite Setup         Setup
 Suite Teardown      Run Keyword    Cleanup
@@ -160,9 +159,6 @@ Verify Config does not exist on node
 
 Setup
     Run    echo 'setup executed'
-    Wait Until Keyword Succeeds    15min    5s    Targets Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    sr1
-    Wait Until Keyword Succeeds    15min    5s    Targets Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    sr2
-
     kubectl apply    ${CURDIR}/intent1-sros.yaml
     Wait Until Keyword Succeeds    1min    5s    ConfigSet Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    "intent1-sros"
     kubectl apply    ${CURDIR}/intent2-sros.yaml
@@ -174,11 +170,14 @@ Setup
 
 Cleanup
     Run    echo 'cleanup executed'
-    kubectl delete    -n ${SDCIO_RESOURCE_NAMESPACE} configs.config.sdcio.dev --all
-    kubectl delete    -n ${SDCIO_RESOURCE_NAMESPACE} configsets.config.sdcio.dev --all
-    kubectl delete    -n ${SDCIO_RESOURCE_NAMESPACE} targets.inv.sdcio.dev --all
-    kubectl delete    -n ${SDCIO_RESOURCE_NAMESPACE} configs.config.sdcio.dev --all
-    kubectl delete    -n ${SDCIO_RESOURCE_NAMESPACE} configsets.config.sdcio.dev --all
+    Delete ConfigSet    ${SDCIO_RESOURCE_NAMESPACE}    "intent1-sros"
+    Sleep    2s
+    Delete ConfigSet    ${SDCIO_RESOURCE_NAMESPACE}    "intent2-sros"
+    Sleep    2s
+    Delete Config    ${SDCIO_RESOURCE_NAMESPACE}    "intent3-sros"
+    Sleep    2s
+    Delete Config    ${SDCIO_RESOURCE_NAMESPACE}    "intent4-sros"
+    Sleep    5s
     Run
     ...    gnmic -a ${sr1} -p 57400 --insecure -u ${SROS_USERNAME} -p ${SROS_PASSWORD} set --delete "/configure/service/vprn[service-name=vprn123]"
     Run
