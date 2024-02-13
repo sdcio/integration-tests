@@ -118,8 +118,11 @@ Setup
 Cleanup
     Run    echo 'cleanup executed'
     Delete ConfigSet    ${SDCIO_RESOURCE_NAMESPACE}    "intent1-sros"
+    Sleep    2s
     Delete ConfigSet    ${SDCIO_RESOURCE_NAMESPACE}    "intent2-sros"
+    Sleep    2s
     Delete Config    ${SDCIO_RESOURCE_NAMESPACE}    "intent3-sros"
+    Sleep    2s
     Delete Config    ${SDCIO_RESOURCE_NAMESPACE}    "intent4-sros"
     Sleep    5s
     Run
