@@ -28,7 +28,7 @@ Verify - ${operation} ConfigSet intent1 on ${SDCIO_SROS_NODES}
     Wait Until Keyword Succeeds
     ...    1min
     ...    5s
-    ...    Verify ConfigSet intent on nodes
+    ...    Verify no ConfigSet on nodes
     ...    "/configure/service/vprn[service-name=vprn123]"
     ...    ${null}
 
@@ -44,7 +44,7 @@ Verify - ${operation} ConfigSet intent2 on ${SDCIO_SROS_NODES}
     Wait Until Keyword Succeeds
     ...    1min
     ...    5s
-    ...    Verify ConfigSet intent on nodes
+    ...    Verify no ConfigSet on nodes
     ...    "/configure/service/vprn[service-name=vprn234]"
     ...    ${null}
 
@@ -84,7 +84,7 @@ Verify - ${operation} Config intent4 on sr2
 
 
 *** Keywords ***
-Verify ConfigSet intent on nodes
+Verify no ConfigSet on nodes
     [Documentation]    Iterates through the SDCIO_SROS_NODES, validates if the output contains $intent and $adminstate for gNMI $path
     [Arguments]    ${path}    ${intent}
     FOR    ${node}    IN    @{SDCIO_SROS_NODES}
