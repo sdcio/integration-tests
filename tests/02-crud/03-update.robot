@@ -104,8 +104,67 @@ Verify Config on node
     Should Contain    ${output}    ${intent}
     Should Contain    ${output}    ${adminstate}
 
+Verify no Config on node
+    [Documentation]    Validate if Config has been applied to a node, through collecting a gNMI path
+    [Arguments]    ${node}    ${path}    ${intent}
+    ${rc}    ${output} =    Run And Return Rc And Output
+    ...    gnmic -a ${${node}} -p 57400 --insecure -u ${SROS_USERNAME} -p ${SROS_PASSWORD} get --path ${path}
+    Log    ${output}
+    Should Contain    ${output}    ${intent}
+
+Delete Config on node
+    [Documentation]    Delete config from a node using gNMI.
+    [Arguments]    ${node}    ${path}
+    ${rc}    ${output} =    Run And Return Rc And Output
+    ...    gnmic -a ${${node}} -p 57400 --insecure -u ${SROS_USERNAME} -p ${SROS_PASSWORD} set --delete ${path}
+    Log ${output}
+    Should Be Equal As Integers    ${rc}    0
+    RETURN    ${rc}    ${output}
+
 Setup
     Run    echo 'setup executed'
+    Wait Until Keyword Succeeds
+    ...    1min
+    ...    5s
+    ...    Verify no Config on node
+    ...    sr1
+    ...    "/configure/service/vprn[service-name=vprn123]"
+    ...    ${null}
+    Wait Until Keyword Succeeds
+    ...    1min
+    ...    5s
+    ...    Verify no Config on node
+    ...    sr2
+    ...    "/configure/service/vprn[service-name=vprn123]"
+    ...    ${null}
+    Wait Until Keyword Succeeds
+    ...    1min
+    ...    5s
+    ...    Verify no Config on node
+    ...    sr1
+    ...    "/configure/service/vprn[service-name=vprn234]"
+    ...    ${null}
+    Wait Until Keyword Succeeds
+    ...    1min
+    ...    5s
+    ...    Verify no Config on node
+    ...    sr2
+    ...    "/configure/service/vprn[service-name=vprn234]"
+    ...    ${null}
+    Wait Until Keyword Succeeds
+    ...    1min
+    ...    5s
+    ...    Verify no Config on node
+    ...    sr1
+    ...    "/configure/service/vprn[service-name=vprn789]"
+    ...    ${null}
+    Wait Until Keyword Succeeds
+    ...    1min
+    ...    5s
+    ...    Verify no Config on node
+    ...    sr2
+    ...    "/configure/service/vprn[service-name=vprn987]"
+    ...    ${null}
     kubectl apply    ${CURDIR}/intent1-sros.yaml
     Wait Until Keyword Succeeds    1min    5s    ConfigSet Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    "intent1-sros"
     kubectl apply    ${CURDIR}/intent2-sros.yaml
@@ -118,23 +177,31 @@ Setup
 Cleanup
     Run    echo 'cleanup executed'
     Delete ConfigSet    ${SDCIO_RESOURCE_NAMESPACE}    "intent1-sros"
-    Sleep    2s
     Delete ConfigSet    ${SDCIO_RESOURCE_NAMESPACE}    "intent2-sros"
-    Sleep    2s
     Delete Config    ${SDCIO_RESOURCE_NAMESPACE}    "intent3-sros"
-    Sleep    2s
     Delete Config    ${SDCIO_RESOURCE_NAMESPACE}    "intent4-sros"
-    Sleep    5s
-    Run
-    ...    gnmic -a ${sr1} -p 57400 --insecure -u ${SROS_USERNAME} -p ${SROS_PASSWORD} set --delete "/configure/service/vprn[service-name=vprn123]"
-    Run
-    ...    gnmic -a ${sr2} -p 57400 --insecure -u ${SROS_USERNAME} -p ${SROS_PASSWORD} set --delete "/configure/service/vprn[service-name=vprn123]"
-    Run
-    ...    gnmic -a ${sr1} -p 57400 --insecure -u ${SROS_USERNAME} -p ${SROS_PASSWORD} set --delete "/configure/service/vprn[service-name=vprn234]"
-    Run
-    ...    gnmic -a ${sr2} -p 57400 --insecure -u ${SROS_USERNAME} -p ${SROS_PASSWORD} set --delete "/configure/service/vprn[service-name=vprn234]"
-    Run
-    ...    gnmic -a ${sr1} -p 57400 --insecure -u ${SROS_USERNAME} -p ${SROS_PASSWORD} set --delete "/configure/service/vprn[service-name=vprn789]"
-    Run
-    ...    gnmic -a ${sr2} -p 57400 --insecure -u ${SROS_USERNAME} -p ${SROS_PASSWORD} set --delete "/configure/service/vprn[service-name=vprn987]"
-    Sleep    5s
+    Run Keyword If Any Tests Failed
+    ...    Delete Config on node
+    ...    ${sr1}
+    ...    "/configure/service/vprn[service-name=vprn123]"
+    Run Keyword If Any Tests Failed
+    ...    Delete Config on node
+    ...    ${sr2}
+    ...    "/configure/service/vprn[service-name=vprn123]"
+    Run Keyword If Any Tests Failed
+    ...    Delete Config on node
+    ...    ${sr1}
+    ...    "/configure/service/vprn[service-name=vprn234]"
+    Run Keyword If Any Tests Failed
+    ...    Delete Config on node
+    ...    ${sr2}
+    ...    "/configure/service/vprn[service-name=vprn234]"
+    Run Keyword If Any Tests Failed
+    ...    Delete Config on node
+    ...    ${sr1}
+    ...    "/configure/service/vprn[service-name=vprn789]"
+    Run Keyword If Any Tests Failed
+    ...    Delete Config on node
+    ...    ${sr2}
+    ...    "/configure/service/vprn[service-name=vprn987]"
+    Run Keyword If Any Tests Failed    Sleep    5s
