@@ -20,9 +20,11 @@ ${operation} - ConfigSet intent1 on ${SDCIO_SROS_NODES}
     ${rc}    ${output} =    Delete ConfigSet    ${SDCIO_RESOURCE_NAMESPACE}    "intent1-sros"
 
 Verify - ${operation} ConfigSet intent1 on k8s
-    ${output} =    Run Keyword And Expect Error    *
+    Wait Until Keyword Succeeds
+    ...    1min
+    ...    5s
+    ...    Run Keyword And Expect Error    *
     ...    kubectl get    -n ${SDCIO_RESOURCE_NAMESPACE} configsets.config.sdcio.dev intent1-sros
-    Log    ${output}
 
 Verify - ${operation} ConfigSet intent1 on ${SDCIO_SROS_NODES}
     Wait Until Keyword Succeeds
@@ -36,9 +38,11 @@ ${operation} - ConfigSet intent2 on ${SDCIO_SROS_NODES}
     ${rc}    ${output} =    Delete ConfigSet    ${SDCIO_RESOURCE_NAMESPACE}    "intent2-sros"
 
 Verify - ${operation} ConfigSet intent2 on k8s
-    ${output} =    Run Keyword And Expect Error    *
+    Wait Until Keyword Succeeds
+    ...    1min
+    ...    5s
+    ...    Run Keyword And Expect Error    *
     ...    kubectl get    -n ${SDCIO_RESOURCE_NAMESPACE} configsets.config.sdcio.dev intent2-sros
-    Log    ${output}
 
 Verify - ${operation} ConfigSet intent2 on ${SDCIO_SROS_NODES}
     Wait Until Keyword Succeeds
@@ -52,9 +56,11 @@ ${operation} - Config intent3 on sr1
     ${rc}    ${output} =    Delete Config    ${SDCIO_RESOURCE_NAMESPACE}    "intent3-sros"
 
 Verify - ${operation} Config intent3 on k8s
-    ${output} =    Run Keyword And Expect Error    *
+    Wait Until Keyword Succeeds
+    ...    1min
+    ...    5s
+    ...    Run Keyword And Expect Error    *
     ...    kubectl get    -n ${SDCIO_RESOURCE_NAMESPACE} configs.config.sdcio.dev intent3-sros
-    Log    ${output}
 
 Verify - ${operation} Config intent3 on sr1
     Wait Until Keyword Succeeds
@@ -69,9 +75,11 @@ ${operation} - Config intent4 on sr2
     ${rc}    ${output} =    Delete Config    ${SDCIO_RESOURCE_NAMESPACE}    "intent4-sros"
 
 Verify - ${operation} Config intent4 on k8s
-    ${output} =    Run Keyword And Expect Error    *
+    Wait Until Keyword Succeeds
+    ...    1min
+    ...    5s
+    ...    Run Keyword And Expect Error    *
     ...    kubectl get    -n ${SDCIO_RESOURCE_NAMESPACE} configs.config.sdcio.dev intent4-sros
-    Log    ${output}
 
 Verify - ${operation} Config intent4 on sr2
     Wait Until Keyword Succeeds
