@@ -65,7 +65,7 @@ Verify - ${operation} ConfigSet intent2 on ${SDCIO_SROS_NODES}
 ${operation} - Config intent3 on sr1
     ${rc}    ${output} =    kubectl apply    ${CURDIR}/intent3-sros.yaml
 
-Verify - ${operation} ConfigSet intent3 on k8s
+Verify - ${operation} Config intent3 on k8s
     Wait Until Keyword Succeeds
     ...    1min
     ...    5s
@@ -86,7 +86,7 @@ Verify - ${operation} Config intent3 on sr1
 ${operation} - Config intent4 on sr2
     ${rc}    ${output} =    kubectl apply    ${CURDIR}/intent4-sros.yaml
 
-Verify - ${operation} ConfigSet intent4 on k8s
+Verify - ${operation} Config intent4 on k8s
     Wait Until Keyword Succeeds
     ...    1min
     ...    5s
