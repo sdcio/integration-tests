@@ -7,22 +7,22 @@ on:
         description: "schema-server semver release (vX.Y.Z)"
         required: true
         type: string
-        default: v0.0.15
+        default: v0.0.16
       dataserver_version:
         description: "data-server semver release (vX.Y.Z)"
         required: true
         type: string
-        default: v0.0.33
+        default: v0.0.34
       cache_version:
         description: "cache semver release (vX.Y.Z)"
         required: true
         type: string
-        default: v0.0.32
+        default: v0.0.33
       configserver_version:
         description: "config-server semver release (vX.Y.Z)"
         required: true
         type: string
-        default: v0.0.13
+        default: v0.0.15
       certmanager_version:
         description: "cert-manager release (vX.Y.Z)"
         required: true

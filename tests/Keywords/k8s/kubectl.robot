@@ -1,5 +1,6 @@
 *** Settings ***
-Library             OperatingSystem
+Library     OperatingSystem
+
 
 *** Keywords ***
 kubectl apply
@@ -9,13 +10,22 @@ kubectl apply
     ...    kubectl apply -f ${fileOrUrl}
     Log    ${output}
     Should Be Equal As Integers    ${rc}    0
-    [Return]    ${rc}    ${output}
+    RETURN    ${rc}    ${output}
 
 kubectl get
-    [Documentation]    Apply a certain resource via kubectl apply -f
+    [Documentation]    Get a certain resource via kubectl get
     [Arguments]    ${options}
     ${rc}    ${output} =    Run And Return Rc And Output
     ...    kubectl get ${options}
     Log    ${output}
     Should Be Equal As Integers    ${rc}    0
-    [Return]    ${rc}    ${output}
+    RETURN    ${rc}    ${output}
+
+kubectl delete
+    [Documentation]    Delete a certain resource via kubectl delete
+    [Arguments]    ${options}
+    ${rc}    ${output} =    Run And Return Rc And Output
+    ...    kubectl delete ${options}
+    Log    ${output}
+    Should Be Equal As Integers    ${rc}    0
+    RETURN    ${rc}    ${output}
