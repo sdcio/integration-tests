@@ -26,7 +26,7 @@ Delete Config
     [Documentation]    Make sure the referenced Config is deleted properly
     [Arguments]    ${namespace}    ${object}
 
-    ${rc}    ${output} =    kubectl delete    -n ${namespace} --wait=true configs.config.sdcio.dev ${object}
+    ${rc}    ${output} =    kubectl delete    -n ${namespace} configs.config.sdcio.dev ${object}
     Log    ${output}
     Should Be Equal As Integers    ${rc}    0
     RETURN    ${rc}    ${output}
@@ -35,7 +35,7 @@ Delete ConfigSet
     [Documentation]    Make sure the referenced Config is deleted properly
     [Arguments]    ${namespace}    ${object}
 
-    ${rc}    ${output} =    kubectl delete    -n ${namespace} --wait=true configsets.config.sdcio.dev ${object}
+    ${rc}    ${output} =    kubectl delete    -n ${namespace} configsets.config.sdcio.dev ${object}
     Log    ${output}
     Should Be Equal As Integers    ${rc}    0
     RETURN    ${rc}    ${output}

@@ -12,7 +12,7 @@ on:
         description: "data-server semver release (vX.Y.Z)"
         required: true
         type: string
-        default: v0.0.34
+        default: v0.0.35
       cache_version:
         description: "cache semver release (vX.Y.Z)"
         required: true

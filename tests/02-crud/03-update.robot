@@ -28,6 +28,14 @@ ${operation} - ConfigSet intent1 on ${SDCIO_SROS_NODES}
     Log    ${output}
     Should Be Equal As Integers    ${rc}    0
 
+Verify - ${operation} ConfigSet intent1 on k8s
+    Wait Until Keyword Succeeds
+    ...    1min
+    ...    5s
+    ...    ConfigSet Check Ready
+    ...    ${SDCIO_RESOURCE_NAMESPACE}
+    ...    "intent1-sros"
+
 Verify - ${operation} ConfigSet intent1 on ${SDCIO_SROS_NODES}
     Wait Until Keyword Succeeds
     ...    1min
@@ -43,6 +51,14 @@ ${operation} - ConfigSet intent2 on ${SDCIO_SROS_NODES}
     ...    kubectl apply -f ${CURDIR}/intent2-sros-update.yaml
     Log    ${output}
     Should Be Equal As Integers    ${rc}    0
+
+Verify - ${operation} ConfigSet intent2 on k8s
+    Wait Until Keyword Succeeds
+    ...    1min
+    ...    5s
+    ...    ConfigSet Check Ready
+    ...    ${SDCIO_RESOURCE_NAMESPACE}
+    ...    "intent2-sros"
 
 Verify - ${operation} ConfigSet intent2 on ${SDCIO_SROS_NODES}
     Wait Until Keyword Succeeds
@@ -60,6 +76,14 @@ ${operation} - Config intent3 on sr1
     Log    ${output}
     Should Be Equal As Integers    ${rc}    0
 
+Verify - ${operation} Config intent3 on k8s
+    Wait Until Keyword Succeeds
+    ...    1min
+    ...    5s
+    ...    Config Check Ready
+    ...    ${SDCIO_RESOURCE_NAMESPACE}
+    ...    "intent3-sros"
+
 Verify - ${operation} Config intent3 on sr1
     Wait Until Keyword Succeeds
     ...    1min
@@ -76,6 +100,14 @@ ${operation} - Config intent4 on sr2
     ...    kubectl apply -f ${CURDIR}/intent4-sros-update.yaml
     Log    ${output}
     Should Be Equal As Integers    ${rc}    0
+
+Verify - ${operation} Config intent4 on k8s
+    Wait Until Keyword Succeeds
+    ...    1min
+    ...    5s
+    ...    Config Check Ready
+    ...    ${SDCIO_RESOURCE_NAMESPACE}
+    ...    "intent4-sros"
 
 Verify - ${operation} Config intent4 on sr2
     Wait Until Keyword Succeeds
