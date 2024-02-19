@@ -17,6 +17,7 @@ ${intent2}              "service-name": "vprn234"
 ${intent3}              "service-name": "vprn789"
 ${intent4}              "service-name": "vprn987"
 ${adminstate}           "admin-state": "disable"
+${null}                 "configure/service/vprn": null
 
 
 *** Test Cases ***
