@@ -123,6 +123,21 @@ Delete Config on node
 
 Setup
     Run    echo 'setup executed'
+    kubectl apply    ${CURDIR}/intent1-sros.yaml
+    Wait Until Keyword Succeeds    1min    5s    ConfigSet Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    "intent1-sros"
+    kubectl apply    ${CURDIR}/intent2-sros.yaml
+    Wait Until Keyword Succeeds    1min    5s    ConfigSet Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    "intent2-sros"
+    kubectl apply    ${CURDIR}/intent3-sros.yaml
+    Wait Until Keyword Succeeds    1min    5s    Config Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    "intent3-sros"
+    kubectl apply    ${CURDIR}/intent4-sros.yaml
+    Wait Until Keyword Succeeds    1min    5s    Config Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    "intent4-sros"
+
+Cleanup
+    Run    echo 'cleanup executed'
+    Delete ConfigSet    ${SDCIO_RESOURCE_NAMESPACE}    "intent1-sros"
+    Delete ConfigSet    ${SDCIO_RESOURCE_NAMESPACE}    "intent2-sros"
+    Delete Config    ${SDCIO_RESOURCE_NAMESPACE}    "intent3-sros"
+    Delete Config    ${SDCIO_RESOURCE_NAMESPACE}    "intent4-sros"
     Wait Until Keyword Succeeds
     ...    1min
     ...    5s
@@ -165,21 +180,6 @@ Setup
     ...    sr2
     ...    "/configure/service/vprn[service-name=vprn987]"
     ...    ${null}
-    kubectl apply    ${CURDIR}/intent1-sros.yaml
-    Wait Until Keyword Succeeds    1min    5s    ConfigSet Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    "intent1-sros"
-    kubectl apply    ${CURDIR}/intent2-sros.yaml
-    Wait Until Keyword Succeeds    1min    5s    ConfigSet Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    "intent2-sros"
-    kubectl apply    ${CURDIR}/intent3-sros.yaml
-    Wait Until Keyword Succeeds    1min    5s    Config Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    "intent3-sros"
-    kubectl apply    ${CURDIR}/intent4-sros.yaml
-    Wait Until Keyword Succeeds    1min    5s    Config Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    "intent4-sros"
-
-Cleanup
-    Run    echo 'cleanup executed'
-    Delete ConfigSet    ${SDCIO_RESOURCE_NAMESPACE}    "intent1-sros"
-    Delete ConfigSet    ${SDCIO_RESOURCE_NAMESPACE}    "intent2-sros"
-    Delete Config    ${SDCIO_RESOURCE_NAMESPACE}    "intent3-sros"
-    Delete Config    ${SDCIO_RESOURCE_NAMESPACE}    "intent4-sros"
     Run Keyword If Any Tests Failed
     ...    Delete Config on node
     ...    ${sr1}

@@ -174,6 +174,48 @@ Cleanup
     Delete ConfigSet    ${SDCIO_RESOURCE_NAMESPACE}    "intent2-sros"
     Delete Config    ${SDCIO_RESOURCE_NAMESPACE}    "intent3-sros"
     Delete Config    ${SDCIO_RESOURCE_NAMESPACE}    "intent4-sros"
+    Wait Until Keyword Succeeds
+    ...    1min
+    ...    5s
+    ...    Verify no Config on node
+    ...    sr1
+    ...    "/configure/service/vprn[service-name=vprn123]"
+    ...    ${null}
+    Wait Until Keyword Succeeds
+    ...    1min
+    ...    5s
+    ...    Verify no Config on node
+    ...    sr2
+    ...    "/configure/service/vprn[service-name=vprn123]"
+    ...    ${null}
+    Wait Until Keyword Succeeds
+    ...    1min
+    ...    5s
+    ...    Verify no Config on node
+    ...    sr1
+    ...    "/configure/service/vprn[service-name=vprn234]"
+    ...    ${null}
+    Wait Until Keyword Succeeds
+    ...    1min
+    ...    5s
+    ...    Verify no Config on node
+    ...    sr2
+    ...    "/configure/service/vprn[service-name=vprn234]"
+    ...    ${null}
+    Wait Until Keyword Succeeds
+    ...    1min
+    ...    5s
+    ...    Verify no Config on node
+    ...    sr1
+    ...    "/configure/service/vprn[service-name=vprn789]"
+    ...    ${null}
+    Wait Until Keyword Succeeds
+    ...    1min
+    ...    5s
+    ...    Verify no Config on node
+    ...    sr2
+    ...    "/configure/service/vprn[service-name=vprn987]"
+    ...    ${null}
     Run Keyword If Any Tests Failed
     ...    Delete Config on node
     ...    ${sr1}
