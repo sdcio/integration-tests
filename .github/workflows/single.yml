@@ -159,5 +159,5 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: single-robot-tests-log-config-server_${{ matrix.config-server }}-data-server_${{ matrix.data-server }}
+          name: single-robot-tests-log-config-server_${{ inputs.configserver_version }}-data-server_${{ inputs.dataserver_version }}
           path: ./integration-tests/tests/out/*.html
