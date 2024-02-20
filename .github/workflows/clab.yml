@@ -1,0 +1,27 @@
+name: containerlab
+
+on:
+  workflow_dispatch:
+env:
+  PY_VER: "3.10"
+  GO_VER: "1.21.4"
+
+jobs:
+  setup-clab:
+    runs-on: sdcio-action-runners
+    container:
+      image: ubuntu:latest
+    steps:
+      - name: Checkout integration-tests
+        uses: actions/checkout@v4
+      - name: Setup Containerlab
+        run: |
+          bash -c "$(curl -sL https://get.containerlab.dev)"
+      - name: Set SROS License
+        env:
+          SROS_LICENSE: ${{ secrets.SROS23_LICENSE }}
+        run: |
+          echo $SROS_LICENSE | tee containerlab/license-sros23.txt
+      - name: Deploy CI-Test-Containerlab
+        run: |
+          sudo -E containerlab deploy -t containerlab/citest.clab.yml --reconfigure
