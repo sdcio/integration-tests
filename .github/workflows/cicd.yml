@@ -142,7 +142,7 @@ jobs:
           cd ..
 
       - name: Create k8s Kind Cluster
-        uses: helm/kind-action@v1.8.0
+        uses: helm/kind-action@v1.9.0
         with:
           cluster_name: ci-kind-${{ github.actor }}
           #config: ./integration-tests/k8s/kind-config.yml
