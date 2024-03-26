@@ -40,9 +40,9 @@ jobs:
         uses: actions/checkout@v4
       - name: Set SROS License
         env:
-          SROS_LICENSE: ${{ secrets.SROS23_LICENSE }}
+          SROS_LICENSE: ${{ secrets.SROS24_LICENSE }}
         run: |
-          echo $SROS_LICENSE | tee containerlab/license-sros23.txt
+          echo $SROS_LICENSE | tee containerlab/license-sros24.txt
       - name: Deploy CI-Test-Containerlab
         env:
           CLAB_LABDIR_BASE: "/home/iptecharch-builder/_clab"
