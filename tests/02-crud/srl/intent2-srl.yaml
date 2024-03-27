@@ -1,0 +1,67 @@
+apiVersion: config.sdcio.dev/v1alpha1
+kind: ConfigSet
+metadata:
+  name: intent2-srl
+  namespace: default
+spec:
+  target:
+    targetSelector:
+      matchLabels:
+        sdcio.dev/device: srl
+  priority: 10
+  config:
+  - path: /
+    value:
+      interface:
+      - name: ethernet-1/2
+        admin-state: "enable"
+        description: "intent2-layer2"
+        vlan-tagging: true
+        subinterface:
+        - index: 0
+          type: bridged
+          vlan:
+            encap:
+              single-tagged:
+                vlan-id: 1
+      - name: irb0
+        admin-state: "enable"
+        description: "intent1-layer3"
+        subinterface:
+        - index: 2
+          admin-state: "enable"
+          ipv4:
+            admin-state: "enable"
+            address:
+              192.168.2.1/24:
+                anycast-gw: true
+          ipv6:
+            admin-state: "enable"
+            address:
+              fd00:0:0:2::1/64:
+                anycast-gw: true
+          anycast-gw:
+            virtual-router-id: 2
+      network-instance:
+      - name: macvrf2
+        admin-state: "enable"
+        type: mac-vrf
+        interface:
+          ethernet-1/2.0: {}
+          irb0.2: {}
+      - name: vrf2
+        admin-state: "enable"
+        type: ip-vrf
+        description: "Intent2 Network-instance"
+        interface:
+          irb0.2: {}
+        protocols:
+          bgp:
+            admin-state: "enable"
+            autonomous-system: 65002
+            router-id: 2.2.2.2
+            afi-safi:
+              ipv4-unicast:
+                admin-state: "enable"
+              ipv6-unicast:
+                admin-state: "enable"  

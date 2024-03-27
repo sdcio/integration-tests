@@ -3,7 +3,6 @@ Library             OperatingSystem
 Library             Process
 Resource            ../variables.robot
 Resource            ../Keywords/k8s/kubectl.robot
-Resource            ../Keywords/targets.robot
 Resource            ../Keywords/config.robot
 
 Suite Setup         Setup
@@ -12,18 +11,22 @@ Suite Teardown      Run Keyword    Cleanup
 
 *** Variables ***
 @{SDCIO_SROS_NODES}     sr1    sr2
-${operation}            Create
+${operation}            Update
 ${intent1}              "service-name": "vprn123"
 ${intent2}              "service-name": "vprn234"
 ${intent3}              "service-name": "vprn789"
 ${intent4}              "service-name": "vprn987"
-${adminstate}           "admin-state": "enable"
+${adminstate}           "admin-state": "disable"
 ${null}                 "configure/service/vprn": null
 
 
 *** Test Cases ***
 ${operation} - ConfigSet intent1 on ${SDCIO_SROS_NODES}
-    ${rc}    ${output} =    kubectl apply    ${CURDIR}/intent1-sros.yaml
+    Log    ${CURDIR}
+    ${rc}    ${output} =    Run And Return Rc And Output
+    ...    kubectl apply -f ${CURDIR}/sros/intent1-sros-update.yaml
+    Log    ${output}
+    Should Be Equal As Integers    ${rc}    0
 
 Verify - ${operation} ConfigSet intent1 on k8s
     Wait Until Keyword Succeeds
@@ -43,7 +46,11 @@ Verify - ${operation} ConfigSet intent1 on ${SDCIO_SROS_NODES}
     ...    ${adminstate}
 
 ${operation} - ConfigSet intent2 on ${SDCIO_SROS_NODES}
-    ${rc}    ${output} =    kubectl apply    ${CURDIR}/intent2-sros.yaml
+    Log    ${CURDIR}
+    ${rc}    ${output} =    Run And Return Rc And Output
+    ...    kubectl apply -f ${CURDIR}/sros/intent2-sros-update.yaml
+    Log    ${output}
+    Should Be Equal As Integers    ${rc}    0
 
 Verify - ${operation} ConfigSet intent2 on k8s
     Wait Until Keyword Succeeds
@@ -63,7 +70,11 @@ Verify - ${operation} ConfigSet intent2 on ${SDCIO_SROS_NODES}
     ...    ${adminstate}
 
 ${operation} - Config intent3 on sr1
-    ${rc}    ${output} =    kubectl apply    ${CURDIR}/intent3-sros.yaml
+    Log    ${CURDIR}
+    ${rc}    ${output} =    Run And Return Rc And Output
+    ...    kubectl apply -f ${CURDIR}/sros/intent3-sros-update.yaml
+    Log    ${output}
+    Should Be Equal As Integers    ${rc}    0
 
 Verify - ${operation} Config intent3 on k8s
     Wait Until Keyword Succeeds
@@ -84,7 +95,11 @@ Verify - ${operation} Config intent3 on sr1
     ...    ${adminstate}
 
 ${operation} - Config intent4 on sr2
-    ${rc}    ${output} =    kubectl apply    ${CURDIR}/intent4-sros.yaml
+    Log    ${CURDIR}
+    ${rc}    ${output} =    Run And Return Rc And Output
+    ...    kubectl apply -f ${CURDIR}/sros/intent4-sros-update.yaml
+    Log    ${output}
+    Should Be Equal As Integers    ${rc}    0
 
 Verify - ${operation} Config intent4 on k8s
     Wait Until Keyword Succeeds
@@ -141,32 +156,14 @@ Delete Config on node
 
 Setup
     Run    echo 'setup executed'
-    Wait Until Keyword Succeeds    15min    5s    Targets Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    sr1
-    Wait Until Keyword Succeeds    15min    5s    Targets Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    sr2
-    Verify no Config on node
-    ...    sr1
-    ...    "/configure/service/vprn[service-name=vprn123]"
-    ...    ${null}
-    Verify no Config on node
-    ...    sr2
-    ...    "/configure/service/vprn[service-name=vprn123]"
-    ...    ${null}
-    Verify no Config on node
-    ...    sr1
-    ...    "/configure/service/vprn[service-name=vprn234]"
-    ...    ${null}
-    Verify no Config on node
-    ...    sr2
-    ...    "/configure/service/vprn[service-name=vprn234]"
-    ...    ${null}
-    Verify no Config on node
-    ...    sr1
-    ...    "/configure/service/vprn[service-name=vprn789]"
-    ...    ${null}
-    Verify no Config on node
-    ...    sr2
-    ...    "/configure/service/vprn[service-name=vprn987]"
-    ...    ${null}
+    kubectl apply    ${CURDIR}/sros/intent1-sros.yaml
+    Wait Until Keyword Succeeds    1min    5s    ConfigSet Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    "intent1-sros"
+    kubectl apply    ${CURDIR}/sros/intent2-sros.yaml
+    Wait Until Keyword Succeeds    1min    5s    ConfigSet Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    "intent2-sros"
+    kubectl apply    ${CURDIR}/sros/intent3-sros.yaml
+    Wait Until Keyword Succeeds    1min    5s    Config Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    "intent3-sros"
+    kubectl apply    ${CURDIR}/sros/intent4-sros.yaml
+    Wait Until Keyword Succeeds    1min    5s    Config Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    "intent4-sros"
 
 Cleanup
     Run    echo 'cleanup executed'
