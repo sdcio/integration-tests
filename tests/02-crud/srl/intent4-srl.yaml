@@ -19,17 +19,19 @@ spec:
         subinterface:
         - index: 0
           type: routed
-          admin-state: "enable"
+          admin-state: enable
           vlan:
             encap:
               single-tagged:
                 vlan-id: 1
           ipv4:
-            admin-state: "enable"
+            admin-state: enable
+            unnumbered:
+              admin-state: disable
             address:
               - ip-prefix: "192.168.4.1/24"
           ipv6:
-            admin-state: "enable"
+            admin-state: enable
             address:
               - ip-prefix: "fd00:0:0:4::1/64"
       network-instance:

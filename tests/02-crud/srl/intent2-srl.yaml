@@ -30,6 +30,8 @@ spec:
         subinterface:
         - index: 2
           ipv4:
+            unnumbered:
+              admin-state: disable
             address:
             - anycast-gw: true
               ip-prefix: 192.168.2.1/24

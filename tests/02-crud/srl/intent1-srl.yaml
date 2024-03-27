@@ -25,11 +25,13 @@ spec:
               single-tagged:
                 vlan-id: 1
       - name: irb0
-        admin-state: "enable"
+        admin-state: enable
         description: "intent1-layer3"
         subinterface:
         - index: 1
           ipv4:
+            unnumbered:
+              admin-state: disable
             address:
             - anycast-gw: true
               ip-prefix: 192.168.1.1/24
