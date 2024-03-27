@@ -29,17 +29,16 @@ spec:
         description: "intent1-layer3"
         subinterface:
         - index: 2
-          admin-state: "enable"
           ipv4:
-            admin-state: "enable"
             address:
-              - ip-prefix: "192.168.2.1/24"
-                anycast-gw: true
+            - anycast-gw: true
+              ip-prefix: 192.168.2.1/24
+            admin-state: enable
           ipv6:
-            admin-state: "enable"
             address:
-              - ip-prefix: "fd00:0:0:2::1/64"
-                anycast-gw: true
+            - anycast-gw: true
+              ip-prefix: fd00:0:0:2::1/64
+            admin-state: enable
           anycast-gw:
             virtual-router-id: 2
       network-instance:
@@ -47,21 +46,21 @@ spec:
         admin-state: "enable"
         type: mac-vrf
         interface:
-          ethernet-1/2.0: {}
-          irb0.2: {}
+          - name: ethernet-1/2.0
+          - name: irb0.2
       - name: vrf2
         admin-state: "enable"
         type: ip-vrf
         description: "Intent2 Network-instance"
         interface:
-          irb0.2: {}
+          - name: irb0.2
         protocols:
           bgp:
             admin-state: "enable"
             autonomous-system: 65002
             router-id: 2.2.2.2
             afi-safi:
-              ipv4-unicast:
+              - afi-safi-name: "ipv4-unicast"
                 admin-state: "enable"
-              ipv6-unicast:
-                admin-state: "enable"  
+              - afi-safi-name: "ipv6-unicast"
+                admin-state: "enable"

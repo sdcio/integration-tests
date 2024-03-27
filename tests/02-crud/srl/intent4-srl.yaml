@@ -38,14 +38,14 @@ spec:
         type: ip-vrf
         description: "Intent4 Network-instance"
         interface:
-          ethernet-1/4.0: {}
+          - name: ethernet-1/4.0
         protocols:
           bgp:
             admin-state: "enable"
             autonomous-system: 65004
             router-id: 4.4.4.4
             afi-safi:
-              ipv4-unicast:
+              - afi-safi-name: "ipv4-unicast"
                 admin-state: "enable"
-              ipv6-unicast:
+              - afi-safi-name: "ipv6-unicast"
                 admin-state: "enable"
