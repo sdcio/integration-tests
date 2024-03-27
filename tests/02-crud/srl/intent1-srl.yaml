@@ -33,12 +33,12 @@ spec:
           ipv4:
             admin-state: "enable"
             address:
-              192.168.1.1/24:
+              - ip-prefix: "192.168.1.1/24"
                 anycast-gw: true
           ipv6:
             admin-state: "enable"
             address:
-              fd00:0:0:1::1/64:
+              - ip-prefix: "fd00:0:0:1::1/64"
                 anycast-gw: true
           anycast-gw:
             virtual-router-id: 1
