@@ -12,17 +12,12 @@ Suite Teardown      Run Keyword    Cleanup
 
 *** Variables ***
 @{SDCIO_SRL_NODES}      srl1    srl2    srl3
-${operation}            Replace
-${intent1-orig}         "network-instance[name=vrf1]/admin-state"
-${intent2-orig}         "network-instance[name=vrf2]/admin-state"
-${intent3-orig}         "network-instance[name=vrf3]/admin-state"
-${intent4-orig}         "network-instance[name=vrf4]/admin-state"
-${intent5-orig}         "network-instance[name=vrf5]/admin-state"
-${intent1}              "network-instance[name=vrf11]/admin-state"
-${intent2}              "network-instance[name=vrf12]/admin-state"
-${intent3}              "network-instance[name=vrf13]/admin-state"
-${intent4}              "network-instance[name=vrf14]/admin-state"
-${intent5}              "network-instance[name=vrf15]/admin-state"
+${operation}            Update
+${intent1}              "network-instance[name=vrf1]/admin-state"
+${intent2}              "network-instance[name=vrf2]/admin-state"
+${intent3}              "network-instance[name=vrf3]/admin-state"
+${intent4}              "network-instance[name=vrf4]/admin-state"
+${intent5}              "network-instance[name=vrf5]/admin-state"
 ${adminstate}           "network-instance/admin-state": "disable"
 
 

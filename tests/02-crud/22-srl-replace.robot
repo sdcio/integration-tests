@@ -30,7 +30,7 @@ ${adminstate}           "network-instance/admin-state": "enable"
 ${operation} - ConfigSet intent1 on ${SDCIO_SRL_NODES}
     Log    ${CURDIR}
     ${rc}    ${output} =    Run And Return Rc And Output
-    ...    kubectl apply -f ${CURDIR}/srl/intent1-srl-update.yaml
+    ...    kubectl apply -f ${CURDIR}/srl/intent1-srl-replace.yaml
     Log    ${output}
     Should Be Equal As Integers    ${rc}    0
 
@@ -62,7 +62,7 @@ Verify - ${operation} ConfigSet intent1 on ${SDCIO_SRL_NODES} no longer exists
 ${operation} - ConfigSet intent2 on ${SDCIO_SRL_NODES}
     Log    ${CURDIR}
     ${rc}    ${output} =    Run And Return Rc And Output
-    ...    kubectl apply -f ${CURDIR}/srl/intent2-srl-update.yaml
+    ...    kubectl apply -f ${CURDIR}/srl/intent2-srl-replace.yaml
     Log    ${output}
     Should Be Equal As Integers    ${rc}    0
 
@@ -94,7 +94,7 @@ Verify - ${operation} ConfigSet intent2 on ${SDCIO_SRL_NODES} no longer exists
 ${operation} - Config intent3 on srl1
     Log    ${CURDIR}
     ${rc}    ${output} =    Run And Return Rc And Output
-    ...    kubectl apply -f ${CURDIR}/srl/intent3-srl-update.yaml
+    ...    kubectl apply -f ${CURDIR}/srl/intent3-srl-replace.yaml
     Log    ${output}
     Should Be Equal As Integers    ${rc}    0
 
@@ -128,7 +128,7 @@ Verify - ${operation} Config intent3 on srl1 no longer exists
 ${operation} - Config intent4 on srl2
     Log    ${CURDIR}
     ${rc}    ${output} =    Run And Return Rc And Output
-    ...    kubectl apply -f ${CURDIR}/srl/intent4-srl-update.yaml
+    ...    kubectl apply -f ${CURDIR}/srl/intent4-srl-replace.yaml
     Log    ${output}
     Should Be Equal As Integers    ${rc}    0
 
@@ -162,7 +162,7 @@ Verify - ${operation} Config intent4 on srl2 no longer exists
 ${operation} - Config intent5 on srl3
     Log    ${CURDIR}
     ${rc}    ${output} =    Run And Return Rc And Output
-    ...    kubectl apply -f ${CURDIR}/srl/intent5-srl-update.yaml
+    ...    kubectl apply -f ${CURDIR}/srl/intent5-srl-replace.yaml
     Log    ${output}
     Should Be Equal As Integers    ${rc}    0
 
@@ -184,7 +184,7 @@ Verify - ${operation} Config intent5 on srl3
     ...    ${intent5}
     ...    ${adminstate}
 
-Verify - ${operation} Config intent4 on srl2 no longer exists
+Verify - ${operation} Config intent5 on srl3 no longer exists
     Wait Until Keyword Succeeds
     ...    1min
     ...    5s
