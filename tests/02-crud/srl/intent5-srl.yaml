@@ -1,10 +1,10 @@
 apiVersion: config.sdcio.dev/v1alpha1
 kind: Config
 metadata:
-  name: intent4-srl
+  name: intent5-srl
   namespace: default
   labels:
-    config.sdcio.dev/targetName: srl2
+    config.sdcio.dev/targetName: srl3
     config.sdcio.dev/targetNamespace: default
 spec:
   priority: 10
@@ -12,9 +12,9 @@ spec:
   - path: /
     value:
       interface:
-      - name: ethernet-1/4
+      - name: ethernet-1/5
         admin-state: "enable"
-        description: "intent4"
+        description: "intent5"
         vlan-tagging: true
         subinterface:
         - index: 0
@@ -29,23 +29,23 @@ spec:
             unnumbered:
               admin-state: disable
             address:
-              - ip-prefix: "192.168.4.1/24"
+              - ip-prefix: "192.168.5.1/24"
           ipv6:
             admin-state: enable
             address:
-              - ip-prefix: "fd00:0:0:4::1/64"
+              - ip-prefix: "fd00:0:0:5::1/64"
       network-instance:
-      - name: vrf4
+      - name: vrf5
         admin-state: "enable"
         type: ip-vrf
-        description: "Intent4 Network-instance"
+        description: "Intent5 Network-instance"
         interface:
-          - name: ethernet-1/4.0
+          - name: ethernet-1/5.0
         protocols:
           bgp:
             admin-state: "enable"
-            autonomous-system: 65004
-            router-id: 4.4.4.4
+            autonomous-system: 65005
+            router-id: 5.5.5.5
             afi-safi:
               - afi-safi-name: "ipv4-unicast"
                 admin-state: "enable"

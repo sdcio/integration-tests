@@ -17,6 +17,7 @@ ${intent1}              "network-instance[name=vrf1]/admin-state"
 ${intent2}              "network-instance[name=vrf2]/admin-state"
 ${intent3}              "network-instance[name=vrf3]/admin-state"
 ${intent4}              "network-instance[name=vrf4]/admin-state"
+${intent5}              "network-instance[name=vrf5]/admin-state"
 ${adminstate}           "network-instance/admin-state": "enable"
 
 
@@ -72,17 +73,17 @@ Verify - ${operation} Config intent3 on k8s
     ...    ${SDCIO_RESOURCE_NAMESPACE}
     ...    "intent3-srl"
 
-Verify - ${operation} Config intent3 on srl3
+Verify - ${operation} Config intent3 on srl1
     Wait Until Keyword Succeeds
     ...    1min
     ...    5s
     ...    Verify Config on node
-    ...    srl3
+    ...    srl1
     ...    "/network-instance[name=vrf3]"
     ...    ${intent3}
     ...    ${adminstate}
 
-${operation} - Config intent4 on srl3
+${operation} - Config intent4 on srl2
     ${rc}    ${output} =    kubectl apply    ${CURDIR}/srl/intent4-srl.yaml
 
 Verify - ${operation} Config intent4 on k8s
@@ -93,14 +94,35 @@ Verify - ${operation} Config intent4 on k8s
     ...    ${SDCIO_RESOURCE_NAMESPACE}
     ...    "intent4-srl"
 
-Verify - ${operation} Config intent4 on srl3
+Verify - ${operation} Config intent4 on srl2
+    Wait Until Keyword Succeeds
+    ...    1min
+    ...    5s
+    ...    Verify Config on node
+    ...    srl2
+    ...    "/network-instance[name=vrf4]"
+    ...    ${intent4}
+    ...    ${adminstate}
+
+${operation} - Config intent5 on srl3
+    ${rc}    ${output} =    kubectl apply    ${CURDIR}/srl/intent5-srl.yaml
+
+Verify - ${operation} Config intent5 on k8s
+    Wait Until Keyword Succeeds
+    ...    1min
+    ...    5s
+    ...    Config Check Ready
+    ...    ${SDCIO_RESOURCE_NAMESPACE}
+    ...    "intent5-srl"
+
+Verify - ${operation} Config intent5 on srl3
     Wait Until Keyword Succeeds
     ...    1min
     ...    5s
     ...    Verify Config on node
     ...    srl3
-    ...    "/network-instance[name=vrf4]"
-    ...    ${intent4}
+    ...    "/network-instance[name=vrf5]"
+    ...    ${intent5}
     ...    ${adminstate}
 
 
@@ -151,6 +173,10 @@ Setup
     ...    "/network-instance[name=vrf1]"
     ...    ${intent1}
     Verify no Config on node
+    ...    srl3
+    ...    "/network-instance[name=vrf1]"
+    ...    ${intent1}
+    Verify no Config on node
     ...    srl1
     ...    "/network-instance[name=vrf2]"
     ...    ${intent2}
@@ -160,12 +186,20 @@ Setup
     ...    ${intent2}
     Verify no Config on node
     ...    srl3
+    ...    "/network-instance[name=vrf2]"
+    ...    ${intent2}
+    Verify no Config on node
+    ...    srl1
     ...    "/network-instance[name=vrf3]"
     ...    ${intent3}
     Verify no Config on node
-    ...    srl3
+    ...    srl2
     ...    "/network-instance[name=vrf4]"
     ...    ${intent4}
+    Verify no Config on node
+    ...    srl3
+    ...    "/network-instance[name=vrf5]"
+    ...    ${intent5}
 
 Cleanup
     Run    echo 'cleanup executed'
@@ -173,6 +207,7 @@ Cleanup
     Delete ConfigSet    ${SDCIO_RESOURCE_NAMESPACE}    "intent2-srl"
     Delete Config    ${SDCIO_RESOURCE_NAMESPACE}    "intent3-srl"
     Delete Config    ${SDCIO_RESOURCE_NAMESPACE}    "intent4-srl"
+    Delete Config    ${SDCIO_RESOURCE_NAMESPACE}    "intent5-srl"
     Wait Until Keyword Succeeds
     ...    1min
     ...    5s
@@ -185,6 +220,13 @@ Cleanup
     ...    5s
     ...    Verify no Config on node
     ...    srl2
+    ...    "/network-instance[name=vrf1]"
+    ...    ${intent1}
+    Wait Until Keyword Succeeds
+    ...    1min
+    ...    5s
+    ...    Verify no Config on node
+    ...    srl3
     ...    "/network-instance[name=vrf1]"
     ...    ${intent1}
     Wait Until Keyword Succeeds
@@ -206,19 +248,29 @@ Cleanup
     ...    5s
     ...    Verify no Config on node
     ...    srl3
+    ...    "/network-instance[name=vrf2]"
+    ...    ${intent2}
+    Wait Until Keyword Succeeds
+    ...    1min
+    ...    5s
+    ...    Verify no Config on node
+    ...    srl1
     ...    "/network-instance[name=vrf3]"
     ...    ${intent3}
     Wait Until Keyword Succeeds
     ...    1min
     ...    5s
     ...    Verify no Config on node
-    ...    srl3
+    ...    srl2
     ...    "/network-instance[name=vrf4]"
     ...    ${intent4}
-    Run Keyword If Any Tests Failed
-    ...    Delete Config on node
-    ...    ${srl1}
-    ...    "/network-instance[name=macvrf1]"
+    Wait Until Keyword Succeeds
+    ...    1min
+    ...    5s
+    ...    Verify no Config on node
+    ...    srl3
+    ...    "/network-instance[name=vrf5]"
+    ...    ${intent5}
     Run Keyword If Any Tests Failed
     ...    Delete Config on node
     ...    ${srl1}
@@ -226,15 +278,7 @@ Cleanup
     Run Keyword If Any Tests Failed
     ...    Delete Config on node
     ...    ${srl1}
-    ...    "/interface[name=irb0]"
-    Run Keyword If Any Tests Failed
-    ...    Delete Config on node
-    ...    ${srl1}
     ...    "/interface[name=ethernet-1/1]"
-    Run Keyword If Any Tests Failed
-    ...    Delete Config on node
-    ...    ${srl2}
-    ...    "/network-instance[name=macvrf1]"
     Run Keyword If Any Tests Failed
     ...    Delete Config on node
     ...    ${srl2}
@@ -242,23 +286,19 @@ Cleanup
     Run Keyword If Any Tests Failed
     ...    Delete Config on node
     ...    ${srl2}
-    ...    "/interface[name=irb0]"
-    Run Keyword If Any Tests Failed
-    ...    Delete Config on node
-    ...    ${srl2}
     ...    "/interface[name=ethernet-1/1]"
     Run Keyword If Any Tests Failed
     ...    Delete Config on node
-    ...    ${srl1}
-    ...    "/network-instance[name=macvrf2]"
+    ...    ${srl3}
+    ...    "/network-instance[name=vrf1]"
+    Run Keyword If Any Tests Failed
+    ...    Delete Config on node
+    ...    ${srl3}
+    ...    "/interface[name=ethernet-1/1]"
     Run Keyword If Any Tests Failed
     ...    Delete Config on node
     ...    ${srl1}
     ...    "/network-instance[name=vrf2]"
-    Run Keyword If Any Tests Failed
-    ...    Delete Config on node
-    ...    ${srl1}
-    ...    "/interface[name=irb0]"
     Run Keyword If Any Tests Failed
     ...    Delete Config on node
     ...    ${srl1}
@@ -266,15 +306,7 @@ Cleanup
     Run Keyword If Any Tests Failed
     ...    Delete Config on node
     ...    ${srl2}
-    ...    "/network-instance[name=macvrf2]"
-    Run Keyword If Any Tests Failed
-    ...    Delete Config on node
-    ...    ${srl2}
     ...    "/network-instance[name=vrf2]"
-    Run Keyword If Any Tests Failed
-    ...    Delete Config on node
-    ...    ${srl2}
-    ...    "/interface[name=irb0]"
     Run Keyword If Any Tests Failed
     ...    Delete Config on node
     ...    ${srl2}
@@ -282,17 +314,33 @@ Cleanup
     Run Keyword If Any Tests Failed
     ...    Delete Config on node
     ...    ${srl3}
+    ...    "/network-instance[name=vrf2]"
+    Run Keyword If Any Tests Failed
+    ...    Delete Config on node
+    ...    ${srl3}
+    ...    "/interface[name=ethernet-1/2]"
+    Run Keyword If Any Tests Failed
+    ...    Delete Config on node
+    ...    ${srl1}
     ...    "/network-instance[name=vrf3]"
     Run Keyword If Any Tests Failed
     ...    Delete Config on node
-    ...    ${srl3}
+    ...    ${srl1}
     ...    "/interface[name=ethernet-1/3]"
     Run Keyword If Any Tests Failed
     ...    Delete Config on node
-    ...    ${srl3}
+    ...    ${srl2}
     ...    "/network-instance[name=vrf4]"
     Run Keyword If Any Tests Failed
     ...    Delete Config on node
-    ...    ${srl3}
+    ...    ${srl2}
     ...    "/interface[name=ethernet-1/4]"
+    Run Keyword If Any Tests Failed
+    ...    Delete Config on node
+    ...    ${srl3}
+    ...    "/network-instance[name=vrf5]"
+    Run Keyword If Any Tests Failed
+    ...    Delete Config on node
+    ...    ${srl3}
+    ...    "/interface[name=ethernet-1/5]"
     Run Keyword If Any Tests Failed    Sleep    5s
