@@ -19,43 +19,29 @@ spec:
         vlan-tagging: true
         subinterface:
         - index: 0
-          type: bridged
+          type: routed
+          admin-state: enable
           vlan:
             encap:
               single-tagged:
                 vlan-id: 1
-      - name: irb0
-        admin-state: "enable"
-        description: "intent1-layer3"
-        subinterface:
-        - index: 2
           ipv4:
             unnumbered:
               admin-state: disable
             address:
-            - anycast-gw: true
-              ip-prefix: 192.168.2.1/24
+            - ip-prefix: 192.168.2.1/24
             admin-state: enable
           ipv6:
             address:
-            - anycast-gw: true
-              ip-prefix: fd00:0:0:2::1/64
+            - ip-prefix: fd00:0:0:2::1/64
             admin-state: enable
-          anycast-gw:
-            virtual-router-id: 2
       network-instance:
-      - name: macvrf2
-        admin-state: "enable"
-        type: mac-vrf
-        interface:
-          - name: ethernet-1/2.0
-          - name: irb0.2
       - name: vrf2
         admin-state: "enable"
         type: ip-vrf
         description: "Intent2 Network-instance"
         interface:
-          - name: irb0.2
+          - name: ethernet-1/2.0
         protocols:
           bgp:
             admin-state: "enable"
