@@ -12,18 +12,23 @@ Suite Teardown      Run Keyword    Cleanup
 
 *** Variables ***
 @{SDCIO_SRL_NODES}      srl1    srl2    srl3
-${operation}            Create
-${intent1}              "network-instance[name=vrf1]/admin-state"
-${intent2}              "network-instance[name=vrf2]/admin-state"
-${intent3}              "network-instance[name=vrf3]/admin-state"
-${intent4}              "network-instance[name=vrf4]/admin-state"
-${intent5}              "network-instance[name=vrf5]/admin-state"
-${adminstate}           "network-instance/admin-state": "enable"
+${operation}            Replace
+${intent1-orig}         "network-instance[name=vrf1]/admin-state"
+${intent2-orig}         "network-instance[name=vrf2]/admin-state"
+${intent3-orig}         "network-instance[name=vrf3]/admin-state"
+${intent4-orig}         "network-instance[name=vrf4]/admin-state"
+${intent5-orig}         "network-instance[name=vrf5]/admin-state"
+${intent1}              "network-instance[name=vrf11]/admin-state"
+${intent2}              "network-instance[name=vrf12]/admin-state"
+${intent3}              "network-instance[name=vrf13]/admin-state"
+${intent4}              "network-instance[name=vrf14]/admin-state"
+${intent5}              "network-instance[name=vrf15]/admin-state"
+${adminstate}           "network-instance/admin-state": "disable"
 
 
 *** Test Cases ***
 ${operation} - ConfigSet intent1 on ${SDCIO_SRL_NODES}
-    ${rc}    ${output} =    kubectl apply    ${CURDIR}/srl/intent1-srl.yaml
+    ${rc}    ${output} =    kubectl apply    ${CURDIR}/srl/intent1-srl-update.yaml
 
 Verify - ${operation} ConfigSet intent1 on k8s
     Wait Until Keyword Succeeds
@@ -43,7 +48,7 @@ Verify - ${operation} ConfigSet intent1 on ${SDCIO_SRL_NODES}
     ...    ${adminstate}
 
 ${operation} - ConfigSet intent2 on ${SDCIO_SRL_NODES}
-    ${rc}    ${output} =    kubectl apply    ${CURDIR}/srl/intent2-srl.yaml
+    ${rc}    ${output} =    kubectl apply    ${CURDIR}/srl/intent2-srl-update.yaml
 
 Verify - ${operation} ConfigSet intent2 on k8s
     Wait Until Keyword Succeeds
@@ -63,7 +68,7 @@ Verify - ${operation} ConfigSet intent2 on ${SDCIO_SRL_NODES}
     ...    ${adminstate}
 
 ${operation} - Config intent3 on srl3
-    ${rc}    ${output} =    kubectl apply    ${CURDIR}/srl/intent3-srl.yaml
+    ${rc}    ${output} =    kubectl apply    ${CURDIR}/srl/intent3-srl-update.yaml
 
 Verify - ${operation} Config intent3 on k8s
     Wait Until Keyword Succeeds
@@ -84,7 +89,7 @@ Verify - ${operation} Config intent3 on srl1
     ...    ${adminstate}
 
 ${operation} - Config intent4 on srl2
-    ${rc}    ${output} =    kubectl apply    ${CURDIR}/srl/intent4-srl.yaml
+    ${rc}    ${output} =    kubectl apply    ${CURDIR}/srl/intent4-srl-update.yaml
 
 Verify - ${operation} Config intent4 on k8s
     Wait Until Keyword Succeeds
@@ -105,7 +110,7 @@ Verify - ${operation} Config intent4 on srl2
     ...    ${adminstate}
 
 ${operation} - Config intent5 on srl3
-    ${rc}    ${output} =    kubectl apply    ${CURDIR}/srl/intent5-srl.yaml
+    ${rc}    ${output} =    kubectl apply    ${CURDIR}/srl/intent5-srl-update.yaml
 
 Verify - ${operation} Config intent5 on k8s
     Wait Until Keyword Succeeds
@@ -151,6 +156,21 @@ Verify no Config on node
     Log    ${output}
     Should Not Contain    ${output}    ${intent}
 
+Verify ConfigSet does not exist on nodes
+    [Documentation]    Iterates through the SDCIO_SRL_NODES, validates if the output does not contains $intent for gNMI $path
+    [Arguments]    ${path}    ${intent}
+    FOR    ${node}    IN    @{SDCIO_SRL_NODES}
+        Verify Config does not exist on node    ${node}    ${path}    ${intent}
+    END
+
+Verify Config does not exist on node
+    [Documentation]    Validate if Config does not exist on a node, through collecting a gNMI path
+    [Arguments]    ${node}    ${path}    ${intent}
+    ${rc}    ${output} =    Run And Return Rc And Output
+    ...    gnmic -a ${${node}} -p 57400 --skip-verify -e PROTO -u ${SRL_USERNAME} -p ${SRL_PASSWORD} get --type CONFIG --path ${path}
+    Log    ${output}
+    Should Not Contain    ${output}    ${intent}
+
 Delete Config on node
     [Documentation]    Delete config from a node using gNMI.
     [Arguments]    ${node}    ${path}
@@ -162,45 +182,16 @@ Delete Config on node
 
 Setup
     Run    echo 'setup executed'
-    Wait Until Keyword Succeeds    15min    5s    Targets Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    srl1
-    Wait Until Keyword Succeeds    15min    5s    Targets Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    srl2
-    Wait Until Keyword Succeeds    15min    5s    Targets Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    srl3
-    Verify no Config on node
-    ...    srl1
-    ...    "/network-instance[name=vrf1]"
-    ...    ${intent1}
-    Verify no Config on node
-    ...    srl2
-    ...    "/network-instance[name=vrf1]"
-    ...    ${intent1}
-    Verify no Config on node
-    ...    srl3
-    ...    "/network-instance[name=vrf1]"
-    ...    ${intent1}
-    Verify no Config on node
-    ...    srl1
-    ...    "/network-instance[name=vrf2]"
-    ...    ${intent2}
-    Verify no Config on node
-    ...    srl2
-    ...    "/network-instance[name=vrf2]"
-    ...    ${intent2}
-    Verify no Config on node
-    ...    srl3
-    ...    "/network-instance[name=vrf2]"
-    ...    ${intent2}
-    Verify no Config on node
-    ...    srl1
-    ...    "/network-instance[name=vrf3]"
-    ...    ${intent3}
-    Verify no Config on node
-    ...    srl2
-    ...    "/network-instance[name=vrf4]"
-    ...    ${intent4}
-    Verify no Config on node
-    ...    srl3
-    ...    "/network-instance[name=vrf5]"
-    ...    ${intent5}
+    kubectl apply    ${CURDIR}/srl/intent1-srl.yaml
+    Wait Until Keyword Succeeds    1min    5s    ConfigSet Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    "intent1-srl"
+    kubectl apply    ${CURDIR}/srl/intent2-srl.yaml
+    Wait Until Keyword Succeeds    1min    5s    ConfigSet Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    "intent2-srl"
+    kubectl apply    ${CURDIR}/srl/intent3-srl.yaml
+    Wait Until Keyword Succeeds    1min    5s    Config Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    "intent3-srl"
+    kubectl apply    ${CURDIR}/srl/intent4-srl.yaml
+    Wait Until Keyword Succeeds    1min    5s    Config Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    "intent4-srl"
+    kubectl apply    ${CURDIR}/srl/intent5-srl.yaml
+    Wait Until Keyword Succeeds    1min    5s    Config Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    "intent5-srl"
 
 Cleanup
     Run    echo 'cleanup executed'
