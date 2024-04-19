@@ -109,7 +109,7 @@ jobs:
         env:
           CLAB_LABDIR_BASE: "/home/runner/_work/_clab"
         run: |
-          sudo -E containerlab deploy -t containerlab/citest.clab.yml --reconfigure
+          sudo -E containerlab deploy -t ./integration-tests/containerlab/citest.clab.yml --reconfigure
       
       - name: Set the versions to test
         run: |
