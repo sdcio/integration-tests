@@ -33,34 +33,6 @@ env:
   GO_VER: "1.21.4"
 
 jobs:
-  setup-clab:
-    runs-on: containerlab
-    steps:
-      - name: Checkout integration-tests
-        uses: actions/checkout@v4
-      - name: Set SROS License
-        env:
-          SROS_LICENSE: ${{ secrets.SROS24_LICENSE }}
-        run: |
-          echo $SROS_LICENSE | tee containerlab/license-sros24.txt
-      - name: Deploy CI-Test-Containerlab
-        env:
-          CLAB_LABDIR_BASE: "/home/iptecharch-builder/_clab"
-        run: |
-          sudo -E containerlab deploy -t containerlab/citest.clab.yml --reconfigure
-
-  destroy-clab:
-    runs-on: containerlab
-    if: ${{ always() }}
-    needs: [setup-clab, setup-cluster-and-test]
-    steps:
-      - name: Checkout integration-tests
-        uses: actions/checkout@v4
-      - name: Deploy CI-Test-Containerlab
-        env:
-          CLAB_LABDIR_BASE: "/home/iptecharch-builder/_clab"
-        run: |
-          sudo -E containerlab destroy -t containerlab/citest.clab.yml --cleanup 
   setup-cluster-and-test:
     runs-on: sdcio-action-runners
     strategy:
@@ -94,7 +66,7 @@ jobs:
         with:
           ref: ${{ env.CONFIG_VERSION }}
           path: config-server
-          repository: iptecharch/config-server
+          repository: sdcio/config-server
           token: ${{ secrets.GH_PAT }} # `GH_PAT` is a secret that contains your PAT
 
       # Checkout config-server main branch IF tag is v0.0.0
@@ -104,7 +76,7 @@ jobs:
         if: "contains(env.CONFIG_VERSION, 'v0.0.0-dev-latest')"
         with:
           path: config-server
-          repository: iptecharch/config-server
+          repository: sdcio/config-server
           token: ${{ secrets.GH_PAT }} # `GH_PAT` is a secret that contains your PAT
 
       - uses: actions/setup-python@v5
@@ -136,7 +108,7 @@ jobs:
         env:
           SROS_LICENSE: ${{ secrets.SROS24_LICENSE }}
         run: |
-          echo $SROS_LICENSE | tee containerlab/license-sros24.txt
+          echo $SROS_LICENSE | tee ./integration-tests/containerlab/license-sros24.txt
 
       - name: Deploy CI-Test-Containerlab
         env:

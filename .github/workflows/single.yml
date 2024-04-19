@@ -57,7 +57,7 @@ jobs:
         with:
           ref: ${{ env.CONFIG_VERSION }}
           path: config-server
-          repository: iptecharch/config-server
+          repository: sdcio/config-server
           token: ${{ secrets.GH_PAT }} # `GH_PAT` is a secret that contains your PAT
 
       # Checkout config-server main branch IF tag is v0.0.0
@@ -67,7 +67,7 @@ jobs:
         if: "contains(env.CONFIG_VERSION, 'v0.0.0-dev-latest')"
         with:
           path: config-server
-          repository: iptecharch/config-server
+          repository: sdcio/config-server
           token: ${{ secrets.GH_PAT }} # `GH_PAT` is a secret that contains your PAT
 
       - uses: actions/setup-python@v5
@@ -99,7 +99,7 @@ jobs:
         env:
           SROS_LICENSE: ${{ secrets.SROS24_LICENSE }}
         run: |
-          echo $SROS_LICENSE | tee containerlab/license-sros24.txt
+          echo $SROS_LICENSE | tee ./integration-tests/containerlab/license-sros24.txt
 
       - name: Deploy CI-Test-Containerlab
         env:
