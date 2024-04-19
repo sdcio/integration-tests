@@ -83,7 +83,11 @@ jobs:
       - name: Install gNMIc
         run: |
           bash -c "$(curl -sL https://get-gnmic.openconfig.net)"
-
+      
+      - name: Install containerlab
+        run: |
+          bash -c "$(curl -sL https://get.containerlab.dev)"
+        
       - uses: actions/setup-go@v5
         with:
           go-version: ${{ env.GO_VER }}
