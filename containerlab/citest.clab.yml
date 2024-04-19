@@ -33,8 +33,3 @@ topology:
       mgmt-ipv4: 172.21.1.12
       #mgmt-ipv6: 2001:172:21:1:12::1
 
-  links:
-    - endpoints: ["srl3:e1-1", "srl1:e1-1"]
-    - endpoints: ["srl3:e1-2", "srl2:e1-2"]
-    - endpoints: ["sr1:eth1", "sr2:eth1"]
-        
