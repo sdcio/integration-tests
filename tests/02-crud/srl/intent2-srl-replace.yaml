@@ -1,0 +1,54 @@
+apiVersion: config.sdcio.dev/v1alpha1
+kind: ConfigSet
+metadata:
+  name: intent2-srl
+  namespace: default
+spec:
+  target:
+    targetSelector:
+      matchLabels:
+        sdcio.dev/device: srl
+  priority: 10
+  config:
+  - path: /
+    value:
+      interface:
+      - name: ethernet-1/2
+        admin-state: "enable"
+        description: "intent2-layer2"
+        vlan-tagging: true
+        subinterface:
+        - index: 0
+          type: routed
+          admin-state: enable
+          vlan:
+            encap:
+              single-tagged:
+                vlan-id: 1
+          ipv4:
+            unnumbered:
+              admin-state: disable
+            address:
+            - ip-prefix: 192.168.2.1/24
+            admin-state: enable
+          ipv6:
+            address:
+            - ip-prefix: fd00:0:0:2::1/64
+            admin-state: enable
+      network-instance:
+      - name: vrf12
+        admin-state: "enable"
+        type: ip-vrf
+        description: "Intent2 Network-instance"
+        interface:
+          - name: ethernet-1/2.0
+        protocols:
+          bgp:
+            admin-state: "enable"
+            autonomous-system: 65002
+            router-id: 2.2.2.2
+            afi-safi:
+              - afi-safi-name: "ipv4-unicast"
+                admin-state: "enable"
+              - afi-safi-name: "ipv6-unicast"
+                admin-state: "enable"

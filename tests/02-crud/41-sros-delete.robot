@@ -118,13 +118,13 @@ Delete Config on node
 
 Setup
     Run    echo 'setup executed'
-    kubectl apply    ${CURDIR}/intent1-sros.yaml
+    kubectl apply    ${CURDIR}/sros/intent1-sros.yaml
     Wait Until Keyword Succeeds    1min    5s    ConfigSet Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    "intent1-sros"
-    kubectl apply    ${CURDIR}/intent2-sros.yaml
+    kubectl apply    ${CURDIR}/sros/intent2-sros.yaml
     Wait Until Keyword Succeeds    1min    5s    ConfigSet Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    "intent2-sros"
-    kubectl apply    ${CURDIR}/intent3-sros.yaml
+    kubectl apply    ${CURDIR}/sros/intent3-sros.yaml
     Wait Until Keyword Succeeds    1min    5s    Config Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    "intent3-sros"
-    kubectl apply    ${CURDIR}/intent4-sros.yaml
+    kubectl apply    ${CURDIR}/sros/intent4-sros.yaml
     Wait Until Keyword Succeeds    1min    5s    Config Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    "intent4-sros"
 
 Cleanup

@@ -11,8 +11,8 @@ topology:
     image: ghcr.io/nokia/srlinux:latest
   kinds:
     vr-sros:
-      image: registry.srlinux.dev/pub/vr-sros:23.10.R1
-      license: ./license-sros23.txt
+      image: registry.srlinux.dev/pub/vr-sros:24.3.R1
+      license: ./license-sros24.txt
   nodes:
     srl1:
       mgmt-ipv4: 172.21.0.11

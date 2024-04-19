@@ -12,7 +12,7 @@ on:
         description: "data-server semver release (vX.Y.Z)"
         required: true
         type: string
-        default: v0.0.35
+        default: v0.0.36
       cache_version:
         description: "cache semver release (vX.Y.Z)"
         required: true
@@ -22,7 +22,7 @@ on:
         description: "config-server semver release (vX.Y.Z)"
         required: true
         type: string
-        default: v0.0.15
+        default: v0.0.21
       certmanager_version:
         description: "cert-manager release (vX.Y.Z)"
         required: true
@@ -40,9 +40,9 @@ jobs:
         uses: actions/checkout@v4
       - name: Set SROS License
         env:
-          SROS_LICENSE: ${{ secrets.SROS23_LICENSE }}
+          SROS_LICENSE: ${{ secrets.SROS24_LICENSE }}
         run: |
-          echo $SROS_LICENSE | tee containerlab/license-sros23.txt
+          echo $SROS_LICENSE | tee containerlab/license-sros24.txt
       - name: Deploy CI-Test-Containerlab
         env:
           CLAB_LABDIR_BASE: "/home/iptecharch-builder/_clab"
@@ -63,7 +63,6 @@ jobs:
           sudo -E containerlab destroy -t containerlab/citest.clab.yml --cleanup 
   setup-cluster-and-test:
     runs-on: sdcio-action-runners
-    needs: setup-clab
     strategy:
       matrix:
         config-server: 
@@ -73,7 +72,6 @@ jobs:
           - "${{ inputs.dataserver_version }}"
           - "v0.0.0-dev-latest"
       fail-fast: false
-      max-parallel: 1
     steps:
       - name: Set env vars
         run: |
@@ -134,6 +132,18 @@ jobs:
           username: iptecharch-builder
           password: ${{ secrets.GH_PAT }}
 
+      - name: Setup SROS License
+        env:
+          SROS_LICENSE: ${{ secrets.SROS24_LICENSE }}
+        run: |
+          echo $SROS_LICENSE | tee containerlab/license-sros24.txt
+
+      - name: Deploy CI-Test-Containerlab
+        env:
+          CLAB_LABDIR_BASE: "/home/runner/_work/_clab"
+        run: |
+          sudo -E containerlab deploy -t containerlab/citest.clab.yml --reconfigure
+          
       - name: Set the versions to test
         run: |
           cat integration-tests/artifacts/kform/configmap-input-vars.yaml.tmpl | envsubst > config-server/artifacts/in/configmap-input-vars.yaml
