@@ -156,6 +156,8 @@ Delete Config on node
 
 Setup
     Run    echo 'setup executed'
+    kubectl apply    ${CURDIR}/sros/customer.yaml
+    Wait Until Keyword Succeeds    1min    5s    ConfigSet Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    "customer"
     kubectl apply    ${CURDIR}/sros/intent1-sros.yaml
     Wait Until Keyword Succeeds    1min    5s    ConfigSet Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    "intent1-sros"
     kubectl apply    ${CURDIR}/sros/intent2-sros.yaml
@@ -238,3 +240,4 @@ Cleanup
     ...    ${sr2}
     ...    "/configure/service/vprn[service-name=vprn987]"
     Run Keyword If Any Tests Failed    Sleep    5s
+    kubectl delete    -f ${CURDIR}/sros/customer.yaml
