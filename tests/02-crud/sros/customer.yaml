@@ -1,0 +1,21 @@
+apiVersion: config.sdcio.dev/v1alpha1
+kind: ConfigSet
+metadata:
+  name: customer
+  namespace: default
+spec:
+  target:
+    targetSelector:
+      matchLabels:
+        sdcio.dev/device: sros
+  priority: 5
+  config:
+  - path: /
+    value:
+      configure:
+        service:
+          customer:
+            - customer-name: "1"
+              customer-id: 1
+            - customer-name: "2"
+              customer-id: 2
