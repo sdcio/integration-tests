@@ -25,7 +25,7 @@ ${SDCIO_INTEGRATION_TESTS_SCHEMA_FILES_BASE}                        ${CURDIR}/01
 # This is intentionally left empty as there are no custom schema's to be tested yet.
 @{SDCIO_INTEGRATION_TESTS_SCHEMA_FILES}
 ...                                                                 schema-nokia-sros-24.3.yaml
-...                                                                 schema-nokia-srl-24.3.1.yaml
+...                                                                 schema-nokia-srl-24.3.2.yaml
 
 # TargetConnectionProfiles
 ${SDCIO_CONFIG_SERVER_TARGETCONNECTIONPROFILE_FILES_BASE}           ${SDCIO_CONFIG_SERVER_REPO_PATH}/example/connection-profiles
