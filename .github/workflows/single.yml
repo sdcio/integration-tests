@@ -82,7 +82,7 @@ jobs:
       # next checkout job will be skipped if this is the case
       - name: Checkout config-server
         uses: actions/checkout@v4
-        if: "!contains(env.CONFIG_VERSION, 'v0.0.0-dev-latest')"
+        if: "!contains(env.CONFIG_VERSION, 'v0.0.0')"
         with:
           ref: ${{ env.CONFIG_VERSION }}
           path: config-server
@@ -93,7 +93,7 @@ jobs:
       # previous checkout job will be skipped if this is the case
       - name: Checkout config-server
         uses: actions/checkout@v4
-        if: "contains(env.CONFIG_VERSION, 'v0.0.0-dev-latest')"
+        if: "contains(env.CONFIG_VERSION, 'v0.0.0')"
         with:
           path: config-server
           repository: sdcio/config-server
