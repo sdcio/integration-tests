@@ -7,27 +7,27 @@ on:
         description: "schema-server semver release (vX.Y.Z)"
         required: true
         type: string
-        default: v0.0.16
+        default: v0.0.18
       dataserver_version:
         description: "data-server semver release (vX.Y.Z)"
         required: true
         type: string
-        default: v0.0.36
+        default: v0.0.39
       cache_version:
         description: "cache semver release (vX.Y.Z)"
         required: true
         type: string
-        default: v0.0.33
+        default: v0.0.34
       configserver_version:
         description: "config-server semver release (vX.Y.Z)"
         required: true
         type: string
-        default: v0.0.21
+        default: v0.0.23
       certmanager_version:
         description: "cert-manager release (vX.Y.Z)"
         required: true
         type: string
-        default: v1.14.2
+        default: v1.15.0
 env:
   PY_VER: "3.10"
   GO_VER: "1.21.4"
