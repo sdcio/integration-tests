@@ -143,6 +143,8 @@ Setup
     Run    echo 'setup executed'
     Wait Until Keyword Succeeds    15min    5s    Targets Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    sr1
     Wait Until Keyword Succeeds    15min    5s    Targets Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    sr2
+    kubectl apply    ${CURDIR}/sros/customer.yaml
+    Wait Until Keyword Succeeds    1min    5s    ConfigSet Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    "customer"
     Verify no Config on node
     ...    sr1
     ...    "/configure/service/vprn[service-name=vprn123]"
@@ -216,6 +218,7 @@ Cleanup
     ...    sr2
     ...    "/configure/service/vprn[service-name=vprn987]"
     ...    ${null}
+    Delete ConfigSet    ${SDCIO_RESOURCE_NAMESPACE}    "customer"
     Run Keyword If Any Tests Failed
     ...    Delete Config on node
     ...    ${sr1}
