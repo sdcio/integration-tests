@@ -161,6 +161,7 @@ jobs:
         uses: helm/kind-action@v1.10.0
         with:
           cluster_name: ci-kind-${{ github.actor }}
+          version: v0.23.0
           #config: ./integration-tests/k8s/kind-config.yml
 
       - name: Make sure the default context is set
