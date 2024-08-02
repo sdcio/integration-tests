@@ -218,26 +218,26 @@ Cleanup
     Delete ConfigSet    ${SDCIO_RESOURCE_NAMESPACE}    "customer"
     Run Keyword If Any Tests Failed
     ...    Delete Config on node
-    ...    ${sr1}
+    ...    sr1
     ...    "/configure/service/vprn[service-name=vprn123]"
     Run Keyword If Any Tests Failed
     ...    Delete Config on node
-    ...    ${sr2}
+    ...    sr2
     ...    "/configure/service/vprn[service-name=vprn123]"
     Run Keyword If Any Tests Failed
     ...    Delete Config on node
-    ...    ${sr1}
+    ...    sr1
     ...    "/configure/service/vprn[service-name=vprn234]"
     Run Keyword If Any Tests Failed
     ...    Delete Config on node
-    ...    ${sr2}
+    ...    sr2
     ...    "/configure/service/vprn[service-name=vprn234]"
     Run Keyword If Any Tests Failed
     ...    Delete Config on node
-    ...    ${sr1}
+    ...    sr1
     ...    "/configure/service/vprn[service-name=vprn789]"
     Run Keyword If Any Tests Failed
     ...    Delete Config on node
-    ...    ${sr2}
+    ...    sr2
     ...    "/configure/service/vprn[service-name=vprn987]"
     Run Keyword If Any Tests Failed    Sleep    5s

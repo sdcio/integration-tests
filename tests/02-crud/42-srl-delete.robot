@@ -181,74 +181,74 @@ Cleanup
     Run    echo 'cleanup executed'
     Run Keyword If Any Tests Failed
     ...    Delete Config on node
-    ...    ${srl1}
+    ...    srl1
     ...    "/network-instance[name=vrf11]"
     Run Keyword If Any Tests Failed
     ...    Delete Config on node
-    ...    ${srl1}
+    ...    srl1
     ...    "/interface[name=ethernet-1/1]"
     Run Keyword If Any Tests Failed
     ...    Delete Config on node
-    ...    ${srl2}
+    ...    srl2
     ...    "/network-instance[name=vrf11]"
     Run Keyword If Any Tests Failed
     ...    Delete Config on node
-    ...    ${srl2}
+    ...    srl2
     ...    "/interface[name=ethernet-1/1]"
     Run Keyword If Any Tests Failed
     ...    Delete Config on node
-    ...    ${srl3}
+    ...    srl3
     ...    "/network-instance[name=vrf11]"
     Run Keyword If Any Tests Failed
     ...    Delete Config on node
-    ...    ${srl3}
+    ...    srl3
     ...    "/interface[name=ethernet-1/1]"
     Run Keyword If Any Tests Failed
     ...    Delete Config on node
-    ...    ${srl1}
+    ...    srl1
     ...    "/network-instance[name=vrf12]"
     Run Keyword If Any Tests Failed
     ...    Delete Config on node
-    ...    ${srl1}
+    ...    srl1
     ...    "/interface[name=ethernet-1/2]"
     Run Keyword If Any Tests Failed
     ...    Delete Config on node
-    ...    ${srl2}
+    ...    srl2
     ...    "/network-instance[name=vrf12]"
     Run Keyword If Any Tests Failed
     ...    Delete Config on node
-    ...    ${srl2}
+    ...    srl2
     ...    "/interface[name=ethernet-1/2]"
     Run Keyword If Any Tests Failed
     ...    Delete Config on node
-    ...    ${srl3}
+    ...    srl3
     ...    "/network-instance[name=vrf12]"
     Run Keyword If Any Tests Failed
     ...    Delete Config on node
-    ...    ${srl3}
+    ...    srl3
     ...    "/interface[name=ethernet-1/2]"
     Run Keyword If Any Tests Failed
     ...    Delete Config on node
-    ...    ${srl1}
+    ...    srl1
     ...    "/network-instance[name=vrf13]"
     Run Keyword If Any Tests Failed
     ...    Delete Config on node
-    ...    ${srl1}
+    ...    srl1
     ...    "/interface[name=ethernet-1/3]"
     Run Keyword If Any Tests Failed
     ...    Delete Config on node
-    ...    ${srl2}
+    ...    srl2
     ...    "/network-instance[name=vrf14]"
     Run Keyword If Any Tests Failed
     ...    Delete Config on node
-    ...    ${srl2}
+    ...    srl2
     ...    "/interface[name=ethernet-1/4]"
     Run Keyword If Any Tests Failed
     ...    Delete Config on node
-    ...    ${srl3}
+    ...    srl3
     ...    "/network-instance[name=vrf15]"
     Run Keyword If Any Tests Failed
     ...    Delete Config on node
-    ...    ${srl3}
+    ...    srl3
     ...    "/interface[name=ethernet-1/5]"
     Run Keyword If Any Tests Failed    Sleep    5s
