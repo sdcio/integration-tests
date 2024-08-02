@@ -171,7 +171,7 @@ Delete Config on node
     [Arguments]    ${node}    ${path}
     ${rc}    ${output} =    Run And Return Rc And Output
     ...    gnmic -a ${${node}} -p 57400 --skip-verify -e PROTO -u ${SRL_USERNAME} -p ${SRL_PASSWORD} set --delete ${path}
-    Log ${output}
+    Log    ${output}
     Should Be Equal As Integers    ${rc}    0
     RETURN    ${rc}    ${output}
 
