@@ -86,7 +86,8 @@ jobs:
       
       - name: Install containerlab
         run: |
-          bash -c "$(curl -sL https://get.containerlab.dev)"
+          echo "deb [trusted=yes] https://apt.fury.io/netdevops/ /" | sudo tee -a /etc/apt/sources.list.d/netdevops.list
+          sudo apt update && sudo apt install -y containerlab
         
       - uses: actions/setup-go@v5
         with:
