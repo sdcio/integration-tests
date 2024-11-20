@@ -1,0 +1,152 @@
+name: CLAB specific-release integration-tests
+
+on: 
+  workflow_dispatch:
+    inputs:
+      schemaserver_version:
+        description: "schema-server semver release (vX.Y.Z)"
+        required: true
+        type: string
+        default: v0.0.19
+      dataserver_version:
+        description: "data-server semver release (vX.Y.Z)"
+        required: true
+        type: string
+        default: v0.0.40
+      cache_version:
+        description: "cache semver release (vX.Y.Z)"
+        required: true
+        type: string
+        default: v0.0.34
+      configserver_version:
+        description: "config-server semver release (vX.Y.Z)"
+        required: true
+        type: string
+        default: v0.0.28
+      certmanager_version:
+        description: "cert-manager release (vX.Y.Z)"
+        required: true
+        type: string
+        default: v1.15.0
+env:
+  PY_VER: "3.10"
+  GO_VER: "1.23.3"
+
+jobs:
+  setup-cluster-and-test:
+    runs-on: sdcio-action-runners
+    needs: setup-clab
+    steps:
+      - name: Set env vars
+        run: |
+          echo "SCHEMA_VERSION=${{ inputs.schemaserver_version }}" >> $GITHUB_ENV
+          echo "DATA_VERSION=${{ inputs.dataserver_version }}" >> $GITHUB_ENV
+          echo "CACHE_VERSION=${{ inputs.cache_version }}" >> $GITHUB_ENV
+          echo "CONFIG_VERSION=${{ inputs.configserver_version }}" >> $GITHUB_ENV
+          echo "CERT_MANAGER_VERSION=${{ inputs.certmanager_version }}" >> $GITHUB_ENV
+
+      - name: Checkout integration-tests
+        uses: actions/checkout@v4
+        with:
+          path: integration-tests
+
+      # Checkout config-server with specific tag if version is not v0.0.0
+      # next checkout job will be skipped if this is the case
+      - name: Checkout config-server
+        uses: actions/checkout@v4
+        if: "!contains(env.CONFIG_VERSION, 'v0.0.0')"
+        with:
+          ref: ${{ env.CONFIG_VERSION }}
+          path: config-server
+          repository: sdcio/config-server
+          token: ${{ secrets.GH_PAT }} # `GH_PAT` is a secret that contains your PAT
+
+      # Checkout config-server main branch IF tag is v0.0.0
+      # previous checkout job will be skipped if this is the case
+      - name: Checkout config-server
+        uses: actions/checkout@v4
+        if: "contains(env.CONFIG_VERSION, 'v0.0.0')"
+        with:
+          path: config-server
+          repository: sdcio/config-server
+          token: ${{ secrets.GH_PAT }} # `GH_PAT` is a secret that contains your PAT
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PY_VER }}
+          cache: pip
+          cache-dependency-path: "integration-tests/tests/requirements.txt"
+
+      - name: Install robotframework
+        run: |
+          pip install -r integration-tests/tests/requirements.txt
+
+      - name: Install gNMIc
+        run: |
+          bash -c "$(curl -sL https://get-gnmic.openconfig.net)"
+      
+      - name: Install containerlab
+        run: |
+          bash -c "$(curl -sL https://get.containerlab.dev)"
+        
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VER }}
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: iptecharch-builder
+          password: ${{ secrets.GH_PAT }}
+
+      - name: Setup SROS License
+        env:
+          SROS_LICENSE: ${{ secrets.SROS24_LICENSE }}
+        run: |
+          echo $SROS_LICENSE | tee ./integration-tests/containerlab/license-sros24.txt
+
+      - name: Deploy CI-Test-Containerlab
+        env:
+          CLAB_LABDIR_BASE: "/home/runner/_work/_clab"
+        run: |
+          sudo -E containerlab deploy -t ./integration-tests/containerlab/citest.clab.yml --reconfigure
+      
+      - name: Set the versions to test
+        run: |
+          cat integration-tests/artifacts/kform/configmap-input-vars.yaml.tmpl | envsubst > config-server/artifacts/in/configmap-input-vars.yaml
+          cd config-server
+          make artifacts
+          cd ..
+
+      - name: Create k8s Kind Cluster
+        uses: helm/kind-action@v1.10.0
+        with:
+          cluster_name: ci-kind-${{ github.actor }}
+          version: v0.25.0
+          #config: ./integration-tests/k8s/kind-config.yml
+
+      - name: Make sure the default context is set
+        run: |
+          #./integration-tests/k8s/patch-kind-registry.sh ci-kind-${{ github.actor }}
+          kubectl config set-context --current --namespace=default
+
+      - name: Run Robot Tests 00
+        run: |
+          robot --consolecolors on -r none -l ./integration-tests/tests/out/00-setup-log --output ./integration-tests/tests/out/00-setup-out.xml ./integration-tests/tests/00-setup/
+
+      - name: Run Robot Tests 01
+        run: |
+          robot --consolecolors on -r none -l ./integration-tests/tests/out/01-crs-log --output ./integration-tests/tests/out/01-crs-out.xml ./integration-tests/tests/01-crs/
+
+      - name: Run Robot Tests 02
+        run: |
+          robot --consolecolors on -r none -l ./integration-tests/tests/out/02-crud-log --output ./integration-tests/tests/out/02-crud-out.xml ./integration-tests/tests/02-crud/
+
+      # upload test reports as a zip file
+      - name: Upload test reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: single-robot-tests-log-config-server_${{ inputs.configserver_version }}-data-server_${{ inputs.dataserver_version }}
+          path: ./integration-tests/tests/out/*.html
