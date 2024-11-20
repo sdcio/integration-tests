@@ -12,7 +12,7 @@ on:
         description: "data-server semver release (vX.Y.Z)"
         required: true
         type: string
-        default: v0.0.40
+        default: v0.0.49
       cache_version:
         description: "cache semver release (vX.Y.Z)"
         required: true
@@ -22,7 +22,7 @@ on:
         description: "config-server semver release (vX.Y.Z)"
         required: true
         type: string
-        default: v0.0.28
+        default: v0.0.41
       certmanager_version:
         description: "cert-manager release (vX.Y.Z)"
         required: true
@@ -35,7 +35,6 @@ env:
 jobs:
   setup-cluster-and-test:
     runs-on: sdcio-action-runners
-    needs: setup-clab
     steps:
       - name: Set env vars
         run: |
