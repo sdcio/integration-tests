@@ -114,10 +114,10 @@ jobs:
       
       - name: Set the versions to test
         run: |
-          cat integration-tests/artifacts/kform/configmap-input-vars.yaml.tmpl | envsubst > config-server/artifacts/in/configmap-input-vars.yaml
-          cd config-server
+          cat ./integration-tests/artifacts/kform/configmap-input-vars.yaml.tmpl | envsubst > config-server/artifacts/in/configmap-input-vars.yaml
+          cd ./config-server
           make artifacts
-          cd ..
+          cd -
 
       - name: Create k8s Kind Cluster
         uses: helm/kind-action@v1.10.0
