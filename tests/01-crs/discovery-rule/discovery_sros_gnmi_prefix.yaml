@@ -1,0 +1,27 @@
+apiVersion: inv.sdcio.dev/v1alpha1
+kind: DiscoveryRule
+metadata:
+  name: dr-sros-gnmi-sr2
+  namespace: default
+spec:
+  period: 1m
+  concurrentScans: 2
+  prefixes:
+  - prefix: 172.21.1.0/28
+    excludes:
+    - 172.21.0.0
+    - 172.21.0.1
+    - 172.21.1.11
+  discoveryProfile:
+    credentials: sros.nokia.sdcio.dev
+    connectionProfiles:
+    - test-sros-gnmi
+  targetConnectionProfiles:
+  - credentials: sros.nokia.sdcio.dev
+    connectionProfile: test-sros-gnmi
+    syncProfile: test-sros-gnmi-getconfig
+  targetTemplate:
+    labels:
+      sdcio.dev/region: eu-west
+      scdio.dev/env: ci-test
+      sdcio.dev/device: sros

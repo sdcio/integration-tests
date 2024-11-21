@@ -1,19 +1,17 @@
 apiVersion: inv.sdcio.dev/v1alpha1
 kind: DiscoveryRule
 metadata:
-  name: dr-sros-netconf-sr1-sr2
+  name: dr-sros-netconf-sr1
   namespace: default
 spec:
   period: 1m
   concurrentScans: 2
   defaultSchema:
     provider: sros.nokia.sdcio.dev  
-    version: 24.3.1
+    version: B-24.10.1
   addresses:
   - address: 172.21.1.11
     hostName: sr1
-  - address: 172.21.1.12
-    hostName: sr2
   targetConnectionProfiles:
   - credentials: sros.nokia.sdcio.dev 
     connectionProfile: test-sros-netconf

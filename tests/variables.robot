@@ -24,8 +24,8 @@ ${SDCIO_CONFIG_SERVER_SCHEMA_FILES_BASE}                            ${SDCIO_CONF
 ${SDCIO_INTEGRATION_TESTS_SCHEMA_FILES_BASE}                        ${CURDIR}/01-crs/schema
 # This is intentionally left empty as there are no custom schema's to be tested yet.
 @{SDCIO_INTEGRATION_TESTS_SCHEMA_FILES}
-...                                                                 schema-nokia-sros-24.3.yaml
-...                                                                 schema-nokia-srl-24.3.2.yaml
+...                                                                 schema-nokia-sros-24.10.yaml
+...                                                                 schema-nokia-srl-24.10.1.yaml
 
 # TargetConnectionProfiles
 ${SDCIO_CONFIG_SERVER_TARGETCONNECTIONPROFILE_FILES_BASE}           ${SDCIO_CONFIG_SERVER_REPO_PATH}/example/connection-profiles
@@ -36,6 +36,7 @@ ${SDCIO_CONFIG_SERVER_TARGETCONNECTIONPROFILE_FILES_BASE}           ${SDCIO_CONF
 ${SDCIO_INTEGRATION_TESTS_TARGETCONNECTIONPROFILE_FILES_BASE}       ${CURDIR}/01-crs/connection-profiles
 @{SDCIO_INTEGRATION_TESTS_TARGETCONNECTIONPROFILE_FILES}
 ...                                                                 conn_profile_sros_netconf.yaml
+...                                                                 conn_profile_sros_gnmi.yaml
 ...                                                                 conn_profile_srl_gnmi.yaml
 
 # TargetSyncProfiles
@@ -47,6 +48,7 @@ ${SDCIO_CONFIG_SERVER_TARGETSYNCPROFILE_FILES_BASE}                 ${SDCIO_CONF
 ${SDCIO_INTEGRATION_TESTS_TARGETSYNCPROFILE_FILES_BASE}             ${CURDIR}/01-crs/sync-profiles
 @{SDCIO_INTEGRATION_TESTS_TARGETSYNCPROFILE_FILES}
 ...                                                                 sync_profile_sros_netconf.yaml
+...                                                                 sync_profile_sros_gnmi.yaml
 ...                                                                 sync_profile_srl_gnmi.yaml
 
 # DiscoveryRules
@@ -58,6 +60,7 @@ ${SDCIO_CONFIG_SERVER_DISCOVERYRULE_FILES_BASE}                     ${SDCIO_CONF
 ${SDCIO_INTEGRATION_TESTS_DISCOVERYRULE_FILES_BASE}                 ${CURDIR}/01-crs/discovery-rule
 @{SDCIO_INTEGRATION_TESTS_DISCOVERYRULE_FILES}
 ...                                                                 discovery_sros_netconf_address.yaml
+...                                                                 discovery_sros_gnmi_prefix.yaml
 ...                                                                 discovery_srl_gnmi_prefix.yaml
 
 ### CURRENTLY USED BY 02-CRUD.

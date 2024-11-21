@@ -1,7 +1,7 @@
 apiVersion: inv.sdcio.dev/v1alpha1
 kind: TargetSyncProfile
 metadata:
-  name: test-srl-gnmi-onchange
+  name: test-sros-gnmi-getconfig
   namespace: default
 spec:
   buffer: 0
@@ -11,7 +11,7 @@ spec:
   - name: config
     protocol: gnmi
     paths:
-    - /
+    - /configure
     mode: get
-    encoding: JSON_IETF
-    interval: "30s"
+    encoding: JSON
+    interval: "10s"

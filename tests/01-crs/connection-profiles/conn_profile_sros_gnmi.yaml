@@ -1,14 +1,15 @@
 apiVersion: inv.sdcio.dev/v1alpha1
 kind: TargetConnectionProfile
 metadata:
-  name: test-sros-netconf
+  name: test-sros-gnmi
   namespace: default
   labels:
     scdio.dev/env: ci-test
 spec:
-  port: 830
-  protocol: netconf
-  encoding: CONFIG
-  skipVerify: true
+  port: 57400
+  protocol: gnmi
+  encoding: JSON
+  insecure: true
+  skipVerify: false
   includeNS: true
   operationWithNS: true

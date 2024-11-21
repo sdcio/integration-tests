@@ -8,10 +8,10 @@ mgmt:
 topology:
   defaults:
     kind: srl
-    image: ghcr.io/nokia/srlinux:latest
+    image: ghcr.io/nokia/srlinux:24.10.1
   kinds:
     vr-sros:
-      image: registry.srlinux.dev/pub/vr-sros:24.3.R1
+      image: registry.srlinux.dev/pub/vr-sros:24.10.R1
       license: ./license-sros24.txt
   nodes:
     srl1:
