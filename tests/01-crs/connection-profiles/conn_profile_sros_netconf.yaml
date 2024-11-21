@@ -8,7 +8,7 @@ metadata:
 spec:
   port: 830
   protocol: netconf
-  encoding: CONFIG
+  encoding: UNKNOWN
   skipVerify: true
   includeNS: true
   operationWithNS: true
