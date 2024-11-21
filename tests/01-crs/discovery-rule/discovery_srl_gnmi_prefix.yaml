@@ -7,7 +7,7 @@ spec:
   period: 1m
   concurrentScans: 2
   prefixes:
-  - prefix: 172.21.0.0/24
+  - prefix: 172.21.0.0/27
     excludes:
     - 172.21.0.0
     - 172.21.0.1
