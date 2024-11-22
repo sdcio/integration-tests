@@ -13,5 +13,5 @@ spec:
     paths:
     - /
     mode: get
-    encoding: JSON_IETF
-    interval: "30s"
+    encoding: PROTO
+    interval: "10s"
