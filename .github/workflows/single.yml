@@ -42,6 +42,7 @@ jobs:
       - name: Checkout integration-tests
         uses: actions/checkout@v4
         with:
+          repository: sdcio/integration-tests
           path: integration-tests
 
       # Checkout config-server with specific tag if version is not v0.0.0
