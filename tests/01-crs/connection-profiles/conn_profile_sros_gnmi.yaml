@@ -1,0 +1,15 @@
+apiVersion: inv.sdcio.dev/v1alpha1
+kind: TargetConnectionProfile
+metadata:
+  name: test-sros-gnmi
+  namespace: default
+  labels:
+    scdio.dev/env: ci-test
+spec:
+  port: 57400
+  protocol: gnmi
+  encoding: JSON
+  insecure: true
+  skipVerify: false
+  includeNS: true
+  operationWithNS: true

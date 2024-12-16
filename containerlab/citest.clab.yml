@@ -1,0 +1,35 @@
+name: citest
+
+mgmt:
+  network: ci_test                 # management network name
+  ipv4-subnet: 172.21.0.0/16       # ipv4 range
+  ipv6-subnet: fd00:172:21::/48    # ipv6 range (optional)
+
+topology:
+  defaults:
+    kind: srl
+    image: ghcr.io/nokia/srlinux:24.10.1
+  kinds:
+    vr-sros:
+      image: registry.srlinux.dev/pub/vr-sros:24.10.R1
+      license: ./license-sros24.txt
+  nodes:
+    srl1:
+      mgmt-ipv4: 172.21.0.11
+      #mgmt-ipv6: 2001:172:21:0:11::1
+    srl2:
+      mgmt-ipv4: 172.21.0.12
+      #mgmt-ipv6: 2001:172:21:0:12::1
+    srl3:
+      mgmt-ipv4: 172.21.0.13
+      #mgmt-ipv6: 2001:172:21:0:13::1
+
+    sr1:
+      kind: vr-sros
+      mgmt-ipv4: 172.21.1.11
+      #mgmt-ipv6: 2001:172:21:1:11::1
+    sr2:
+      kind: vr-sros
+      mgmt-ipv4: 172.21.1.12
+      #mgmt-ipv6: 2001:172:21:1:12::1
+

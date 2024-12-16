@@ -1,0 +1,14 @@
+apiVersion: inv.sdcio.dev/v1alpha1
+kind: TargetConnectionProfile
+metadata:
+  name: test-sros-netconf
+  namespace: default
+  labels:
+    scdio.dev/env: ci-test
+spec:
+  port: 830
+  protocol: netconf
+  encoding: UNKNOWN
+  skipVerify: true
+  includeNS: true
+  operationWithNS: true

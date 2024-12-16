@@ -1,0 +1,45 @@
+name: matrix cicd integration-tests
+
+on:
+  workflow_dispatch:
+
+jobs:
+  latest-versions:
+    name: Fetch latest versions from GH API
+    runs-on: sdcio-action-runners
+    outputs:
+      schemaversion: ${{ steps.latest-versions.outputs.schemaversion }}
+      dataversion: ${{ steps.latest-versions.outputs.dataversion }}
+      cacheversion: ${{ steps.latest-versions.outputs.cacheversion }}
+      configversion: ${{ steps.latest-versions.outputs.configversion }}
+      certmanagerversion: ${{ steps.latest-versions.outputs.certmanagerversion }}
+    steps:
+      - name: Set env vars
+        id: latest-versions
+        run: |
+          echo "schemaversion=$( curl -sL https://api.github.com/repos/sdcio/schema-server/releases/latest | jq '.name' )" >> $GITHUB_OUTPUT
+          echo "dataversion=$( curl -sL https://api.github.com/repos/sdcio/data-server/releases/latest | jq '.name' )" >> $GITHUB_OUTPUT
+          echo "cacheversion=$( curl -sL https://api.github.com/repos/sdcio/cache/releases/latest | jq '.name' )" >> $GITHUB_OUTPUT
+          echo "configversion=$( curl -sL https://api.github.com/repos/sdcio/config-server/releases/latest | jq '.name' )" >> $GITHUB_OUTPUT
+          echo "certmanagerversion=$( curl -sL https://api.github.com/repos/cert-manager/cert-manager/releases/latest | jq '.name' )" >> $GITHUB_OUTPUT
+
+  integration-tests:
+    needs: latest-versions
+    strategy:
+      matrix:
+        config-server: 
+          - "${{ needs.latest-versions.outputs.configversion }}"
+          - "v0.0.0-dev-latest"
+        data-server: 
+          - "${{ needs.latest-versions.outputs.dataversion }}"
+          - "v0.0.0-dev-latest"
+      fail-fast: false
+      max-parallel: 1
+    uses: ./.github/workflows/single.yml
+    with:
+      configserver_version: ${{ matrix.config-server }}
+      dataserver_version: ${{ matrix.data-server }}
+      schemaserver_version: ${{ needs.latest-versions.outputs.schemaversion }}
+      cache_version: ${{ needs.latest-versions.outputs.cacheversion }}
+      certmanager_version: ${{ needs.latest-versions.outputs.certmanagerversion }}
+    secrets: inherit

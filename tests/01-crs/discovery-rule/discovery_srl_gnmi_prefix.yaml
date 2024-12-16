@@ -1,0 +1,27 @@
+apiVersion: inv.sdcio.dev/v1alpha1
+kind: DiscoveryRule
+metadata:
+  name: dr-srl-gnmi-prefix
+  namespace: default
+spec:
+  period: 1m
+  concurrentScans: 2
+  prefixes:
+  - prefix: 172.21.0.0/27
+    excludes:
+    - 172.21.0.0
+    - 172.21.0.1
+    - 172.21.0.255
+  discoveryProfile:
+    credentials: srl.nokia.sdcio.dev 
+    connectionProfiles:
+    - test-srl-gnmi
+  targetConnectionProfiles:
+  - credentials: srl.nokia.sdcio.dev 
+    connectionProfile: test-srl-gnmi
+    syncProfile: test-srl-gnmi-onchange
+  targetTemplate:
+    labels:
+      sdcio.dev/region: eu-west
+      scdio.dev/env: ci-test
+      sdcio.dev/device: srl
