@@ -22,12 +22,12 @@ spec:
       - openconfig/openconfig-extensions.yang
       excludes:
       - .*tools.*
-  - repoURL: https://github.com/hansthienpondt/srl-yang-patch
+  - repoURL: https://github.com/sdcio/srlinux-yang-patch
     kind: branch
-    ref: v24.7.2
+    ref: v24.10
     dirs:
-    - src: .
-      dst: .
+    - src: srl_nokia
+      dst: deviations
     schema:
       models:
       - deviations

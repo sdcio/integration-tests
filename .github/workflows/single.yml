@@ -83,7 +83,7 @@ jobs:
       - name: Install containerlab
         run: |
           echo "deb [trusted=yes] https://apt.fury.io/netdevops/ /" | sudo tee -a /etc/apt/sources.list.d/netdevops.list
-          sudo apt update && sudo apt install -y containerlab iptables
+          sudo apt update && sudo apt install -y containerlab=0.60.1 iptables
           sudo iptables -I DOCKER-USER 1 -j ACCEPT
 
       - uses: actions/setup-go@v5
