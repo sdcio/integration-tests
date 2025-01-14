@@ -18,8 +18,8 @@ ${SDCIO_INTEGRATION_TESTS_SECRETS_FILES_BASE}                       ${CURDIR}/01
 # Schemas
 ${SDCIO_CONFIG_SERVER_SCHEMA_FILES_BASE}                            ${SDCIO_CONFIG_SERVER_REPO_PATH}/example/schemas
 @{SDCIO_CONFIG_SERVER_SCHEMA_FILES}
-...                                                                 schema-nokia-sros-23.10.yaml
-...                                                                 schema-nokia-srl-23.10.1.yaml
+...                                                                 schema-nokia-sros-24.10.yaml
+...                                                                 schema-nokia-srl-24.10.1.yaml
 
 ${SDCIO_INTEGRATION_TESTS_SCHEMA_FILES_BASE}                        ${CURDIR}/01-crs/schema
 # This is intentionally left empty as there are no custom schema's to be tested yet.
