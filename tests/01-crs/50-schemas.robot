@@ -14,11 +14,11 @@ Install Schemas
 
     # Build the full paths for install and later checks
     # for loop is sourced from the config-server repository.
-    FOR    ${s}    IN    @{SDCIO_CONFIG_SERVER_SCHEMA_FILES}
-        Append To List
-        ...    ${SDCIO_SCHEMA_FILES_ABSOLUTE}
-        ...    ${SDCIO_CONFIG_SERVER_SCHEMA_FILES_BASE}/${s}
-    END
+    # FOR    ${s}    IN    @{SDCIO_CONFIG_SERVER_SCHEMA_FILES}
+    #    Append To List
+    #    ...    ${SDCIO_SCHEMA_FILES_ABSOLUTE}
+    #    ...    ${SDCIO_CONFIG_SERVER_SCHEMA_FILES_BASE}/${s}
+    # END
     # for loop is sourced from this repository.
     FOR    ${s}    IN    @{SDCIO_INTEGRATION_TESTS_SCHEMA_FILES}
         Append To List

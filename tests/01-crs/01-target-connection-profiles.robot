@@ -12,11 +12,11 @@ Install TargetConnectionProfiles
 
     # Build the full paths for install and later checks
     # for loop is sourced from the config-server repository.
-    FOR    ${s}    IN    @{SDCIO_CONFIG_SERVER_TARGETCONNECTIONPROFILE_FILES}
-        Append To List
-        ...    ${SDCIO_TARGETCONNECTIONPROFILE_FILES_ABSOLUTE}
-        ...    ${SDCIO_CONFIG_SERVER_TARGETCONNECTIONPROFILE_FILES_BASE}/${s}
-    END
+    # FOR    ${s}    IN    @{SDCIO_CONFIG_SERVER_TARGETCONNECTIONPROFILE_FILES}
+    #    Append To List
+    #    ...    ${SDCIO_TARGETCONNECTIONPROFILE_FILES_ABSOLUTE}
+    #    ...    ${SDCIO_CONFIG_SERVER_TARGETCONNECTIONPROFILE_FILES_BASE}/${s}
+    # END
     # for loop is sourced from this repository.
     FOR    ${s}    IN    @{SDCIO_INTEGRATION_TESTS_TARGETCONNECTIONPROFILE_FILES}
         Append To List
