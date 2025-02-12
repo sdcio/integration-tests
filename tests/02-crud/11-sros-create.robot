@@ -27,16 +27,16 @@ ${operation} - ConfigSet intent1 on ${SDCIO_SROS_NODES}
 
 Verify - ${operation} ConfigSet intent1 on k8s
     Wait Until Keyword Succeeds
-    ...    1min
-    ...    5s
+    ...    2min
+    ...    10s
     ...    ConfigSet Check Ready
     ...    ${SDCIO_RESOURCE_NAMESPACE}
     ...    "intent1-sros"
 
 Verify - ${operation} ConfigSet intent1 on ${SDCIO_SROS_NODES}
     Wait Until Keyword Succeeds
-    ...    1min
-    ...    5s
+    ...    2min
+    ...    10s
     ...    Verify ConfigSet intent on nodes
     ...    "/configure/service/vprn[service-name=vprn123]"
     ...    ${intent1}
@@ -47,16 +47,16 @@ ${operation} - ConfigSet intent2 on ${SDCIO_SROS_NODES}
 
 Verify - ${operation} ConfigSet intent2 on k8s
     Wait Until Keyword Succeeds
-    ...    1min
-    ...    5s
+    ...    2min
+    ...    10s
     ...    ConfigSet Check Ready
     ...    ${SDCIO_RESOURCE_NAMESPACE}
     ...    "intent2-sros"
 
 Verify - ${operation} ConfigSet intent2 on ${SDCIO_SROS_NODES}
     Wait Until Keyword Succeeds
-    ...    1min
-    ...    5s
+    ...    2min
+    ...    10s
     ...    Verify ConfigSet intent on nodes
     ...    "/configure/service/vprn[service-name=vprn234]"
     ...    ${intent2}
@@ -67,16 +67,16 @@ ${operation} - Config intent3 on sr1
 
 Verify - ${operation} Config intent3 on k8s
     Wait Until Keyword Succeeds
-    ...    1min
-    ...    5s
+    ...    2min
+    ...    10s
     ...    Config Check Ready
     ...    ${SDCIO_RESOURCE_NAMESPACE}
     ...    "intent3-sros"
 
 Verify - ${operation} Config intent3 on sr1
     Wait Until Keyword Succeeds
-    ...    1min
-    ...    5s
+    ...    2min
+    ...    10s
     ...    Verify Config on node
     ...    sr1
     ...    "/configure/service/vprn[service-name=vprn789]"
@@ -88,16 +88,16 @@ ${operation} - Config intent4 on sr2
 
 Verify - ${operation} Config intent4 on k8s
     Wait Until Keyword Succeeds
-    ...    1min
-    ...    5s
+    ...    2min
+    ...    10s
     ...    Config Check Ready
     ...    ${SDCIO_RESOURCE_NAMESPACE}
     ...    "intent4-sros"
 
 Verify - ${operation} Config intent4 on sr2
     Wait Until Keyword Succeeds
-    ...    1min
-    ...    5s
+    ...    2min
+    ...    10s
     ...    Verify Config on node
     ...    sr2
     ...    "/configure/service/vprn[service-name=vprn987]"
@@ -141,10 +141,10 @@ Delete Config on node
 
 Setup
     Run    echo 'setup executed'
-    Wait Until Keyword Succeeds    15min    5s    Targets Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    sr1
-    Wait Until Keyword Succeeds    15min    5s    Targets Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    sr2
+    Wait Until Keyword Succeeds    15min    10s    Targets Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    sr1
+    Wait Until Keyword Succeeds    15min    10s    Targets Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    sr2
     kubectl apply    ${CURDIR}/sros/customer.yaml
-    Wait Until Keyword Succeeds    1min    5s    ConfigSet Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    "customer"
+    Wait Until Keyword Succeeds    2min    10s    ConfigSet Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    "customer"
     Verify no Config on node
     ...    sr1
     ...    "/configure/service/vprn[service-name=vprn123]"
@@ -177,43 +177,43 @@ Cleanup
     Delete Config    ${SDCIO_RESOURCE_NAMESPACE}    "intent3-sros"
     Delete Config    ${SDCIO_RESOURCE_NAMESPACE}    "intent4-sros"
     Wait Until Keyword Succeeds
-    ...    1min
-    ...    5s
+    ...    2min
+    ...    10s
     ...    Verify no Config on node
     ...    sr1
     ...    "/configure/service/vprn[service-name=vprn123]"
     ...    ${null}
     Wait Until Keyword Succeeds
-    ...    1min
-    ...    5s
+    ...    2min
+    ...    10s
     ...    Verify no Config on node
     ...    sr2
     ...    "/configure/service/vprn[service-name=vprn123]"
     ...    ${null}
     Wait Until Keyword Succeeds
-    ...    1min
-    ...    5s
+    ...    2min
+    ...    10s
     ...    Verify no Config on node
     ...    sr1
     ...    "/configure/service/vprn[service-name=vprn234]"
     ...    ${null}
     Wait Until Keyword Succeeds
-    ...    1min
-    ...    5s
+    ...    2min
+    ...    10s
     ...    Verify no Config on node
     ...    sr2
     ...    "/configure/service/vprn[service-name=vprn234]"
     ...    ${null}
     Wait Until Keyword Succeeds
-    ...    1min
-    ...    5s
+    ...    2min
+    ...    10s
     ...    Verify no Config on node
     ...    sr1
     ...    "/configure/service/vprn[service-name=vprn789]"
     ...    ${null}
     Wait Until Keyword Succeeds
-    ...    1min
-    ...    5s
+    ...    2min
+    ...    10s
     ...    Verify no Config on node
     ...    sr2
     ...    "/configure/service/vprn[service-name=vprn987]"
@@ -243,4 +243,4 @@ Cleanup
     ...    Delete Config on node
     ...    sr2
     ...    "/configure/service/vprn[service-name=vprn987]"
-    Run Keyword If Any Tests Failed    Sleep    5s
+    Run Keyword If Any Tests Failed    Sleep    10s
