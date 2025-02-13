@@ -1,7 +1,7 @@
 name: manual specific-release integration-tests
 
 on:
-  workflow_call:
+  workflow_dispatch:
     inputs:
       dataserver_version:
         description: "data-server semver release (vX.Y.Z)"
