@@ -1,0 +1,27 @@
+apiVersion: inv.sdcio.dev/v1alpha1
+kind: DiscoveryRule
+metadata:
+  name: dr-arista-gnmi-prefix
+  namespace: default
+spec:
+  period: 1m
+  concurrentScans: 2
+  prefixes:
+  - prefix: 172.21.2.0/27
+    excludes:
+    - 172.21.2.0
+    - 172.21.2.1
+    - 172.21.2.255
+  discoveryProfile:
+    credentials: eos.arista.sdcio.dev
+    connectionProfiles:
+    - test-arista-gnmi
+  targetConnectionProfiles:
+  - credentials: eos.arista.sdcio.dev 
+    connectionProfile: test-arista-gnmi
+    syncProfile: test-arista-gnmi-get
+  targetTemplate:
+    labels:
+      sdcio.dev/region: eu-west
+      scdio.dev/env: ci-test
+      sdcio.dev/device: arista

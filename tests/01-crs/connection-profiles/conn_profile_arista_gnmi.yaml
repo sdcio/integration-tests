@@ -1,0 +1,13 @@
+apiVersion: inv.sdcio.dev/v1alpha1
+kind: TargetConnectionProfile
+metadata:
+  name: test-arista-gnmi
+  namespace: default
+  labels:
+    scdio.dev/env: ci-test
+spec:
+  port: 6030
+  protocol: gnmi
+  encoding: JSON_IETF
+  insecure: true
+  skipVerify: false

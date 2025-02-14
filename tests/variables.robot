@@ -51,6 +51,18 @@ ${SDCIO_INTEGRATION_TESTS_TARGETSYNCPROFILE_FILES_BASE}             ${CURDIR}/01
 ...                                                                 sync_profile_sros_gnmi.yaml
 ...                                                                 sync_profile_srl_gnmi.yaml
 
+# DiscoveryVendorProfiles
+${SDCIO_CONFIG_SERVER_DISCOVERYVENDORPROFILE_FILES_BASE}	${SDCIO_CONFIG_SERVER_REPO_PATH}/example/discoveryvendor-profile
+@{SDCIO_CONFIG_SERVER_DISCOVERYVENDORPROFILE_FILES}
+...								discoveryvendor-profile-arista.yaml
+...								discoveryvendor-profile-nokia-srlinux.yaml
+...								discoveryvendor-profile-nokia-sros.yaml
+${SDCIO_INTEGRATION_TESTS_DISCOVERVENDORPROFILE_FILES_BASE}	${CURDIR}/01-crs/discovery-vendor-profile
+@{SDCIO_INTEGRATION_TESTS_DISCOVERVENDORPROFILE_FILES}
+...								discoveryvendor-profile-arista-eos.yaml
+...								discoveryvendor-profile-nokia-srlinux.yaml
+...								discoveryvendor-profile-nokia-sros.yaml
+
 # DiscoveryRules
 ${SDCIO_CONFIG_SERVER_DISCOVERYRULE_FILES_BASE}                     ${SDCIO_CONFIG_SERVER_REPO_PATH}/example/discovery-rule
 @{SDCIO_CONFIG_SERVER_DISCOVERYRULE_FILES}
