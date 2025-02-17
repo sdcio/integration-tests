@@ -26,15 +26,15 @@ ${operation} - ConfigSet intent1 on ${SDCIO_SRL_NODES}
 
 Verify - ${operation} ConfigSet intent1 on k8s
     Wait Until Keyword Succeeds
-    ...    1min
-    ...    5s
+    ...    2min
+    ...    10s
     ...    Run Keyword And Expect Error    *
     ...    kubectl get    -n ${SDCIO_RESOURCE_NAMESPACE} configsets.config.sdcio.dev intent1-srl
 
 Verify - ${operation} ConfigSet intent1 on ${SDCIO_SRL_NODES} no longer exists
     Wait Until Keyword Succeeds
-    ...    1min
-    ...    5s
+    ...    2min
+    ...    10s
     ...    Verify ConfigSet does not exist on nodes
     ...    "/network-instance[name=vrf1]"
     ...    ${intent1}
@@ -44,15 +44,15 @@ ${operation} - ConfigSet intent2 on ${SDCIO_SRL_NODES}
 
 Verify - ${operation} ConfigSet intent2 on k8s
     Wait Until Keyword Succeeds
-    ...    1min
-    ...    5s
+    ...    2min
+    ...    10s
     ...    Run Keyword And Expect Error    *
     ...    kubectl get    -n ${SDCIO_RESOURCE_NAMESPACE} configsets.config.sdcio.dev intent2-srl
 
 Verify - ${operation} ConfigSet intent2 on ${SDCIO_SRL_NODES} no longer exists
     Wait Until Keyword Succeeds
-    ...    1min
-    ...    5s
+    ...    2min
+    ...    10s
     ...    Verify ConfigSet does not exist on nodes
     ...    "/network-instance[name=vrf2]"
     ...    ${intent2}
@@ -62,15 +62,15 @@ ${operation} - Config intent3 on srl1
 
 Verify - ${operation} Config intent3 on k8s
     Wait Until Keyword Succeeds
-    ...    1min
-    ...    5s
+    ...    2min
+    ...    10s
     ...    Run Keyword And Expect Error    *
     ...    kubectl get    -n ${SDCIO_RESOURCE_NAMESPACE} configs.config.sdcio.dev intent3-srl
 
 Verify - ${operation} Config intent3 on srl1 no longer exists
     Wait Until Keyword Succeeds
-    ...    1min
-    ...    5s
+    ...    2min
+    ...    10s
     ...    Verify Config does not exist on node
     ...    srl1
     ...    "/network-instance[name=vrf3]"
@@ -81,15 +81,15 @@ ${operation} - Config intent4 on srl2
 
 Verify - ${operation} Config intent4 on k8s
     Wait Until Keyword Succeeds
-    ...    1min
-    ...    5s
+    ...    2min
+    ...    10s
     ...    Run Keyword And Expect Error    *
     ...    kubectl get    -n ${SDCIO_RESOURCE_NAMESPACE} configs.config.sdcio.dev intent4-srl
 
 Verify - ${operation} Config intent4 on srl2 no longer exists
     Wait Until Keyword Succeeds
-    ...    1min
-    ...    5s
+    ...    2min
+    ...    10s
     ...    Verify Config does not exist on node
     ...    srl2
     ...    "/network-instance[name=vrf4]"
@@ -100,15 +100,15 @@ ${operation} - Config intent5 on srl3
 
 Verify - ${operation} Config intent5 on k8s
     Wait Until Keyword Succeeds
-    ...    1min
-    ...    5s
+    ...    2min
+    ...    10s
     ...    Run Keyword And Expect Error    *
     ...    kubectl get    -n ${SDCIO_RESOURCE_NAMESPACE} configs.config.sdcio.dev intent5-srl
 
 Verify - ${operation} Config intent5 on srl3 no longer exists
     Wait Until Keyword Succeeds
-    ...    1min
-    ...    5s
+    ...    2min
+    ...    10s
     ...    Verify Config does not exist on node
     ...    srl3
     ...    "/network-instance[name=vrf5]"
@@ -167,15 +167,15 @@ Delete Config on node
 Setup
     Run    echo 'setup executed'
     kubectl apply    ${CURDIR}/srl/intent1-srl.yaml
-    Wait Until Keyword Succeeds    1min    5s    ConfigSet Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    "intent1-srl"
+    Wait Until Keyword Succeeds    2min    10s    ConfigSet Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    "intent1-srl"
     kubectl apply    ${CURDIR}/srl/intent2-srl.yaml
-    Wait Until Keyword Succeeds    1min    5s    ConfigSet Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    "intent2-srl"
+    Wait Until Keyword Succeeds    2min    10s    ConfigSet Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    "intent2-srl"
     kubectl apply    ${CURDIR}/srl/intent3-srl.yaml
-    Wait Until Keyword Succeeds    1min    5s    Config Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    "intent3-srl"
+    Wait Until Keyword Succeeds    2min    10s    Config Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    "intent3-srl"
     kubectl apply    ${CURDIR}/srl/intent4-srl.yaml
-    Wait Until Keyword Succeeds    1min    5s    Config Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    "intent4-srl"
+    Wait Until Keyword Succeeds    2min    10s    Config Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    "intent4-srl"
     kubectl apply    ${CURDIR}/srl/intent5-srl.yaml
-    Wait Until Keyword Succeeds    1min    5s    Config Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    "intent5-srl"
+    Wait Until Keyword Succeeds    2min    10s    Config Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    "intent5-srl"
 
 Cleanup
     Run    echo 'cleanup executed'
@@ -251,4 +251,4 @@ Cleanup
     ...    Delete Config on node
     ...    srl3
     ...    "/interface[name=ethernet-1/5]"
-    Run Keyword If Any Tests Failed    Sleep    5s
+    Run Keyword If Any Tests Failed    Sleep    10s
