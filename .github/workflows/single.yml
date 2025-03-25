@@ -99,9 +99,9 @@ jobs:
 
       - name: Setup SROS License
         env:
-          SROS_LICENSE: ${{ secrets.SROS24_LICENSE }}
+          SROS_LICENSE: ${{ secrets.SROS25_LICENSE }}
         run: |
-          echo $SROS_LICENSE | tee ./integration-tests/containerlab/license-sros24.txt
+          echo $SROS_LICENSE | tee ./integration-tests/containerlab/license-sros.txt
 
       - name: Deploy CI-Test-Containerlab
         env:
