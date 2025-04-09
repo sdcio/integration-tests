@@ -8,11 +8,11 @@ mgmt:
 topology:
   defaults:
     kind: srl
-    image: ghcr.io/nokia/srlinux:24.10.1
+    image: ghcr.io/nokia/srlinux:25.3.1
   kinds:
     vr-sros:
-      image: registry.srlinux.dev/pub/vr-sros:24.10.R1
-      license: ./license-sros24.txt
+      image: registry.srlinux.dev/pub/vr-sros:25.3.R1
+      license: ./license-sros.txt
   nodes:
     srl1:
       mgmt-ipv4: 172.21.0.11
@@ -32,4 +32,7 @@ topology:
       kind: vr-sros
       mgmt-ipv4: 172.21.1.12
       #mgmt-ipv6: 2001:172:21:1:12::1
-
+#    ceos:
+#      kind: arista_ceos
+#      image: registry.srlinux.dev/pub/ceos:4.33.1F
+#      mgmt-ipv4: 172.21.2.11
