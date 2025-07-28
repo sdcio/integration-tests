@@ -79,7 +79,7 @@ ${SDCIO_INTEGRATION_TESTS_DISCOVERYRULE_FILES_BASE}                 ${CURDIR}/01
 ${sr1}                                                              172.21.1.11
 ${sr2}                                                              172.21.1.12
 ${SROS_USERNAME}                                                    admin
-${SROS_PASSWORD}                                                    admin
+${SROS_PASSWORD}                                                    NokiaSros1!
 ${srl1}                                                             172.21.0.11
 ${srl2}                                                             172.21.0.12
 ${srl3}                                                             172.21.0.13
