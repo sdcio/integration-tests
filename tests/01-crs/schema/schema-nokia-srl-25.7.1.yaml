@@ -1,15 +1,15 @@
 apiVersion: inv.sdcio.dev/v1alpha1
 kind: Schema
 metadata:
-  name: srl.nokia.sdcio.dev-25.3.1
+  name: srl.nokia.sdcio.dev-25.7.1
   namespace: default
 spec:
   provider: srl.nokia.sdcio.dev
-  version: 25.3.1
+  version: 25.7.1
   repositories:
   - repoURL: https://github.com/nokia/srlinux-yang-models
     kind: tag
-    ref: v25.3.1
+    ref: v25.7.1
     dirs:
     - src: srlinux-yang-models
       dst: .
@@ -23,7 +23,7 @@ spec:
       - .*tools.*
   - repoURL: https://github.com/sdcio/srlinux-yang-patch
     kind: branch
-    ref: v25.3
+    ref: v25.7
     dirs:
     - src: srl_nokia
       dst: deviations

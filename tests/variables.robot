@@ -24,8 +24,8 @@ ${SDCIO_CONFIG_SERVER_SCHEMA_FILES_BASE}                            ${SDCIO_CONF
 ${SDCIO_INTEGRATION_TESTS_SCHEMA_FILES_BASE}                        ${CURDIR}/01-crs/schema
 # This is intentionally left empty as there are no custom schema's to be tested yet.
 @{SDCIO_INTEGRATION_TESTS_SCHEMA_FILES}
-...                                                                 schema-nokia-sros-25.3.yaml
-...                                                                 schema-nokia-srl-25.3.1.yaml
+...                                                                 schema-nokia-sros-25.7.yaml
+...                                                                 schema-nokia-srl-25.7.1.yaml
 
 # TargetConnectionProfiles
 ${SDCIO_CONFIG_SERVER_TARGETCONNECTIONPROFILE_FILES_BASE}           ${SDCIO_CONFIG_SERVER_REPO_PATH}/example/connection-profiles
@@ -79,7 +79,7 @@ ${SDCIO_INTEGRATION_TESTS_DISCOVERYRULE_FILES_BASE}                 ${CURDIR}/01
 ${sr1}                                                              172.21.1.11
 ${sr2}                                                              172.21.1.12
 ${SROS_USERNAME}                                                    admin
-${SROS_PASSWORD}                                                    admin
+${SROS_PASSWORD}                                                    NokiaSros1!
 ${srl1}                                                             172.21.0.11
 ${srl2}                                                             172.21.0.12
 ${srl3}                                                             172.21.0.13

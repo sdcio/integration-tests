@@ -8,10 +8,10 @@ mgmt:
 topology:
   defaults:
     kind: srl
-    image: ghcr.io/nokia/srlinux:25.3.1
+    image: ghcr.io/nokia/srlinux:25.7.1
   kinds:
-    vr-sros:
-      image: registry.k8s.sdcio.dev/clab/vr-sros:25.3.R1
+    nokia_srsim:
+      image: registry.k8s.sdcio.dev/clab/nokia_srsim:25.7.R1
       license: ./license-sros.txt
   nodes:
     srl1:
@@ -25,11 +25,11 @@ topology:
       #mgmt-ipv6: 2001:172:21:0:13::1
 
     sr1:
-      kind: vr-sros
+      kind: nokia_srsim
       mgmt-ipv4: 172.21.1.11
       #mgmt-ipv6: 2001:172:21:1:11::1
     sr2:
-      kind: vr-sros
+      kind: nokia_srsim
       mgmt-ipv4: 172.21.1.12
       #mgmt-ipv6: 2001:172:21:1:12::1
 #    ceos:
