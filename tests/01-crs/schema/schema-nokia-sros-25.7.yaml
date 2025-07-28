@@ -1,15 +1,15 @@
 apiVersion: inv.sdcio.dev/v1alpha1
 kind: Schema
 metadata:
-  name: sros.nokia.sdcio.dev-25.3.1
+  name: sros.nokia.sdcio.dev-25.7.1
   namespace: default
 spec:
   provider: sros.nokia.sdcio.dev
-  version: 25.3.R1
+  version: 25.7.R1
   repositories:
   - repoURL: https://github.com/nokia/7x50_YangModels
     kind: tag
-    ref: sros_25.3.r1
+    ref: sros_25.7.r1
     dirs:
     - src: YANG
       dst: .

@@ -8,7 +8,7 @@ spec:
   concurrentScans: 2
   defaultSchema:
     provider: sros.nokia.sdcio.dev  
-    version: 25.3.R1
+    version: 25.7.R1
   addresses:
   - address: 172.21.1.11
     hostName: sr1
