@@ -210,21 +210,21 @@ ${operation} - Adjust ConfigSet intent1 on ${SDCIO_SROS_NODES}
     Run Keyword
     ...    Verify Config on node
     ...    sr1
-    ...    "/configure/service/vprn[service-name=vprn123]/admin-state"
+    ...    "/configure/service/vprn[service-name=vprn123]"
     ...    ${intent1}
-    ...    "disable"
+    ...    "admin-state": "disable"
     Run Keyword
     ...    Verify Config on node
     ...    sr1
-    ...    "/configure/service/vprn[service-name=vprn123]/service-id"
+    ...    "/configure/service/vprn[service-name=vprn123]"
     ...    ${intent1}
-    ...    "1101"
+    ...    "service-id": 1101
     Run Keyword
     ...    Verify Config on node
     ...    sr1
-    ...    "/configure/service/vprn[service-name=vprn123]/customer"
+    ...    "/configure/service/vprn[service-name=vprn123]"
     ...    ${intent1}
-    ...    "2"
+    ...    "customer": "2"
     Run Keyword
     ...    Set Config on node
     ...    sr2
@@ -243,21 +243,21 @@ ${operation} - Adjust ConfigSet intent1 on ${SDCIO_SROS_NODES}
     Run Keyword
     ...    Verify Config on node
     ...    sr2
-    ...    "/configure/service/vprn[service-name=vprn123]/admin-state"
+    ...    "/configure/service/vprn[service-name=vprn123]"
     ...    ${intent1}
-    ...    "disable"
+    ...    "admin-state": "disable"
     Run Keyword
     ...    Verify Config on node
     ...    sr2
-    ...    "/configure/service/vprn[service-name=vprn123]/service-id"
+    ...    "/configure/service/vprn[service-name=vprn123]"
     ...    ${intent1}
-    ...    "1101"
+    ...    "service-id": 1101
     Run Keyword
     ...    Verify Config on node
     ...    sr2
-    ...    "/configure/service/vprn[service-name=vprn123]/customer"
+    ...    "/configure/service/vprn[service-name=vprn123]"
     ...    ${intent1}
-    ...    "2"
+    ...    "customer": "2"
 Verify - ${operation} Adjust ConfigSet intent1 on ${SDCIO_SROS_NODES}
     Wait Until Keyword Succeeds
     ...    2min
@@ -300,21 +300,21 @@ ${operation} - Adjust ConfigSet intent2 on ${SDCIO_SROS_NODES}
     Run Keyword
     ...    Verify Config on node
     ...    sr1
-    ...    "/configure/service/vprn[service-name=vprn234]/admin-state"
+    ...    "/configure/service/vprn[service-name=vprn234]"
     ...    ${intent2}
-    ...    "disable"
+    ...    "admin-state": "disable"
     Run Keyword
     ...    Verify Config on node
     ...    sr1
-    ...    "/configure/service/vprn[service-name=vprn234]/service-id"
+    ...    "/configure/service/vprn[service-name=vprn234]"
     ...    ${intent2}
-    ...    "1102"
+    ...    "service-id": 1102
     Run Keyword
     ...    Verify Config on node
     ...    sr1
-    ...    "/configure/service/vprn[service-name=vprn234]/customer"
+    ...    "/configure/service/vprn[service-name=vprn234]"
     ...    ${intent2}
-    ...    "2"
+    ...    "customer": "2"
     Run Keyword
     ...    Set Config on node
     ...    sr2
@@ -333,21 +333,21 @@ ${operation} - Adjust ConfigSet intent2 on ${SDCIO_SROS_NODES}
     Run Keyword
     ...    Verify Config on node
     ...    sr2
-    ...    "/configure/service/vprn[service-name=vprn234]/admin-state"
+    ...    "/configure/service/vprn[service-name=vprn234]"
     ...    ${intent2}
-    ...    "disable"
+    ...    "admin-state": "disable"
     Run Keyword
     ...    Verify Config on node
     ...    sr2
-    ...    "/configure/service/vprn[service-name=vprn234]/service-id"
+    ...    "/configure/service/vprn[service-name=vprn234]"
     ...    ${intent2}
-    ...    "1102"
+    ...    "service-id": 1102
     Run Keyword
     ...    Verify Config on node
     ...    sr2
-    ...    "/configure/service/vprn[service-name=vprn234]/customer"
+    ...    "/configure/service/vprn[service-name=vprn234]"
     ...    ${intent2}
-    ...    "2"
+    ...    "customer": "2"
 Verify - ${operation} Adjust ConfigSet intent2 on ${SDCIO_SROS_NODES}
     Wait Until Keyword Succeeds
     ...    2min
@@ -389,21 +389,21 @@ ${operation} - Adjust Config intent3 on sr1
     Run Keyword
     ...    Verify Config on node
     ...    sr1
-    ...    "/configure/service/vprn[service-name=vprn789]/admin-state"
+    ...    "/configure/service/vprn[service-name=vprn789]"
     ...    ${intent3}
-    ...    "disable"
+    ...    "admin-state": "disable"
     Run Keyword
     ...    Verify Config on node
     ...    sr1
-    ...    "/configure/service/vprn[service-name=vprn789]/service-id"
+    ...    "/configure/service/vprn[service-name=vprn789]"
     ...    ${intent3}
-    ...    "1103"
+    ...    "service-id": 1103
     Run Keyword
     ...    Verify Config on node
     ...    sr1
-    ...    "/configure/service/vprn[service-name=vprn789]/customer"
+    ...    "/configure/service/vprn[service-name=vprn789]"
     ...    ${intent3}
-    ...    "2"
+    ...    "customer": "2"
 Verify - ${operation} Adjust Config intent3 on sr1
     Wait Until Keyword Succeeds
     ...    2min
@@ -448,21 +448,21 @@ ${operation} - Adjust Config intent4 on sr2
     Run Keyword
     ...    Verify Config on node
     ...    sr2
-    ...    "/configure/service/vprn[service-name=vprn987]/admin-state"
+    ...    "/configure/service/vprn[service-name=vprn987]"
     ...    ${intent4}
-    ...    "disable"
+    ...    "admin-state": "disable"
     Run Keyword
     ...    Verify Config on node
     ...    sr2
-    ...    "/configure/service/vprn[service-name=vprn987]/service-id"
+    ...    "/configure/service/vprn[service-name=vprn987]"
     ...    ${intent4}
-    ...    "1104"
+    ...    "service-id": 1104
     Run Keyword
     ...    Verify Config on node
     ...    sr2
-    ...    "/configure/service/vprn[service-name=vprn987]/customer"
+    ...    "/configure/service/vprn[service-name=vprn987]"
     ...    ${intent4}
-    ...    "2"
+    ...    "customer": "2"
 Verify - ${operation} Adjust Config intent4 on sr2
     Wait Until Keyword Succeeds
     ...    2min
