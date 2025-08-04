@@ -252,7 +252,7 @@ ${operation} - Adjust ConfigSet intent1 on ${SDCIO_SROS_NODES}
     ...    sr2
     ...    "/configure/service/vprn[service-name=vprn123]/customer"
     ...    "2"
-Verify - ${operation} ConfigSet intent1 on ${SDCIO_SROS_NODES}
+Verify - ${operation} Adjust ConfigSet intent1 on ${SDCIO_SROS_NODES}
     Wait Until Keyword Succeeds
     ...    2min
     ...    10s
@@ -266,7 +266,7 @@ Verify - ${operation} ConfigSet intent1 on ${SDCIO_SROS_NODES}
     ...    Verify ConfigSet intent on nodes
     ...    "/configure/service/vprn[service-name=vprn123]"
     ...    ${intent1}
-    ...    '"service-id": "101"'
+    ...    '"service-id": 101'
     Wait Until Keyword Succeeds
     ...    2min
     ...    10s
@@ -336,7 +336,7 @@ ${operation} - Adjust ConfigSet intent2 on ${SDCIO_SROS_NODES}
     ...    sr2
     ...    "/configure/service/vprn[service-name=vprn234]/customer"
     ...    "2"
-Verify - ${operation} ConfigSet intent2 on ${SDCIO_SROS_NODES}
+Verify - ${operation} Adjust ConfigSet intent2 on ${SDCIO_SROS_NODES}
     Wait Until Keyword Succeeds
     ...    2min
     ...    10s
@@ -350,7 +350,7 @@ Verify - ${operation} ConfigSet intent2 on ${SDCIO_SROS_NODES}
     ...    Verify ConfigSet intent on nodes
     ...    "/configure/service/vprn[service-name=vprn234]"
     ...    ${intent2}
-    ...    '"service-id": "102"'
+    ...    '"service-id": 102'
     Wait Until Keyword Succeeds
     ...    2min
     ...    10s
@@ -389,7 +389,7 @@ ${operation} - Adjust Config intent3 on sr1
     ...    sr1
     ...    "/configure/service/vprn[service-name=vprn789]/customer"
     ...    "2"
-Verify - ${operation} Config intent3 on sr1
+Verify - ${operation} Adjust Config intent3 on sr1
     Wait Until Keyword Succeeds
     ...    2min
     ...    10s
@@ -405,7 +405,7 @@ Verify - ${operation} Config intent3 on sr1
     ...    sr1
     ...    "/configure/service/vprn[service-name=vprn789]"
     ...    ${intent3}
-    ...    '"service-id": "103"'
+    ...    '"service-id": 103'
     Wait Until Keyword Succeeds
     ...    2min
     ...    10s
@@ -445,7 +445,7 @@ ${operation} - Delete Config intent4 on sr2
     ...    sr2
     ...    "/configure/service/vprn[service-name=vprn987]/customer"
     ...    "2"
-Verify - ${operation} Config intent4 on sr2
+Verify - ${operation} Adjust Config intent4 on sr2
     Wait Until Keyword Succeeds
     ...    2min
     ...    10s
@@ -461,7 +461,7 @@ Verify - ${operation} Config intent4 on sr2
     ...    sr2
     ...    "/configure/service/vprn[service-name=vprn987]"
     ...    ${intent4}
-    ...    '"service-id": "104"'
+    ...    '"service-id": 104'
     Wait Until Keyword Succeeds
     ...    2min
     ...    10s
