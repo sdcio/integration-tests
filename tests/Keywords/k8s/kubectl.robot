@@ -34,7 +34,7 @@ kubectl patch
     [Documentation]    Patch a certain resource via kubectl patch
     [Arguments]    ${resource}    ${resource_name}    ${patch}
     ${rc}    ${output} =    Run And Return Rc And Output
-    ...    kubectl patch ${resource} ${resource_name} -p '${patch}'
+    ...    kubectl patch ${resource} ${resource_name} -p ${patch}
     Log    ${output}
     Should Be Equal As Integers    ${rc}    0
     RETURN    ${rc}    ${output}
