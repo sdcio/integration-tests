@@ -607,8 +607,7 @@ Delete Deviation CR
     [Documentation]    Delete the deviation CR on k8s
     [Arguments]    ${name}
     ${rc}    ${output} =    Run And Return Rc And Output
-    ...    kubectl delete
-    ...    deviation.config.sdcio.dev/${name} -n ${SDCIO_RESOURCE_NAMESPACE} --wait=false
+    ...    kubectl delete deviation.config.sdcio.dev/${name} -n ${SDCIO_RESOURCE_NAMESPACE} --wait=false
     Log    ${output}
     Should Be Equal As Integers    ${rc}    0
     RETURN    ${rc}    ${output}
