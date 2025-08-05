@@ -127,9 +127,9 @@ Verify - ${operation} Deviations ConfigSet intent1-sros persistently applied on 
 Reject Deviation - ${operation} Delete the Deviation CR intent1-sros applied on ${SDCIO_SROS_NODES}
     Run Keyword
     ...    kubectl delete
-    ...    deviation.config.sdcio.dev/intent1-sros-sr1 -n ${SDCIO_RESOURCE_NAMESPACE}
+    ...    'deviation.config.sdcio.dev/intent1-sros-sr1 -n ${SDCIO_RESOURCE_NAMESPACE}'
     ...    kubectl delete 
-    ...    deviation.config.sdcio.dev/intent1-sros-sr2 -n ${SDCIO_RESOURCE_NAMESPACE}
+    ...    'deviation.config.sdcio.dev/intent1-sros-sr2 -n ${SDCIO_RESOURCE_NAMESPACE}'
 
 Verify - ${operation} Rejected Deviations ConfigSet intent1-sros is now gone on ${SDCIO_SROS_NODES}
     Wait Until Keyword Succeeds
@@ -485,7 +485,7 @@ Verify - ${operation} Deviations intent3-sros persistently applied on sr1
 Reject Deviation - ${operation} Delete the Deviation CR intent1-sros applied on ${SDCIO_SROS_NODES}
     Run Keyword
     ...    kubectl delete 
-    ...    deviation.config.sdcio.dev/intent3-sros -n ${SDCIO_RESOURCE_NAMESPACE}
+    ...    'deviation.config.sdcio.dev/intent3-sros -n ${SDCIO_RESOURCE_NAMESPACE}'
 
 Verify - ${operation} Rejected Deviations ConfigSet intent1-sros is now gone on ${SDCIO_SROS_NODES}
     Wait Until Keyword Succeeds
