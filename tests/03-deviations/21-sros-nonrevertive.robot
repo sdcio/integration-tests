@@ -508,7 +508,7 @@ Verify - ${operation} Deviations intent4-sros persistently applied on sr2
 Fully Accept Deviation - ${operation} Patch intent4-sros applied on sr2
     Run Keyword
     ...    kubectl patch
-    ...    configset
+    ...    config
     ...    intent4-sros
     ...    '{"spec": {"config": [{"path":"/","value":{"configure":{"service":{"vprn":{"admin-state":"disable","customer":"2","service-id":"1104","service-name":"vprn987"}}}}}]}}'
 
@@ -551,9 +551,6 @@ Verify - ${operation} Deviations ConfigSet intent4-sros fully accepted on sr2
 Verify Deviation on k8s
     [Documentation]    Verify the deviation CR on k8s, check if the deviation counter is increased
     [Arguments]    ${name}    ${match}
-    ${log} =    Run Keyword And Return
-    ...    kubectl get 
-    ...    deviation.config.sdcio.dev/${name} -n ${SDCIO_RESOURCE_NAMESPACE} -o json
     ${rc}    ${output} =    Run And Return Rc And Output
     ...    kubectl get 
     ...    deviation.config.sdcio.dev/${name} -n ${SDCIO_RESOURCE_NAMESPACE} -o jsonpath='{.spec.deviations}' | jq 'length'
@@ -607,7 +604,7 @@ Delete Deviation CR
     [Documentation]    Delete the deviation CR on k8s
     [Arguments]    ${name}
     ${rc}    ${output} =    Run And Return Rc And Output
-    ...    kubectl delete deviation.config.sdcio.dev/${name} -n ${SDCIO_RESOURCE_NAMESPACE} --wait=false
+    ...    kubectl delete deviation.config.sdcio.dev/${name} -n ${SDCIO_RESOURCE_NAMESPACE}
     Log    ${output}
     Should Be Equal As Integers    ${rc}    0
     RETURN    ${rc}    ${output}
