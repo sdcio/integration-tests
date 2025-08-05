@@ -316,7 +316,7 @@ Verify - ${operation} Deviations ConfigSet intent2-sros partially accepted on ${
     ...    Verify Config on node
     ...    sr2
     ...    "/configure/service/vprn[service-name=vprn234]"
-    ...    ${intent1}
+    ...    ${intent2}
     ...    "admin-state": "disable"
     Wait Until Keyword Succeeds
     ...    2min
@@ -324,7 +324,7 @@ Verify - ${operation} Deviations ConfigSet intent2-sros partially accepted on ${
     ...    Verify Config on node
     ...    sr2
     ...    "/configure/service/vprn[service-name=vprn234]"
-    ...    ${intent1}
+    ...    ${intent2}
     ...    "service-id": 1102
     Wait Until Keyword Succeeds
     ...    2min
@@ -332,7 +332,7 @@ Verify - ${operation} Deviations ConfigSet intent2-sros partially accepted on ${
     ...    Verify Config on node
     ...    sr2
     ...    "/configure/service/vprn[service-name=vprn234]"
-    ...    ${intent1}
+    ...    ${intent2}
     ...    "customer": "2"
     Wait Until Keyword Succeeds
     ...    2min
@@ -340,7 +340,7 @@ Verify - ${operation} Deviations ConfigSet intent2-sros partially accepted on ${
     ...    Verify Config on node
     ...    sr1
     ...    "/configure/service/vprn[service-name=vprn234]"
-    ...    ${intent1}
+    ...    ${intent2}
     ...    "admin-state": "disable"
     Wait Until Keyword Succeeds
     ...    2min
@@ -348,7 +348,7 @@ Verify - ${operation} Deviations ConfigSet intent2-sros partially accepted on ${
     ...    Verify Config on node
     ...    sr1
     ...    "/configure/service/vprn[service-name=vprn234]"
-    ...    ${intent1}
+    ...    ${intent2}
     ...    "service-id": 1102
     Wait Until Keyword Succeeds
     ...    2min
@@ -356,7 +356,7 @@ Verify - ${operation} Deviations ConfigSet intent2-sros partially accepted on ${
     ...    Verify Config on node
     ...    sr1
     ...    "/configure/service/vprn[service-name=vprn234]"
-    ...    ${intent1}
+    ...    ${intent2}
     ...    "customer": "2"
 
 Fully Accept Deviation - ${operation} Patch intent2-sros applied on ${SDCIO_SROS_NODES}
@@ -386,7 +386,7 @@ Verify - ${operation} Deviations ConfigSet intent2-sros fully accepted on ${SDCI
     ...    Verify Config on node
     ...    sr2
     ...    "/configure/service/vprn[service-name=vprn234]"
-    ...    ${intent1}
+    ...    ${intent2}
     ...    "admin-state": "disable"
     Wait Until Keyword Succeeds
     ...    2min
@@ -394,7 +394,7 @@ Verify - ${operation} Deviations ConfigSet intent2-sros fully accepted on ${SDCI
     ...    Verify Config on node
     ...    sr2
     ...    "/configure/service/vprn[service-name=vprn234]"
-    ...    ${intent1}
+    ...    ${intent2}
     ...    "service-id": 1102
     Wait Until Keyword Succeeds
     ...    2min
@@ -402,7 +402,7 @@ Verify - ${operation} Deviations ConfigSet intent2-sros fully accepted on ${SDCI
     ...    Verify Config on node
     ...    sr2
     ...    "/configure/service/vprn[service-name=vprn234]"
-    ...    ${intent1}
+    ...    ${intent2}
     ...    "customer": "2"
     Wait Until Keyword Succeeds
     ...    2min
@@ -410,7 +410,7 @@ Verify - ${operation} Deviations ConfigSet intent2-sros fully accepted on ${SDCI
     ...    Verify Config on node
     ...    sr1
     ...    "/configure/service/vprn[service-name=vprn234]"
-    ...    ${intent1}
+    ...    ${intent2}
     ...    "admin-state": "disable"
     Wait Until Keyword Succeeds
     ...    2min
@@ -418,7 +418,7 @@ Verify - ${operation} Deviations ConfigSet intent2-sros fully accepted on ${SDCI
     ...    Verify Config on node
     ...    sr1
     ...    "/configure/service/vprn[service-name=vprn234]"
-    ...    ${intent1}
+    ...    ${intent2}
     ...    "service-id": 1102
     Wait Until Keyword Succeeds
     ...    2min
@@ -426,7 +426,7 @@ Verify - ${operation} Deviations ConfigSet intent2-sros fully accepted on ${SDCI
     ...    Verify Config on node
     ...    sr1
     ...    "/configure/service/vprn[service-name=vprn234]"
-    ...    ${intent1}
+    ...    ${intent2}
     ...    "customer": "2"
 
 ${operation} - Adjust Config intent3 on sr1
