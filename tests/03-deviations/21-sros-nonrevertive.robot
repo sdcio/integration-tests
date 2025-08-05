@@ -126,8 +126,8 @@ Verify - ${operation} Deviations ConfigSet intent1-sros persistently applied on 
 # Reject the intent (delete the deviation CR), verify the intent is back in it's original state.
 Reject Deviation - ${operation} Delete the Deviation CR intent1-sros applied on ${SDCIO_SROS_NODES}
     Run Keyword
-    ...    kubectl delete    -n ${SDCIO_RESOURCE_NAMESPACE} deviation.config.sdcio.dev/intent1-sros-sr1
-    ...    kubectl delete    -n ${SDCIO_RESOURCE_NAMESPACE} deviation.config.sdcio.dev/intent1-sros-sr2
+    ...    kubectl delete    deviation.config.sdcio.dev/intent1-sros-sr1
+    ...    kubectl delete    deviation.config.sdcio.dev/intent1-sros-sr2
 
 Verify - ${operation} Rejected Deviations ConfigSet intent1-sros is now gone on ${SDCIO_SROS_NODES}
     Wait Until Keyword Succeeds
@@ -244,7 +244,7 @@ Verify - ${operation} Deviations ConfigSet intent2-sros persistently applied on 
     ...    Verify Config on node
     ...    sr2
     ...    "/configure/service/vprn[service-name=vprn234]"
-    ...    ${intent1}
+    ...    ${intent2}
     ...    "admin-state": "disable"
     Wait Until Keyword Succeeds
     ...    2min
@@ -252,7 +252,7 @@ Verify - ${operation} Deviations ConfigSet intent2-sros persistently applied on 
     ...    Verify Config on node
     ...    sr2
     ...    "/configure/service/vprn[service-name=vprn234]"
-    ...    ${intent1}
+    ...    ${intent2}
     ...    "service-id": 1102
     Wait Until Keyword Succeeds
     ...    2min
@@ -260,7 +260,7 @@ Verify - ${operation} Deviations ConfigSet intent2-sros persistently applied on 
     ...    Verify Config on node
     ...    sr2
     ...    "/configure/service/vprn[service-name=vprn234]"
-    ...    ${intent1}
+    ...    ${intent2}
     ...    "customer": "2"
     Wait Until Keyword Succeeds
     ...    2min
@@ -268,7 +268,7 @@ Verify - ${operation} Deviations ConfigSet intent2-sros persistently applied on 
     ...    Verify Config on node
     ...    sr1
     ...    "/configure/service/vprn[service-name=vprn234]"
-    ...    ${intent1}
+    ...    ${intent2}
     ...    "admin-state": "disable"
     Wait Until Keyword Succeeds
     ...    2min
@@ -276,7 +276,7 @@ Verify - ${operation} Deviations ConfigSet intent2-sros persistently applied on 
     ...    Verify Config on node
     ...    sr1
     ...    "/configure/service/vprn[service-name=vprn234]"
-    ...    ${intent1}
+    ...    ${intent2}
     ...    "service-id": 1102
     Wait Until Keyword Succeeds
     ...    2min
@@ -284,7 +284,7 @@ Verify - ${operation} Deviations ConfigSet intent2-sros persistently applied on 
     ...    Verify Config on node
     ...    sr1
     ...    "/configure/service/vprn[service-name=vprn234]"
-    ...    ${intent1}
+    ...    ${intent2}
     ...    "customer": "2"
 
 # Accept the deviation (patch the original intent CR), verify the deviation counter is reset to 0, verify the state on the device matches the patched intent.
@@ -482,7 +482,7 @@ Verify - ${operation} Deviations intent3-sros persistently applied on sr1
 # Reject the intent (delete the deviation CR), verify the intent is back in it's original state.
 Reject Deviation - ${operation} Delete the Deviation CR intent1-sros applied on ${SDCIO_SROS_NODES}
     Run Keyword
-    ...    kubectl delete    -n ${SDCIO_RESOURCE_NAMESPACE} deviation.config.sdcio.dev/intent3-sros
+    ...    kubectl delete    deviation.config.sdcio.dev/intent3-sros
 
 Verify - ${operation} Rejected Deviations ConfigSet intent1-sros is now gone on ${SDCIO_SROS_NODES}
     Wait Until Keyword Succeeds
