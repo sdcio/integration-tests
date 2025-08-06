@@ -305,13 +305,13 @@ Verify - ${operation} Deviation counter is 0 on intent2-sros-sr1 and intent2-sro
     ...    10s
     ...    Verify Deviation on k8s
     ...    intent2-sros-sr1
-    ...    0
+    ...    2
     Wait Until Keyword Succeeds
     ...    2min
     ...    10s
     ...    Verify Deviation on k8s
     ...    intent2-sros-sr2
-    ...    0
+    ...    2
     
 Verify - ${operation} Deviations ConfigSet intent2-sros are partially accepted on ${SDCIO_SROS_NODES}
     Wait Until Keyword Succeeds
@@ -321,7 +321,7 @@ Verify - ${operation} Deviations ConfigSet intent2-sros are partially accepted o
     ...    sr1
     ...    "/configure/service/vprn[service-name=vprn234]"
     ...    ${intent2}
-    ...    "admin-state": "enable"
+    ...    "admin-state": "disable"
     Wait Until Keyword Succeeds
     ...    2min
     ...    10s
@@ -329,7 +329,7 @@ Verify - ${operation} Deviations ConfigSet intent2-sros are partially accepted o
     ...    sr1
     ...    "/configure/service/vprn[service-name=vprn234]"
     ...    ${intent2}
-    ...    "service-id": 102
+    ...    "service-id": 1102
     Wait Until Keyword Succeeds
     ...    2min
     ...    10s
@@ -345,7 +345,7 @@ Verify - ${operation} Deviations ConfigSet intent2-sros are partially accepted o
     ...    sr2
     ...    "/configure/service/vprn[service-name=vprn234]"
     ...    ${intent2}
-    ...    "admin-state": "enable"
+    ...    "admin-state": "disable"
     Wait Until Keyword Succeeds
     ...    2min
     ...    10s
@@ -353,7 +353,7 @@ Verify - ${operation} Deviations ConfigSet intent2-sros are partially accepted o
     ...    sr2
     ...    "/configure/service/vprn[service-name=vprn234]"
     ...    ${intent2}
-    ...    "service-id": 102
+    ...    "service-id": 1102
     Wait Until Keyword Succeeds
     ...    2min
     ...    10s
