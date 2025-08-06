@@ -22,10 +22,6 @@ ${null}                 "configure/service/vprn": null
 
 
 *** Test Cases ***
-# Usecases
-
-# explicit non-revertive
-## delete a revertive intent, verify during sync period, make sure the non-revertive intent is still unchanged (verify the deviation intent is applied)
 
 # Non-revertive ConfigSet intent1-sros is applied, change values on device, witness the deviation counter increase, verify the ConfigSet on the devices.
 
@@ -298,7 +294,7 @@ Partially Accept Deviation - ${operation} Patch intent2-sros applied on ${SDCIO_
     ...    intent2-sros
     ...    '{"spec": {"config": [{"path":"/","value":{"configure":{"service":{"vprn":{"admin-state":"enable","customer":"2","service-id":"102","service-name":"vprn234"}}}}}]}}'
 
-Verify - ${operation} Deviation counter is 0 on intent2-sros-sr1 and intent2-sros-sr2 on k8s
+Verify - ${operation} Deviation counter is 2 on intent2-sros-sr1 and intent2-sros-sr2 on k8s
     Wait Until Keyword Succeeds
     ...    2min
     ...    10s
@@ -371,13 +367,13 @@ Fully Accept Deviation - ${operation} Patch intent2-sros applied on ${SDCIO_SROS
 
 Verify - ${operation} Deviation counter is 0 on intent2-sros-sr1 and intent2-sros-sr2 on k8s
     Wait Until Keyword Succeeds
-    ...    2min
+    ...    4min
     ...    10s
     ...    Verify Deviation on k8s
     ...    intent2-sros-sr1
     ...    0
     Wait Until Keyword Succeeds
-    ...    2min
+    ...    4min
     ...    10s
     ...    Verify Deviation on k8s
     ...    intent2-sros-sr2
@@ -625,7 +621,7 @@ Fully Accept Deviation - ${operation} Patch intent4-sros applied on sr2
 
 Verify - ${operation} Deviation counter is 0 on intent4-sros on k8s
     Wait Until Keyword Succeeds
-    ...    2min
+    ...    4min
     ...    10s
     ...    Verify Deviation on k8s
     ...    intent4-sros

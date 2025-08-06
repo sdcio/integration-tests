@@ -22,25 +22,6 @@ ${null}                 "configure/service/vprn": null
 
 
 *** Test Cases ***
-# Usecases
-# implicit revertive
-## Duplicate test cases below for Config, ConfigSet. 
-## delete an intent from the device, Verify during sync period, verify recovery on the device (note: deviation counter should not increase)
-## delete all intents from device, verify during sync period, verify recovery on the device (note: deviation counter should not increase)
-## alter paths of the intent directly on the device, verify during sync period, verify recovery on the device (note: deviation counter should not increase)
-## alter paths of the intent directly on the device, delete an intent against the k8s interface, verify recovery on the device (note: changes triggered on same target by other intent)
-
-# explicit revertive
-## same test cases as above, but patch the intents with a revertive: true flag.
-
-# explicit non-revertive
-## Duplicate test cases below for Config, ConfigSet. 
-## create a non-revertive intent (patch), apply changes on the device, verify after sync period the deviation counter increases, dump the full output of the deviation. (deviation create)
-## delete a revertive intent, verify during sync period, make sure the non-revertive intent is still unchanged (verify the deviation intent is applied)
-## delete the deviation CR, verify during sync period, make sure the intent is back in it's original state (reject the deviation intent)
-## patch the original intent CR partially, verify during sync period, make sure the deviation counter is reset to N-1, verify the state on the device matches the patched intent (accept the deviation partially)
-## patch the original intent CR, verify during sync period, make sure the deviation counter is reset to 0, verify the state on the device matches the patched intent. (accept the deviation intent)
-
 # Delete ConfigSet and Config one by one, from SROS nodes, we will have to wait for the syncPeriod to pass before deviations are calculated. After the syncPeriod, deviations should be 0 and Intent has to be recreated on the device.
 ${operation} - Delete ConfigSet intent1 on ${SDCIO_SROS_NODES}
     Run Keyword
