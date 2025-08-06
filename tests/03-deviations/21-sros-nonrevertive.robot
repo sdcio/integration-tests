@@ -132,7 +132,6 @@ Reject Deviation - ${operation} Delete the Deviation CR (intent1-sros) applied o
     ...    Delete Deviation CR
     ...    intent1-sros-sr2
 
-
 Verify - ${operation} Rejected Deviations (intent1-sros) are now gone on ${SDCIO_SROS_NODES}
     Wait Until Keyword Succeeds
     ...    2min
@@ -363,6 +362,77 @@ Verify - ${operation} Deviations ConfigSet intent2-sros are partially accepted o
     ...    ${intent2}
     ...    "customer": "2"
 
+Fully Accept Deviation - ${operation} Patch intent2-sros applied on ${SDCIO_SROS_NODES}
+    Run Keyword
+    ...    kubectl patch
+    ...    configset
+    ...    intent2-sros
+    ...    '{"spec": {"config": [{"path":"/","value":{"configure":{"service":{"vprn":{"admin-state":"disable","customer":"2","service-id":"1102","service-name":"vprn234"}}}}}]}}'
+
+Verify - ${operation} Deviation counter is 0 on intent2-sros-sr1 and intent2-sros-sr2 on k8s
+    Wait Until Keyword Succeeds
+    ...    2min
+    ...    10s
+    ...    Verify Deviation on k8s
+    ...    intent2-sros-sr1
+    ...    0
+    Wait Until Keyword Succeeds
+    ...    2min
+    ...    10s
+    ...    Verify Deviation on k8s
+    ...    intent2-sros-sr2
+    ...    0
+    
+Verify - ${operation} Deviations ConfigSet intent2-sros are partially accepted on ${SDCIO_SROS_NODES}
+    Wait Until Keyword Succeeds
+    ...    2min
+    ...    10s
+    ...    Verify Config on node
+    ...    sr1
+    ...    "/configure/service/vprn[service-name=vprn234]"
+    ...    ${intent2}
+    ...    "admin-state": "disable"
+    Wait Until Keyword Succeeds
+    ...    2min
+    ...    10s
+    ...    Verify Config on node
+    ...    sr1
+    ...    "/configure/service/vprn[service-name=vprn234]"
+    ...    ${intent2}
+    ...    "service-id": 1102
+    Wait Until Keyword Succeeds
+    ...    2min
+    ...    10s
+    ...    Verify Config on node
+    ...    sr1
+    ...    "/configure/service/vprn[service-name=vprn234]"
+    ...    ${intent2}
+    ...    "customer": "2"
+    Wait Until Keyword Succeeds
+    ...    2min
+    ...    10s
+    ...    Verify Config on node
+    ...    sr2
+    ...    "/configure/service/vprn[service-name=vprn234]"
+    ...    ${intent2}
+    ...    "admin-state": "disable"
+    Wait Until Keyword Succeeds
+    ...    2min
+    ...    10s
+    ...    Verify Config on node
+    ...    sr2
+    ...    "/configure/service/vprn[service-name=vprn234]"
+    ...    ${intent2}
+    ...    "service-id": 1102
+    Wait Until Keyword Succeeds
+    ...    2min
+    ...    10s
+    ...    Verify Config on node
+    ...    sr2
+    ...    "/configure/service/vprn[service-name=vprn234]"
+    ...    ${intent2}
+    ...    "customer": "2"
+
 ${operation} - Create Deviation: adjust config (intent3-sros) on sr1
     Run Keyword
     ...    Set Config on node
@@ -504,6 +574,47 @@ Verify - ${operation} Deviations (intent4-sros) are persistently applied on sr2
     ...    "customer": "2"
 
 # Accept the deviation (patch the original intent CR), verify the deviation counter is reset to 0, verify the state on the device matches the patched intent.
+
+Partially Accept Deviation - ${operation} Patch intent4-sros applied on sr2
+    Run Keyword
+    ...    kubectl patch
+    ...    config
+    ...    intent4-sros
+    ...    '{"spec": {"config": [{"path":"/","value":{"configure":{"service":{"vprn":{"admin-state":"enable","customer":"2","service-id":"104","service-name":"vprn987"}}}}}]}}'
+
+Verify - ${operation} Deviation counter is 2 on intent4-sros on k8s
+    Wait Until Keyword Succeeds
+    ...    2min
+    ...    10s
+    ...    Verify Deviation on k8s
+    ...    intent4-sros
+    ...    2
+
+Verify - ${operation} Deviations Config intent4-sros is fully accepted on sr2
+    Wait Until Keyword Succeeds
+    ...    2min
+    ...    10s
+    ...    Verify Config on node
+    ...    sr2
+    ...    "/configure/service/vprn[service-name=vprn987]"
+    ...    ${intent4}
+    ...    "admin-state": "disable"
+    Wait Until Keyword Succeeds
+    ...    2min
+    ...    10s
+    ...    Verify Config on node
+    ...    sr2
+    ...    "/configure/service/vprn[service-name=vprn987]"
+    ...    ${intent4}
+    ...    "service-id": 1104
+    Wait Until Keyword Succeeds
+    ...    2min
+    ...    10s
+    ...    Verify Config on node
+    ...    sr2
+    ...    "/configure/service/vprn[service-name=vprn987]"
+    ...    ${intent4}
+    ...    "customer": "2"
 
 Fully Accept Deviation - ${operation} Patch intent4-sros applied on sr2
     Run Keyword
