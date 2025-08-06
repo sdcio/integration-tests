@@ -29,7 +29,7 @@ ${null}                 "configure/service/vprn": null
 
 # Non-revertive ConfigSet intent1-sros is applied, change values on device, witness the deviation counter increase, verify the ConfigSet on the devices.
 
-${operation} - Adjust ConfigSet intent1 on ${SDCIO_SROS_NODES}
+${operation} - Create Deviation: adjust config (intent1-sros) on ${SDCIO_SROS_NODES}
     Run Keyword
     ...    Set Config on node
     ...    sr1
@@ -73,7 +73,7 @@ Verify - ${operation} Deviation counter is 3 on intent1-sros-sr1 and intent1-sro
     ...    Verify Deviation on k8s
     ...    intent1-sros-sr2
     ...    3
-Verify - ${operation} Deviations ConfigSet intent1-sros persistently applied on ${SDCIO_SROS_NODES}
+Verify - ${operation} Deviations (intent1-sros) are persistently applied on ${SDCIO_SROS_NODES}
     Wait Until Keyword Succeeds
     ...    2min
     ...    10s
@@ -124,7 +124,7 @@ Verify - ${operation} Deviations ConfigSet intent1-sros persistently applied on 
     ...    "customer": "2"
 
 # Reject the intent (delete the deviation CR), verify the intent is back in it's original state.
-Reject Deviation - ${operation} Delete the Deviation CR intent1-sros applied on ${SDCIO_SROS_NODES}
+Reject Deviation - ${operation} Delete the Deviation CR (intent1-sros) applied on ${SDCIO_SROS_NODES}
     Run Keyword
     ...    Delete Deviation CR
     ...    intent1-sros-sr1
@@ -133,31 +133,7 @@ Reject Deviation - ${operation} Delete the Deviation CR intent1-sros applied on 
     ...    intent1-sros-sr2
 
 
-Verify - ${operation} Rejected Deviations ConfigSet intent1-sros is now gone on ${SDCIO_SROS_NODES}
-    Wait Until Keyword Succeeds
-    ...    2min
-    ...    10s
-    ...    Verify Config on node
-    ...    sr2
-    ...    "/configure/service/vprn[service-name=vprn123]"
-    ...    ${intent1}
-    ...    "admin-state": "enable"
-    Wait Until Keyword Succeeds
-    ...    2min
-    ...    10s
-    ...    Verify Config on node
-    ...    sr2
-    ...    "/configure/service/vprn[service-name=vprn123]"
-    ...    ${intent1}
-    ...    "service-id": 101
-    Wait Until Keyword Succeeds
-    ...    2min
-    ...    10s
-    ...    Verify Config on node
-    ...    sr2
-    ...    "/configure/service/vprn[service-name=vprn123]"
-    ...    ${intent1}
-    ...    "customer": "1"
+Verify - ${operation} Rejected Deviations (intent1-sros) are now gone on ${SDCIO_SROS_NODES}
     Wait Until Keyword Succeeds
     ...    2min
     ...    10s
@@ -182,8 +158,32 @@ Verify - ${operation} Rejected Deviations ConfigSet intent1-sros is now gone on 
     ...    "/configure/service/vprn[service-name=vprn123]"
     ...    ${intent1}
     ...    "customer": "1"
+    Wait Until Keyword Succeeds
+    ...    2min
+    ...    10s
+    ...    Verify Config on node
+    ...    sr2
+    ...    "/configure/service/vprn[service-name=vprn123]"
+    ...    ${intent1}
+    ...    "admin-state": "enable"
+    Wait Until Keyword Succeeds
+    ...    2min
+    ...    10s
+    ...    Verify Config on node
+    ...    sr2
+    ...    "/configure/service/vprn[service-name=vprn123]"
+    ...    ${intent1}
+    ...    "service-id": 101
+    Wait Until Keyword Succeeds
+    ...    2min
+    ...    10s
+    ...    Verify Config on node
+    ...    sr2
+    ...    "/configure/service/vprn[service-name=vprn123]"
+    ...    ${intent1}
+    ...    "customer": "1"
 
-Verify - ${operation} Deviation counter is 0 on intent1-sros-sr1 and intent1-sros-sr2 on k8s
+Verify - ${operation} Deviation counter == 0 for intent1-sros-sr1 and intent1-sros-sr2 on k8s
     Wait Until Keyword Succeeds
     ...    2min
     ...    10s
@@ -197,7 +197,7 @@ Verify - ${operation} Deviation counter is 0 on intent1-sros-sr1 and intent1-sro
     ...    intent1-sros-sr2
     ...    0
 
-${operation} - Adjust ConfigSet intent2 on ${SDCIO_SROS_NODES}
+${operation} - Create Deviation: adjust config (intent2-sros) on ${SDCIO_SROS_NODES}
     Run Keyword
     ...    Set Config on node
     ...    sr1
@@ -241,12 +241,12 @@ Verify - ${operation} Deviation counter is 3 on intent2-sros-sr1 and intent2-sro
     ...    Verify Deviation on k8s
     ...    intent2-sros-sr2
     ...    3
-Verify - ${operation} Deviations ConfigSet intent2-sros persistently applied on ${SDCIO_SROS_NODES}
+Verify - ${operation} Deviations (intent2-sros) are persistently applied on ${SDCIO_SROS_NODES}
     Wait Until Keyword Succeeds
     ...    2min
     ...    10s
     ...    Verify Config on node
-    ...    sr2
+    ...    sr1
     ...    "/configure/service/vprn[service-name=vprn234]"
     ...    ${intent2}
     ...    "admin-state": "disable"
@@ -254,7 +254,7 @@ Verify - ${operation} Deviations ConfigSet intent2-sros persistently applied on 
     ...    2min
     ...    10s
     ...    Verify Config on node
-    ...    sr2
+    ...    sr1
     ...    "/configure/service/vprn[service-name=vprn234]"
     ...    ${intent2}
     ...    "service-id": 1102
@@ -262,7 +262,7 @@ Verify - ${operation} Deviations ConfigSet intent2-sros persistently applied on 
     ...    2min
     ...    10s
     ...    Verify Config on node
-    ...    sr2
+    ...    sr1
     ...    "/configure/service/vprn[service-name=vprn234]"
     ...    ${intent2}
     ...    "customer": "2"
@@ -270,7 +270,7 @@ Verify - ${operation} Deviations ConfigSet intent2-sros persistently applied on 
     ...    2min
     ...    10s
     ...    Verify Config on node
-    ...    sr1
+    ...    sr2
     ...    "/configure/service/vprn[service-name=vprn234]"
     ...    ${intent2}
     ...    "admin-state": "disable"
@@ -278,7 +278,7 @@ Verify - ${operation} Deviations ConfigSet intent2-sros persistently applied on 
     ...    2min
     ...    10s
     ...    Verify Config on node
-    ...    sr1
+    ...    sr2
     ...    "/configure/service/vprn[service-name=vprn234]"
     ...    ${intent2}
     ...    "service-id": 1102
@@ -286,7 +286,7 @@ Verify - ${operation} Deviations ConfigSet intent2-sros persistently applied on 
     ...    2min
     ...    10s
     ...    Verify Config on node
-    ...    sr1
+    ...    sr2
     ...    "/configure/service/vprn[service-name=vprn234]"
     ...    ${intent2}
     ...    "customer": "2"
@@ -299,26 +299,26 @@ Partially Accept Deviation - ${operation} Patch intent2-sros applied on ${SDCIO_
     ...    intent2-sros
     ...    '{"spec": {"config": [{"path":"/","value":{"configure":{"service":{"vprn":{"admin-state":"enable","customer":"2","service-id":"102","service-name":"vprn234"}}}}}]}}'
 
-Verify - ${operation} Deviation counter intent2-sros-sr1 and intent2-sros-sr2 on k8s
+Verify - ${operation} Deviation counter is 0 on intent2-sros-sr1 and intent2-sros-sr2 on k8s
     Wait Until Keyword Succeeds
     ...    2min
     ...    10s
     ...    Verify Deviation on k8s
     ...    intent2-sros-sr1
-    ...    2
+    ...    0
     Wait Until Keyword Succeeds
     ...    2min
     ...    10s
     ...    Verify Deviation on k8s
     ...    intent2-sros-sr2
-    ...    2
+    ...    0
     
-Verify - ${operation} Deviations ConfigSet intent2-sros partially accepted on ${SDCIO_SROS_NODES}
+Verify - ${operation} Deviations ConfigSet intent2-sros are partially accepted on ${SDCIO_SROS_NODES}
     Wait Until Keyword Succeeds
     ...    2min
     ...    10s
     ...    Verify Config on node
-    ...    sr2
+    ...    sr1
     ...    "/configure/service/vprn[service-name=vprn234]"
     ...    ${intent2}
     ...    "admin-state": "enable"
@@ -326,7 +326,7 @@ Verify - ${operation} Deviations ConfigSet intent2-sros partially accepted on ${
     ...    2min
     ...    10s
     ...    Verify Config on node
-    ...    sr2
+    ...    sr1
     ...    "/configure/service/vprn[service-name=vprn234]"
     ...    ${intent2}
     ...    "service-id": 102
@@ -334,7 +334,7 @@ Verify - ${operation} Deviations ConfigSet intent2-sros partially accepted on ${
     ...    2min
     ...    10s
     ...    Verify Config on node
-    ...    sr2
+    ...    sr1
     ...    "/configure/service/vprn[service-name=vprn234]"
     ...    ${intent2}
     ...    "customer": "2"
@@ -342,7 +342,7 @@ Verify - ${operation} Deviations ConfigSet intent2-sros partially accepted on ${
     ...    2min
     ...    10s
     ...    Verify Config on node
-    ...    sr1
+    ...    sr2
     ...    "/configure/service/vprn[service-name=vprn234]"
     ...    ${intent2}
     ...    "admin-state": "enable"
@@ -350,7 +350,7 @@ Verify - ${operation} Deviations ConfigSet intent2-sros partially accepted on ${
     ...    2min
     ...    10s
     ...    Verify Config on node
-    ...    sr1
+    ...    sr2
     ...    "/configure/service/vprn[service-name=vprn234]"
     ...    ${intent2}
     ...    "service-id": 102
@@ -358,12 +358,12 @@ Verify - ${operation} Deviations ConfigSet intent2-sros partially accepted on ${
     ...    2min
     ...    10s
     ...    Verify Config on node
-    ...    sr1
+    ...    sr2
     ...    "/configure/service/vprn[service-name=vprn234]"
     ...    ${intent2}
     ...    "customer": "2"
 
-${operation} - Adjust Config intent3 on sr1
+${operation} - Create Deviation: adjust config (intent3-sros) on sr1
     Run Keyword
     ...    Set Config on node
     ...    sr1
@@ -380,7 +380,7 @@ ${operation} - Adjust Config intent3 on sr1
     ...    "/configure/service/vprn[service-name=vprn789]/customer"
     ...    '"2"'
 
-Verify - ${operation} Deviation counter intent3-sros on k8s
+Verify - ${operation} Deviation counter is 3 on intent3-sros on k8s
     Wait Until Keyword Succeeds
     ...    2min
     ...    10s
@@ -388,7 +388,7 @@ Verify - ${operation} Deviation counter intent3-sros on k8s
     ...    intent3-sros
     ...    3
 
-Verify - ${operation} Deviations intent3-sros persistently applied on sr1
+Verify - ${operation} Deviations (intent3-sros) are persistently applied on sr1
     Wait Until Keyword Succeeds
     ...    2min
     ...    10s
@@ -419,7 +419,7 @@ Reject Deviation - ${operation} Delete the Deviation CR intent3-sros applied on 
     ...    Delete Deviation CR
     ...    intent3-sros
 
-Verify - ${operation} Rejected Deviations ConfigSet intent3-sros is now gone on sr1
+Verify - ${operation} Rejected Deviations (intent3-sros) is now gone on sr1
     Wait Until Keyword Succeeds
     ...    2min
     ...    10s
@@ -452,7 +452,7 @@ Verify - ${operation} Deviation counter is reset intent3-sros on k8s
     ...    intent3-sros
     ...    0
 
-${operation} - Adjust Config intent4 on sr2
+${operation} - Create Deviation: adjust config (intent4-sros) on sr2
     Run Keyword
     ...    Set Config on node
     ...    sr2
@@ -469,7 +469,7 @@ ${operation} - Adjust Config intent4 on sr2
     ...    "/configure/service/vprn[service-name=vprn987]/customer"
     ...    '"2"'
 
-Verify - ${operation} Deviation counter 3 intent4-sros on k8s
+Verify - ${operation} Deviation counter is 3 on intent4-sros on k8s
     Wait Until Keyword Succeeds
     ...    2min
     ...    10s
@@ -477,7 +477,7 @@ Verify - ${operation} Deviation counter 3 intent4-sros on k8s
     ...    intent4-sros
     ...    3
 
-Verify - ${operation} Deviations intent4-sros persistently applied on sr2
+Verify - ${operation} Deviations (intent4-sros) are persistently applied on sr2
     Wait Until Keyword Succeeds
     ...    2min
     ...    10s
@@ -512,7 +512,7 @@ Fully Accept Deviation - ${operation} Patch intent4-sros applied on sr2
     ...    intent4-sros
     ...    '{"spec": {"config": [{"path":"/","value":{"configure":{"service":{"vprn":{"admin-state":"disable","customer":"2","service-id":"1104","service-name":"vprn987"}}}}}]}}'
 
-Verify - ${operation} Deviation counter 0 intent4-sros on k8s
+Verify - ${operation} Deviation counter is 0 on intent4-sros on k8s
     Wait Until Keyword Succeeds
     ...    2min
     ...    10s
@@ -520,7 +520,7 @@ Verify - ${operation} Deviation counter 0 intent4-sros on k8s
     ...    intent4-sros
     ...    0
 
-Verify - ${operation} Deviations ConfigSet intent4-sros fully accepted on sr2
+Verify - ${operation} Deviations Config intent4-sros is fully accepted on sr2
     Wait Until Keyword Succeeds
     ...    2min
     ...    10s
@@ -552,11 +552,11 @@ Verify Deviation on k8s
     [Documentation]    Verify the deviation CR on k8s, check if the deviation counter is increased
     [Arguments]    ${name}    ${match}
     ${rc}    ${output} =    Run And Return Rc And Output
-    ...    kubectl get 
-    ...    deviation.config.sdcio.dev/${name} -n ${SDCIO_RESOURCE_NAMESPACE} -o jsonpath='{.spec.deviations}' | jq 'length'
-    Log    ${log}
+    ...    kubectl get deviation.config.sdcio.dev/${name} -n ${SDCIO_RESOURCE_NAMESPACE} -o jsonpath='{.spec.deviations}' | jq 'length'
+    Log    ${output}
+    ${result} =	    Convert To Integer    ${output}
     Should Be Equal As Integers    ${rc}    0
-    Should Be Equal As Integers    ${output}    ${match}
+    Should Be Equal As Integers    ${result}    ${match}
 
 Verify ConfigSet intent on nodes
     [Documentation]    Iterates through the SDCIO_SROS_NODES, validates if the output contains $intent and $adminstate for gNMI $path
