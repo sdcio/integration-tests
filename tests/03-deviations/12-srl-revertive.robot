@@ -106,7 +106,7 @@ Verify - ${operation} Config intent3-srl is recreated on srl1
 ${operation} - Delete Config intent4-srl on srl2
     Run Keyword
     ...    Delete Config on node
-    ...    srl4
+    ...    srl2
     ...    "/network-instance[name=vrf4]"
 
 Verify - ${operation} Config intent4-srl is gone on srl2
@@ -268,6 +268,7 @@ ${operation} - Adjust ConfigSet intent1-srl on ${SDCIO_SRL_NODES}
     ...    srl2
     ...    "/network-instance[name=vrf1]/protocols/bgp/afi-safi[afi-safi-name=ipv6-unicast]/admin-state"
     ...    "disable"
+
 Verify - ${operation} Adjust ConfigSet intent1-srl on ${SDCIO_SRL_NODES}
     Wait Until Keyword Succeeds
     ...    2min
@@ -584,7 +585,7 @@ Verify - ${operation} Adjust Config intent4-srl on srl2
     ...    srl2
     ...    "/network-instance[name=vrf4]/protocols/bgp/autonomous-system"
     ...    "Path": "network-instance[name=vrf4]/protocols/bgp/autonomous-system"
-    ...    "network-instance/protocols/bgp/autonomous-system": 65003
+    ...    "network-instance/protocols/bgp/autonomous-system": 65004
     Wait Until Keyword Succeeds
     ...    2min
     ...    10s
