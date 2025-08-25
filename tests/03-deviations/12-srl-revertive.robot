@@ -83,7 +83,7 @@ Verify - ${operation} ConfigSet intent2-srl is recreated on ${SDCIO_SRL_NODES}
 ${operation} - Delete Config intent3-srl on srl1
     Run Keyword
     ...    Delete Config on node
-    ...    srl3
+    ...    srl1
     ...    "/network-instance[name=vrf3]"
 
 Verify - ${operation} Config intent3-srl is gone on srl1
@@ -648,7 +648,7 @@ Set Config on node
     [Documentation]    Delete config from a node using gNMI.
     [Arguments]    ${node}    ${path}    ${value}
     ${rc}    ${output} =    Run And Return Rc And Output
-    ...    gnmic -a ${${node}} -p 57400 --skip-verify -e PROTO -u ${SRL_USERNAME} -p ${SRL_PASSWORD} set --update-path ${path} --update-value ${value}
+    ...    gnmic -a ${${node}} -p 57400 --skip-verify -e JSON_IETF -u ${SRL_USERNAME} -p ${SRL_PASSWORD} set --update-path ${path} --update-value ${value}
     Log    ${output}
     Should Be Equal As Integers    ${rc}    0
     RETURN    ${rc}    ${output}
