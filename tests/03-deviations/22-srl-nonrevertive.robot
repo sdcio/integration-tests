@@ -154,7 +154,7 @@ Verify - ${operation} Deviations (intent1-srl) are persistently applied on ${SDC
     ...    Verify ConfigSet intent on nodes
     ...    "/interface[name=ethernet-1/1]/subinterface[index=0]/vlan/encap/single-tagged/vlan-id"
     ...    "Path": "interface[name=ethernet-1/1]/subinterface[index=0]/vlan/encap/single-tagged/vlan-id"
-    ...    "interface/subinterface/vlan/encap/single-tagged/vlan-id": 1000
+    ...    "interface/subinterface/vlan/encap/single-tagged/vlan-id": 100
     Wait Until Keyword Succeeds
     ...    2min
     ...    10s
@@ -293,7 +293,7 @@ ${operation} - Create Deviation: adjust config (intent2-srl) on ${SDCIO_SRL_NODE
     ...    Set Config on node
     ...    srl2
     ...    "/interface[name=ethernet-1/2]/description"
-    ...    "Deviation revertive test - override description intent1"
+    ...    "Deviation revertive test - override description intent2"
     Run Keyword
     ...    Set Config on node
     ...    srl2
@@ -323,7 +323,7 @@ ${operation} - Create Deviation: adjust config (intent2-srl) on ${SDCIO_SRL_NODE
     ...    Set Config on node
     ...    srl3
     ...    "/interface[name=ethernet-1/2]/description"
-    ...    "Deviation revertive test - override description intent1"
+    ...    "Deviation revertive test - override description intent2"
     Run Keyword
     ...    Set Config on node
     ...    srl3
