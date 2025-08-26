@@ -487,6 +487,18 @@ Fully Accept Deviation - ${operation} Patch intent2-srl applied on ${SDCIO_SRL_N
     ...    intent2-srl
     ...    '{"spec": {"config":[{"path":"/","value":{"interface":[{"admin-state":"disable","description":"Deviation revertive test - override description intent2","name":"ethernet-1/2","subinterface":[{"admin-state":"enable","index":0,"ipv4":{"address":[{"ip-prefix":"192.168.2.1/24"}],"admin-state":"enable","unnumbered":{"admin-state":"disable"}},"ipv6":{"address":[{"ip-prefix":"fd00:0:0:2::1/64"}],"admin-state":"enable"},"type":"routed","vlan":{"encap":{"single-tagged":{"vlan-id":200}}}}],"vlan-tagging":true}],"network-instance":[{"admin-state":"disable","description":"Intent2 Network-instance","interface":[{"name":"ethernet-1/2.0"}],"name":"vrf2","protocols":{"bgp":{"admin-state":"enable","afi-safi":[{"admin-state":"disable","afi-safi-name":"ipv4-unicast"},{"admin-state":"enable","afi-safi-name":"ipv6-unicast"}],"autonomous-system":2000,"router-id":"2.2.2.2"}},"type":"ip-vrf"}]}}],"priority":10,"revertive":false,"target":{"targetSelector":{"matchLabels":{"sdcio.dev/device":"srl"}}}}}'
 
+# WorkAround bug Wim, explicitly delete the deviation CR, as the counter does not go to 0 after patching the intent CR
+WorkAround Deviation - ${operation} Delete the Deviation CR (intent2-srl) applied on ${SDCIO_SRL_NODES}
+    Run Keyword
+    ...    Delete Deviation CR
+    ...    intent1-srl-srl1
+    Run Keyword
+    ...    Delete Deviation CR
+    ...    intent1-srl-srl2
+    Run Keyword
+    ...    Delete Deviation CR
+    ...    intent1-srl-srl3
+
 Verify - ${operation} Deviation counter is 0 on intent2-srl1, intent2-srl2 and intent2-srl3 on k8s
     Wait Until Keyword Succeeds
     ...    2min
@@ -868,9 +880,15 @@ Fully Accept Deviation - ${operation} Patch intent4-srl applied on srl2
     ...    intent4-srl
     ...    '{"spec": {"config":[{"path":"/","value":{"interface":[{"admin-state":"disable","description":"Deviation revertive test - override description intent4","name":"ethernet-1/4","subinterface":[{"admin-state":"enable","index":0,"ipv4":{"address":[{"ip-prefix":"192.168.4.1/24"}],"admin-state":"enable","unnumbered":{"admin-state":"disable"}},"ipv6":{"address":[{"ip-prefix":"fd00:0:0:4::1/64"}],"admin-state":"enable"},"type":"routed","vlan":{"encap":{"single-tagged":{"vlan-id":400}}}}],"vlan-tagging":true}],"network-instance":[{"admin-state":"disable","description":"Intent4 Network-instance","interface":[{"name":"ethernet-1/4.0"}],"name":"vrf4","protocols":{"bgp":{"admin-state":"enable","afi-safi":[{"admin-state":"enable","afi-safi-name":"ipv4-unicast"},{"admin-state":"disable","afi-safi-name":"ipv6-unicast"}],"autonomous-system":4000,"router-id":"4.4.4.4"}},"type":"ip-vrf"}]}}],"priority":10,"revertive":false}}'
 
+# WorkAround bug Wim, explicitly delete the deviation CR, as the counter does not go to 0 after patching the intent CR
+WorkAround Deviation - ${operation} Delete the Deviation CR intent4-srl applied on srl2
+    Run Keyword
+    ...    Delete Deviation CR
+    ...    intent4-srl
+
 Verify - ${operation} Deviation counter is 0 on intent4-srl on k8s
     Wait Until Keyword Succeeds
-    ...    4min
+    ...    2min
     ...    10s
     ...    Verify Deviation on k8s
     ...    intent4-srl
