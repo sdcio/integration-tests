@@ -491,13 +491,13 @@ Fully Accept Deviation - ${operation} Patch intent2-srl applied on ${SDCIO_SRL_N
 WorkAround Deviation - ${operation} Delete the Deviation CR (intent2-srl) applied on ${SDCIO_SRL_NODES}
     Run Keyword
     ...    Delete Deviation CR
-    ...    intent1-srl-srl1
+    ...    intent2-srl-srl1
     Run Keyword
     ...    Delete Deviation CR
-    ...    intent1-srl-srl2
+    ...    intent2-srl-srl2
     Run Keyword
     ...    Delete Deviation CR
-    ...    intent1-srl-srl3
+    ...    intent2-srl-srl3
 
 Verify - ${operation} Deviation counter is 0 on intent2-srl1, intent2-srl2 and intent2-srl3 on k8s
     Wait Until Keyword Succeeds
