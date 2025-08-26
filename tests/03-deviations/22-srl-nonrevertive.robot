@@ -823,7 +823,7 @@ Verify - ${operation} Deviation counter is 3 on intent4-srl on k8s
     ...    intent4-srl
     ...    3
 
-Verify - ${operation} Deviations Config intent4-srl is fully accepted on srl2
+Verify - ${operation} Deviations Config intent4-srl is partially accepted on srl2
     Wait Until Keyword Succeeds
     ...    2min
     ...    10s
