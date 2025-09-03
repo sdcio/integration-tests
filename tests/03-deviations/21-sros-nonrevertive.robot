@@ -379,7 +379,7 @@ Verify - ${operation} Deviation counter is 0 on intent2-sros-sr1 and intent2-sro
     ...    intent2-sros-sr2
     ...    0
     
-Verify - ${operation} Deviations ConfigSet intent2-sros are partially accepted on ${SDCIO_SROS_NODES}
+Verify - ${operation} Deviations ConfigSet intent2-sros are fully accepted on ${SDCIO_SROS_NODES}
     Wait Until Keyword Succeeds
     ...    2min
     ...    10s
@@ -586,7 +586,7 @@ Verify - ${operation} Deviation counter is 2 on intent4-sros on k8s
     ...    intent4-sros
     ...    2
 
-Verify - ${operation} Deviations Config intent4-sros is fully accepted on sr2
+Verify - ${operation} Deviations Config intent4-sros is partially accepted on sr2
     Wait Until Keyword Succeeds
     ...    2min
     ...    10s
