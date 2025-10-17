@@ -6,7 +6,7 @@ on:
 jobs:
   latest-versions:
     name: Fetch latest versions from GH API
-    runs-on: sdcio-action-runners
+    runs-on: ubuntu-22.04
     outputs:
       schemaversion: ${{ steps.latest-versions.outputs.schemaversion }}
       dataversion: ${{ steps.latest-versions.outputs.dataversion }}

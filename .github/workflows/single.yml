@@ -29,7 +29,7 @@ env:
 
 jobs:
   setup-clab-cluster-and-test:
-    runs-on: sdcio-action-runners
+    runs-on: ubuntu-22.04
     steps:
       - name: Set env vars
         run: |
