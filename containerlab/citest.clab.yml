@@ -11,7 +11,7 @@ topology:
     image: ghcr.io/nokia/srlinux:25.7.1
   kinds:
     nokia_srsim:
-      image: registry.k8s.sdcio.dev/clab/nokia_srsim:25.7.R1
+      image: ghcr.io/sdcio/nokia_srsim:25.7.R1
       license: ./license-sros.txt
   nodes:
     srl1:
