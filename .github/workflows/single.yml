@@ -54,7 +54,7 @@ jobs:
           ref: ${{ env.CONFIG_VERSION }}
           path: config-server
           repository: sdcio/config-server
-          token: ${{ secrets.GH_PAT }} # `GH_PAT` is a secret that contains your PAT
+          token: ${{ secrets.GITHUB_TOKEN }} # `GH_PAT` is a secret that contains your PAT
 
       # Checkout config-server main branch IF tag is v0.0.0
       # previous checkout job will be skipped if this is the case
@@ -64,7 +64,7 @@ jobs:
         with:
           path: config-server
           repository: sdcio/config-server
-          token: ${{ secrets.GH_PAT }} # `GH_PAT` is a secret that contains your PAT
+          token: ${{ secrets.GITHUB_TOKEN }} # `GH_PAT` is a secret that contains your PAT
 
       - uses: actions/setup-python@v5
         with:
@@ -94,8 +94,8 @@ jobs:
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
-          username: iptecharch-builder
-          password: ${{ secrets.GH_PAT }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup SROS License
         env:
