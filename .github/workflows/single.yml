@@ -40,7 +40,7 @@ jobs:
           echo "CERT_MANAGER_VERSION=${{ inputs.certmanager_version }}" >> $GITHUB_ENV
 
       - name: Checkout integration-tests
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: sdcio/integration-tests
           path: integration-tests
@@ -48,7 +48,7 @@ jobs:
       # Checkout config-server with specific tag if version is not v0.0.0
       # next checkout job will be skipped if this is the case
       - name: Checkout config-server
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         if: "!contains(env.CONFIG_VERSION, 'v0.0.0')"
         with:
           ref: ${{ env.CONFIG_VERSION }}
@@ -59,7 +59,7 @@ jobs:
       # Checkout config-server main branch IF tag is v0.0.0
       # previous checkout job will be skipped if this is the case
       - name: Checkout config-server
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         if: "contains(env.CONFIG_VERSION, 'v0.0.0')"
         with:
           path: config-server
