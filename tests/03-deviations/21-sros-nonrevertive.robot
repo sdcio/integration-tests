@@ -742,7 +742,7 @@ Setup
     kubectl apply    ${CURDIR}/sros/intent4-sros.yaml
     kubectl patch    config    intent4-sros    '{"spec": {"revertive": false}}'
     Wait Until Keyword Succeeds    2min    10s    Config Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    "intent4-sros"
-
+    Sleep   30s
 
 Cleanup
     Run    echo 'cleanup executed'

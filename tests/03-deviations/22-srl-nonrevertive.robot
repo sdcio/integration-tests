@@ -1038,6 +1038,7 @@ Setup
     kubectl apply    ${CURDIR}/srl/intent5-srl.yaml
     kubectl patch    config    intent5-srl    '{"spec": {"revertive": false}}'
     Wait Until Keyword Succeeds    2min    10s    Config Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    "intent5-srl"
+    Sleep    30s
 
 Cleanup
     Run    echo 'cleanup executed'
