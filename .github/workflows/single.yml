@@ -147,7 +147,7 @@ jobs:
 
       # upload test reports as a zip file
       - name: Upload test reports
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         if: always()
         with:
           name: single-robot-tests-log-config-server_${{ env.CONFIG_VERSION }}-data-server_${{ env.DATA_VERSION }}
