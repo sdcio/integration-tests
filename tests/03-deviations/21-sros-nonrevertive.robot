@@ -720,29 +720,24 @@ Setup
     Run    echo 'setup executed'
     kubectl apply    ${CURDIR}/sros/customer.yaml
     Wait Until Keyword Succeeds    2min    10s    ConfigSet Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    "customer"
-    kubectl apply    ${CURDIR}/sros/intent1-sros.yaml
-    kubectl patch    configset  intent1-sros    '{"spec": {"revertive": false}}'
+    kubectl apply    ${CURDIR}/sros/intent1-sros-nonrevertive.yaml
     Wait Until Keyword Succeeds
     ...    2min
     ...    10s
     ...    ConfigSet Check Ready
     ...    ${SDCIO_RESOURCE_NAMESPACE}
     ...    "intent1-sros"
-    kubectl apply    ${CURDIR}/sros/intent2-sros.yaml
-    kubectl patch    configset  intent2-sros    '{"spec": {"revertive": false}}'
+    kubectl apply    ${CURDIR}/sros/intent2-sros-nonrevertive.yaml
     Wait Until Keyword Succeeds
     ...    2min
     ...    10s
     ...    ConfigSet Check Ready
     ...    ${SDCIO_RESOURCE_NAMESPACE}
     ...    "intent2-sros"
-    kubectl apply    ${CURDIR}/sros/intent3-sros.yaml
-    kubectl patch    config    intent3-sros    '{"spec": {"revertive": false}}'
+    kubectl apply    ${CURDIR}/sros/intent3-sros-nonrevertive.yaml
     Wait Until Keyword Succeeds    2min    10s    Config Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    "intent3-sros"
-    kubectl apply    ${CURDIR}/sros/intent4-sros.yaml
-    kubectl patch    config    intent4-sros    '{"spec": {"revertive": false}}'
+    kubectl apply    ${CURDIR}/sros/intent4-sros-nonrevertive.yaml
     Wait Until Keyword Succeeds    2min    10s    Config Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    "intent4-sros"
-    Sleep   30s
 
 Cleanup
     Run    echo 'cleanup executed'

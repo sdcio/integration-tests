@@ -1023,22 +1023,16 @@ Delete Deviation CR
 
 Setup
     Run    echo 'setup executed'
-    kubectl apply    ${CURDIR}/srl/intent1-srl.yaml
-    kubectl patch    configset    intent1-srl    '{"spec": {"revertive": false}}'
+    kubectl apply    ${CURDIR}/srl/intent1-srl-nonrevertive.yaml
     Wait Until Keyword Succeeds    2min    10s    ConfigSet Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    "intent1-srl"
-    kubectl apply    ${CURDIR}/srl/intent2-srl.yaml
-    kubectl patch    configset    intent2-srl    '{"spec": {"revertive": false}}'
+    kubectl apply    ${CURDIR}/srl/intent2-srl-nonrevertive.yaml
     Wait Until Keyword Succeeds    2min    10s    ConfigSet Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    "intent2-srl"
-    kubectl apply    ${CURDIR}/srl/intent3-srl.yaml
-    kubectl patch    config    intent3-srl    '{"spec": {"revertive": false}}'
+    kubectl apply    ${CURDIR}/srl/intent3-srl-nonrevertive.yaml
     Wait Until Keyword Succeeds    2min    10s    Config Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    "intent3-srl"
-    kubectl apply    ${CURDIR}/srl/intent4-srl.yaml
-    kubectl patch    config    intent4-srl    '{"spec": {"revertive": false}}'
+    kubectl apply    ${CURDIR}/srl/intent4-srl-nonrevertive.yaml
     Wait Until Keyword Succeeds    2min    10s    Config Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    "intent4-srl"
-    kubectl apply    ${CURDIR}/srl/intent5-srl.yaml
-    kubectl patch    config    intent5-srl    '{"spec": {"revertive": false}}'
+    kubectl apply    ${CURDIR}/srl/intent5-srl-nonrevertive.yaml
     Wait Until Keyword Succeeds    2min    10s    Config Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    "intent5-srl"
-    Sleep    30s
 
 Cleanup
     Run    echo 'cleanup executed'
