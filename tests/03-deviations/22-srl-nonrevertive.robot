@@ -416,7 +416,7 @@ Partially Accept Deviation - ${operation} Patch intent2-srl applied on ${SDCIO_S
     ...    intent2-srl
     ...    '{"spec": {"config":[{"path":"/","value":{"interface":[{"admin-state":"disable","description":"Deviation revertive test - override description intent2","name":"ethernet-1/2","subinterface":[{"admin-state":"enable","index":0,"ipv4":{"address":[{"ip-prefix":"192.168.2.1/24"}],"admin-state":"enable","unnumbered":{"admin-state":"disable"}},"ipv6":{"address":[{"ip-prefix":"fd00:0:0:2::1/64"}],"admin-state":"enable"},"type":"routed","vlan":{"encap":{"single-tagged":{"vlan-id":200}}}}],"vlan-tagging":true}],"network-instance":[{"admin-state":"enable","description":"Intent2 Network-instance","interface":[{"name":"ethernet-1/2.0"}],"name":"vrf2","protocols":{"bgp":{"admin-state":"enable","afi-safi":[{"admin-state":"enable","afi-safi-name":"ipv4-unicast"},{"admin-state":"enable","afi-safi-name":"ipv6-unicast"}],"autonomous-system":65002,"router-id":"2.2.2.2"}},"type":"ip-vrf"}]}}],"priority":10,"revertive":false,"target":{"targetSelector":{"matchLabels":{"sdcio.dev/device":"srl"}}}}}'
 
-Verify - ${operation} Deviation counter is 2 on intent2-srl-srl1, intent2-srl-srl2 and intent2-srl-srl3 on k8s
+Verify - ${operation} Deviation counter is 3 on intent2-srl-srl1, intent2-srl-srl2 and intent2-srl-srl3 on k8s
     Wait Until Keyword Succeeds
     ...    2min
     ...    10s
