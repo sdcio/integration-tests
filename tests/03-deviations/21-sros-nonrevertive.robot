@@ -192,6 +192,10 @@ Verify - ${operation} Deviation counter == 0 for intent1-sros-sr1 and intent1-sr
     ...    intent1-sros-sr2
     ...    0
 
+# Sleep 30s to allow system to stabilize before next test case
+# Can be removed once data-server implements deviations.
+Sleep    30s
+
 ${operation} - Create Deviation: adjust config (intent2-sros) on ${SDCIO_SROS_NODES}
     Run Keyword
     ...    Set Config on node
@@ -429,6 +433,10 @@ Verify - ${operation} Deviations ConfigSet intent2-sros are fully accepted on ${
     ...    ${intent2}
     ...    "customer": "2"
 
+# Sleep 30s to allow system to stabilize before next test case
+# Can be removed once data-server implements deviations.
+Sleep    30s
+
 ${operation} - Create Deviation: adjust config (intent3-sros) on sr1
     Run Keyword
     ...    Set Config on node
@@ -517,6 +525,10 @@ Verify - ${operation} Deviation counter is reset intent3-sros on k8s
     ...    Verify Deviation on k8s
     ...    intent3-sros
     ...    0
+
+# Sleep 30s to allow system to stabilize before next test case
+# Can be removed once data-server implements deviations.
+Sleep    30s
 
 ${operation} - Create Deviation: adjust config (intent4-sros) on sr2
     Run Keyword
@@ -742,6 +754,10 @@ Setup
     kubectl apply    ${CURDIR}/sros/intent4-sros.yaml
     kubectl patch    config    intent4-sros    '{"spec": {"revertive": false}}'
     Wait Until Keyword Succeeds    2min    10s    Config Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    "intent4-sros"
+    # A Config/ConfigSet will be already in a 'Ready' state before the kubectl patch is applied, 
+    # therefore the system can be still be in convergence re-applying the same intent and resetting any deviations applied.
+    # This Sleep statement is to make sure the system is stable before starting the test.
+    # Can be removed once data-server implements deviations.
     Sleep   30s
 
 Cleanup

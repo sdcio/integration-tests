@@ -253,6 +253,10 @@ Verify - ${operation} Deviation counter == 0 for intent1-srl-srl1, intent1-srl-s
     ...    intent1-srl-srl3
     ...    0
 
+# Sleep 30s to allow system to stabilize before next test case
+# Can be removed once data-server implements deviations.
+Sleep    30s
+
 ${operation} - Create Deviation: adjust config (intent2-srl) on ${SDCIO_SRL_NODES}
     Run Keyword
     ...    Set Config on node
@@ -563,6 +567,10 @@ Verify - ${operation} Deviations ConfigSet intent2-srl are fully accepted on ${S
     ...    "Path": "network-instance[name=vrf2]/protocols/bgp/afi-safi[afi-safi-name=ipv4-unicast]/admin-state"
     ...    "network-instance/protocols/bgp/afi-safi/admin-state": "disable"
 
+# Sleep 30s to allow system to stabilize before next test case
+# Can be removed once data-server implements deviations.
+Sleep    30s
+
 ${operation} - Create Deviation: adjust config (intent3-srl) on srl1
     Run Keyword
     ...    Set Config on node
@@ -715,6 +723,10 @@ Verify - ${operation} Deviation counter is reset intent3-srl on k8s
     ...    Verify Deviation on k8s
     ...    intent3-srl
     ...    0
+
+# Sleep 30s to allow system to stabilize before next test case
+# Can be removed once data-server implements deviations.
+Sleep    30s
 
 ${operation} - Create Deviation: adjust config (intent4-srl) on srl2
     Run Keyword
@@ -1038,6 +1050,10 @@ Setup
     kubectl apply    ${CURDIR}/srl/intent5-srl.yaml
     kubectl patch    config    intent5-srl    '{"spec": {"revertive": false}}'
     Wait Until Keyword Succeeds    2min    10s    Config Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    "intent5-srl"
+    # A Config/ConfigSet will be already in a 'Ready' state before the kubectl patch is applied, 
+    # therefore the system can be still be in convergence re-applying the same intent and resetting any deviations applied.
+    # This Sleep statement is to make sure the system is stable before starting the test.
+    # Can be removed once data-server implements deviations.
     Sleep    30s
 
 Cleanup
