@@ -655,15 +655,15 @@ Set Config on node
 
 Setup
     Run    echo 'setup executed'
-    kubectl apply    ${CURDIR}/srl/intent1-srl-revertive.yaml
+    kubectl apply    ${CURDIR}/srl/intent1-srl.yaml
     Wait Until Keyword Succeeds    2min    10s    ConfigSet Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    "intent1-srl"
-    kubectl apply    ${CURDIR}/srl/intent2-srl-revertive.yaml
+    kubectl apply    ${CURDIR}/srl/intent2-srl.yaml
     Wait Until Keyword Succeeds    2min    10s    ConfigSet Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    "intent2-srl"
-    kubectl apply    ${CURDIR}/srl/intent3-srl-revertive.yaml
+    kubectl apply    ${CURDIR}/srl/intent3-srl.yaml
     Wait Until Keyword Succeeds    2min    10s    Config Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    "intent3-srl"
-    kubectl apply    ${CURDIR}/srl/intent4-srl-revertive.yaml
+    kubectl apply    ${CURDIR}/srl/intent4-srl.yaml
     Wait Until Keyword Succeeds    2min    10s    Config Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    "intent4-srl"
-    kubectl apply    ${CURDIR}/srl/intent5-srl-revertive.yaml
+    kubectl apply    ${CURDIR}/srl/intent5-srl.yaml
     Wait Until Keyword Succeeds    2min    10s    Config Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    "intent5-srl"
 
 
