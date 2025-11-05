@@ -255,7 +255,8 @@ Verify - ${operation} Deviation counter == 0 for intent1-srl-srl1, intent1-srl-s
 
 # Sleep 30s to allow system to stabilize before next test case
 # Can be removed once data-server implements deviations.
-Sleep    30s
+WorkAround - Stabilise system before next test case
+    Sleep    30s
 
 ${operation} - Create Deviation: adjust config (intent2-srl) on ${SDCIO_SRL_NODES}
     Run Keyword
@@ -569,7 +570,8 @@ Verify - ${operation} Deviations ConfigSet intent2-srl are fully accepted on ${S
 
 # Sleep 30s to allow system to stabilize before next test case
 # Can be removed once data-server implements deviations.
-Sleep    30s
+WorkAround - Stabilise system before next test case
+    Sleep    30s
 
 ${operation} - Create Deviation: adjust config (intent3-srl) on srl1
     Run Keyword
@@ -726,7 +728,8 @@ Verify - ${operation} Deviation counter is reset intent3-srl on k8s
 
 # Sleep 30s to allow system to stabilize before next test case
 # Can be removed once data-server implements deviations.
-Sleep    30s
+WorkAround - Stabilise system before next test case
+    Sleep    30s
 
 ${operation} - Create Deviation: adjust config (intent4-srl) on srl2
     Run Keyword
