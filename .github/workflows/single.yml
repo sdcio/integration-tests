@@ -86,7 +86,7 @@ jobs:
           sudo apt update && sudo apt install -y containerlab iptables
           sudo iptables -I DOCKER-USER 1 -j ACCEPT
 
-      - uses: actions/setup-go@v5
+      - uses: actions/setup-go@v6
         with:
           go-version: ${{ env.GO_VER }}
 
