@@ -9,6 +9,7 @@ Resource            ../Keywords/targets.robot
 Resource            ../Keywords/config.robot
 Resource            ../Keywords/gnmic.robot
 Resource            ../Keywords/yq.robot
+Resource            ../Keywords/jq.robot
 
 Suite Setup         Setup
 Suite Teardown      Run Keyword    Cleanup
@@ -48,12 +49,18 @@ Create and Verify ConfigSet
             ...    ${SROS_USERNAME}
             ...    ${SROS_PASSWORD}
             ...    "/configure/service/vprn[service-name=${intents.${intent}}]"
-            ${gnmicoutput} =    Get value from JSON    ${output}    $.[*].values."configure/service/vprn"
+            ${gnmicoutput} =    Get values from JSON    ${output}    $.[*].values
 
-            ${rc}    ${output} =    YQ file    ${CURDIR}/input/sros/${intent}-sros.yaml    '.spec.config.[].value.configure.service.vprn' -o json 
-            ${intentoutput} =    Convert string to JSON    ${output}
+            # Note, as the gnmic output is not properly JSON formatted, we need to save the gnmic output initially to a file, 
+            # to be able to compare it in consecutive runs.
+            # ONLY UNCOMMENT THE FOLLOWING LINE IF YOU NEED TO UPDATE THE EXPECTED OUTPUT
+            Save JSON to file    ${gnmicoutput}    ${CURDIR}/expectedoutput/sros/${intent}-sros.json
 
-            Dictionaries Should Be Equal    ${gnmicoutput}    ${intentoutput}
+            # Load the previously saved expected output, and compare it with the actual gnmic output            
+            @{expectedoutput} =    Load JSON from file    ${CURDIR}/expectedoutput/sros/${intent}-sros.json
+
+            ${compare} =        JQ Compare JSON	${gnmicoutput}    ${expectedoutput}
+            Should Be True      ${compare}
         END
     END
 
@@ -90,12 +97,23 @@ Create and Verify Config
             ...    ${SROS_USERNAME}
             ...    ${SROS_PASSWORD}
             ...    "/configure/service/vprn[service-name=${intents.${intent}}]"
-            ${gnmicoutput} =    Get value from JSON    ${output}    $.[*].values."configure/service/vprn"
+            ${gnmicoutput} =    Get values from JSON    ${output}    $.[*].values
 
-            ${rc}    ${output} =    YQ file    ${CURDIR}/input/sros/${intent}-sros.yaml    '.spec.config.[].value.configure.service.vprn' -o json 
-            ${intentoutput} =    Convert string to JSON    ${output}
+            # Note, as the gnmic output is not properly JSON formatted, we need to save the gnmic output initially to a file, 
+            # to be able to compare it in consecutive runs.
+            # ONLY UNCOMMENT THE FOLLOWING LINE IF YOU NEED TO UPDATE THE EXPECTED OUTPUT
+            Save JSON to file    ${gnmicoutput}    ${CURDIR}/expectedoutput/sros/${intent}-sros.json
 
-            Dictionaries Should Be Equal    ${gnmicoutput}    ${intentoutput}
+            # Load the previously saved expected output, and compare it with the actual gnmic output            
+            @{expectedoutput} =    Load JSON from file    ${CURDIR}/expectedoutput/sros/${intent}-sros.json
+
+            ${compare} =        JQ Compare JSON	${gnmicoutput}    ${expectedoutput}
+            Should Be True      ${compare}
+
+            #${rc}    ${output} =    YQ file    ${CURDIR}/input/sros/${intent}-sros.yaml    '.spec.config.[].value.configure.service.vprn' -o json 
+            #${intentoutput} =    Convert string to JSON    ${output}
+
+            #Dictionaries Should Be Equal    ${gnmicoutput}    ${intentoutput}
         END
     END
 
@@ -132,9 +150,9 @@ Delete and Verify Config
             ...    ${SROS_USERNAME}
             ...    ${SROS_PASSWORD}
             ...    "/configure/service/vprn[service-name=${intents.${intent}}]"
-            ${gnmicoutput} =    Get value from JSON    ${output}    $.[*].values."configure/service/vprn"
+            ${gnmicoutput} =    Get values from JSON    ${output}    $.[*].values
 
-            Should Be Equal    ${gnmicoutput}    ${None}
+    	    Should Be Empty	${gnmicoutput}
         END
     END
 
@@ -164,9 +182,9 @@ Delete and Verify ConfigSet
             ...    ${SROS_USERNAME}
             ...    ${SROS_PASSWORD}
             ...    "/configure/service/vprn[service-name=${intents.${intent}}]"
-            ${gnmicoutput} =    Get value from JSON    ${output}    $.[*].values."configure/service/vprn"
+            ${gnmicoutput} =    Get values from JSON    ${output}    $.[*].values
 
-            Should Be Equal    ${gnmicoutput}    ${None}
+    	    Should Be Empty	${gnmicoutput}
         END
     END
 
