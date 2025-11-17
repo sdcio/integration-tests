@@ -37,7 +37,8 @@ ${SDCIO_INTEGRATION_TESTS_TARGETCONNECTIONPROFILE_FILES_BASE}       ${CURDIR}/01
 @{SDCIO_INTEGRATION_TESTS_TARGETCONNECTIONPROFILE_FILES}
 ...                                                                 conn_profile_sros_netconf.yaml
 ...                                                                 conn_profile_sros_gnmi.yaml
-...                                                                 conn_profile_srl_gnmi.yaml
+...                                                                 conn_profile_srl_gnmi_proto.yaml
+...                                                                 conn_profile_srl_gnmi_jsonietf.yaml        
 
 # TargetSyncProfiles
 ${SDCIO_CONFIG_SERVER_TARGETSYNCPROFILE_FILES_BASE}                 ${SDCIO_CONFIG_SERVER_REPO_PATH}/example/sync-profiles
@@ -49,7 +50,8 @@ ${SDCIO_INTEGRATION_TESTS_TARGETSYNCPROFILE_FILES_BASE}             ${CURDIR}/01
 @{SDCIO_INTEGRATION_TESTS_TARGETSYNCPROFILE_FILES}
 ...                                                                 sync_profile_sros_netconf.yaml
 ...                                                                 sync_profile_sros_gnmi.yaml
-...                                                                 sync_profile_srl_gnmi.yaml
+...                                                                 sync_profile_srl_gnmi_get.yaml
+...                                                                 sync_profile_srl_gnmi_onchange.yaml    
 
 # DiscoveryVendorProfiles
 ${SDCIO_CONFIG_SERVER_DISCOVERYVENDORPROFILE_FILES_BASE}	${SDCIO_CONFIG_SERVER_REPO_PATH}/example/discoveryvendor-profile

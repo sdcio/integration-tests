@@ -20,7 +20,7 @@ Delete Config from node
     [Documentation]    Delete Config from a node, through collecting a gNMI path
     [Arguments]    ${node}    ${options}    ${username}    ${password}    ${path}
     ${rc}    ${output} =    Run And Return Rc And Output
-    ...    gnmic -a ${${node}} -p 57400 ${options} -u ${username} -p ${password} set --delete --path ${path}
+    ...    gnmic -a ${${node}} -p 57400 ${options} -u ${username} -p ${password} set --delete ${path}
     Log    ${output}
     Should Be Equal As Integers    ${rc}    0
     ${json} =    Convert string to JSON    ${output}
