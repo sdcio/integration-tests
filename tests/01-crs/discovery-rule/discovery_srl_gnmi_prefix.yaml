@@ -15,10 +15,10 @@ spec:
   discoveryProfile:
     credentials: srl.nokia.sdcio.dev 
     connectionProfiles:
-    - test-srl-gnmi
+    - test-srl-gnmi-proto
   targetConnectionProfiles:
   - credentials: srl.nokia.sdcio.dev 
-    connectionProfile: test-srl-gnmi
+    connectionProfile: test-srl-gnmi-proto
     syncProfile: test-srl-gnmi-onchange
   targetTemplate:
     labels:

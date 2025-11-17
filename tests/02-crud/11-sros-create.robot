@@ -21,6 +21,7 @@ ${adminstate}           "admin-state": "enable"
 ${null}                 "configure/service/vprn": null
 
 
+
 *** Test Cases ***
 ${operation} - ConfigSet intent1 on ${SDCIO_SROS_NODES}
     ${rc}    ${output} =    kubectl apply    ${CURDIR}/sros/intent1-sros.yaml
