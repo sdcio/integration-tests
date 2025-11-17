@@ -9,6 +9,7 @@ Resource            ../Keywords/targets.robot
 Resource            ../Keywords/config.robot
 Resource            ../Keywords/gnmic.robot
 Resource            ../Keywords/yq.robot
+Resource            ../Keywords/jq.robot
 
 Suite Setup         Setup
 Suite Teardown      Run Keyword    Cleanup
@@ -49,17 +50,18 @@ Create and Verify ConfigSet
             ...    ${SRL_PASSWORD}
             ...    "/network-instance[name=${intents.${intent}}]"
             
-            ${gnmicoutput} =    Get value from JSON    ${output}    $.[*].values
+            ${gnmicoutput} =    Get values from JSON    ${output}    $.[*].values
 
             # Note, as the gnmic output is not properly JSON formatted, we need to save the gnmic output initially to a file, 
             # to be able to compare it in consecutive runs.
             # ONLY UNCOMMENT THE FOLLOWING LINE IF YOU NEED TO UPDATE THE EXPECTED OUTPUT
-            Save JSON to file    ${output}    ${CURDIR}/expectedoutput/srl/${intent}-srl.json
+            #Save JSON to file    ${gnmicoutput}    ${CURDIR}/expectedoutput/srl/${intent}-srl.json
 
             # Load the previously saved expected output, and compare it with the actual gnmic output            
-            &{expectedoutput} =    Load JSON from file    ${CURDIR}/expectedoutput/srl/${intent}-srl.json
+            @{expectedoutput} =    Load JSON from file    ${CURDIR}/expectedoutput/srl/${intent}-srl.json
 
-            Dictionaries Should Be Equal    ${gnmicoutput}    ${expectedoutput}
+            ${compare} =	JQ Compare JSON	${gnmicoutput}    ${expectedoutput}
+	    Should Be True	${compare}
         END
     END
 
@@ -96,17 +98,18 @@ Create and Verify Config
             ...    ${SRL_USERNAME}
             ...    ${SRL_PASSWORD}
             ...    "/network-instance[name=${intents.${intent}}]"
-            ${gnmicoutput} =    Get value from JSON    ${output}    $.[*].values
+            ${gnmicoutput} =    Get values from JSON    ${output}    $.[*].values
 
             # Note, as the gnmic output is not properly JSON formatted, we need to save the gnmic output initially to a file, 
             # to be able to compare it in consecutive runs.
             # ONLY UNCOMMENT THE FOLLOWING LINE IF YOU NEED TO UPDATE THE EXPECTED OUTPUT
-            Save JSON to file    ${output}    ${CURDIR}/expectedoutput/srl/${intent}-srl.json
+            #Save JSON to file    ${gnmicoutput}    ${CURDIR}/expectedoutput/srl/${intent}-srl.json
 
             # Load the previously saved expected output, and compare it with the actual gnmic output            
-            &{expectedoutput} =    Load JSON from file    ${CURDIR}/expectedoutput/srl/${intent}-srl.json
+            @{expectedoutput} =    Load JSON from file    ${CURDIR}/expectedoutput/srl/${intent}-srl.json
 
-            Dictionaries Should Be Equal    ${gnmicoutput}    ${expectedoutput}
+            ${compare} =        JQ Compare JSON	${gnmicoutput}    ${expectedoutput}
+            Should Be True      ${compare}
         END
     END
 
@@ -143,9 +146,9 @@ Delete and Verify Config
             ...    ${SRL_USERNAME}
             ...    ${SRL_PASSWORD}
             ...    "/network-instance[name=${intents.${intent}}]"
-            ${gnmicoutput} =    Get value from JSON    ${output}    $.[*].values
+            ${gnmicoutput} =    Get values from JSON    ${output}    $.[*].values
 
-            Should Be Equal    ${gnmicoutput}    ${None}
+	    Should Be Empty	${gnmicoutput}
         END
     END
 
@@ -175,9 +178,9 @@ Delete and Verify ConfigSet
             ...    ${SRL_USERNAME}
             ...    ${SRL_PASSWORD}
             ...    "/network-instance[name=${intents.${intent}}]"
-            ${gnmicoutput} =    Get value from JSON    ${output}    $.[*].values
+            ${gnmicoutput} =    Get values from JSON    ${output}    $.[*].values
 
-            Should Be Equal    ${gnmicoutput}    ${None}
+	    Should Be Empty	${gnmicoutput}
         END
     END
 

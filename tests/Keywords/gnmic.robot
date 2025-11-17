@@ -13,7 +13,7 @@ Get Config from node
     Log    ${output}
     Should Be Equal As Integers    ${rc}    0
     ${json} =    Convert string to JSON    ${output}
-    ${values} =    Get value from JSON    ${json}    $.[*].updates
+    ${values} =    Get values from JSON    ${json}    $.[*].updates.[*]
     RETURN    ${rc}    ${values}
 
 Delete Config from node
@@ -24,5 +24,5 @@ Delete Config from node
     Log    ${output}
     Should Be Equal As Integers    ${rc}    0
     ${json} =    Convert string to JSON    ${output}
-    ${values} =    Get value from JSON    ${json}    $.[*].updates
+    ${values} =    Get values from JSON    ${json}    $.[*].updates.[*]
     RETURN    ${rc}    ${values}
