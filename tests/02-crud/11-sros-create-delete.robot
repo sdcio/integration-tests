@@ -49,12 +49,12 @@ Create and Verify ConfigSet
             ...    ${SROS_USERNAME}
             ...    ${SROS_PASSWORD}
             ...    "/configure/service/vprn[service-name=${intents.${intent}}]"
-            ${gnmicoutput} =    Get values from JSON    ${output}    $.[*].values
+            ${gnmicoutput} =    Get values from JSON    ${output}    $.[*].values."configure/service/vprn"
 
             # Note, as the gnmic output is not properly JSON formatted, we need to save the gnmic output initially to a file, 
             # to be able to compare it in consecutive runs.
             # ONLY UNCOMMENT THE FOLLOWING LINE IF YOU NEED TO UPDATE THE EXPECTED OUTPUT
-            # Save JSON to file    ${gnmicoutput}    ${CURDIR}/expectedoutput/sros/${intent}-sros.json
+            Save JSON to file    ${gnmicoutput}    ${CURDIR}/expectedoutput/sros/${intent}-sros.json
 
             # Load the previously saved expected output, and compare it with the actual gnmic output            
             @{expectedoutput} =    Load JSON from file    ${CURDIR}/expectedoutput/sros/${intent}-sros.json
@@ -102,21 +102,18 @@ Create and Verify Config
             # Note, as the gnmic output is not properly JSON formatted, we need to save the gnmic output initially to a file, 
             # to be able to compare it in consecutive runs.
             # ONLY UNCOMMENT THE FOLLOWING LINE IF YOU NEED TO UPDATE THE EXPECTED OUTPUT
-            # Save JSON to file    ${gnmicoutput}    ${CURDIR}/expectedoutput/sros/${intent}-sros.json
+            Save JSON to file    ${gnmicoutput}    ${CURDIR}/expectedoutput/sros/${intent}-sros.json
 
             # Load the previously saved expected output, and compare it with the actual gnmic output            
             @{expectedoutput} =    Load JSON from file    ${CURDIR}/expectedoutput/sros/${intent}-sros.json
 
             ${compare} =        JQ Compare JSON	${gnmicoutput}    ${expectedoutput}
             Should Be True      ${compare}
-
             #${rc}    ${output} =    YQ file    ${CURDIR}/input/sros/${intent}-sros.yaml    '.spec.config.[].value.configure.service.vprn' -o json 
             #${intentoutput} =    Convert string to JSON    ${output}
-
             #Dictionaries Should Be Equal    ${gnmicoutput}    ${intentoutput}
         END
     END
-
 
 Delete and Verify Config
     [Documentation]    Delete Config resources are deleted in k8s and on SROS nodes
@@ -150,8 +147,8 @@ Delete and Verify Config
             ...    ${SROS_USERNAME}
             ...    ${SROS_PASSWORD}
             ...    "/configure/service/vprn[service-name=${intents.${intent}}]"
+            
             ${gnmicoutput} =    Get values from JSON    ${output}    $.[*].values."configure/service/vprn"
-
     	    Should Be Empty	${gnmicoutput}
         END
     END
@@ -182,8 +179,8 @@ Delete and Verify ConfigSet
             ...    ${SROS_USERNAME}
             ...    ${SROS_PASSWORD}
             ...    "/configure/service/vprn[service-name=${intents.${intent}}]"
-            ${gnmicoutput} =    Get values from JSON    ${output}    $.[*].values
-
+            
+            ${gnmicoutput} =    Get values from JSON    ${output}    $.[*].values."configure/service/vprn"
     	    Should Be Empty	${gnmicoutput}
         END
     END
@@ -191,8 +188,9 @@ Delete and Verify ConfigSet
 *** Keywords ***
 Setup
     Run    echo 'setup executed'
-    Wait Until Keyword Succeeds    15min    10s    Targets Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    sr1
-    Wait Until Keyword Succeeds    15min    10s    Targets Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    sr2
+    FOR    ${node}    IN    @{SDCIO_SROS_NODES}
+        Wait Until Keyword Succeeds    15min    10s    Target Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    ${node}
+    END
     kubectl apply    ${CURDIR}/input/sros/customer.yaml
     Wait Until Keyword Succeeds    2min    10s    ConfigSet Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    "customer"
 

@@ -21,6 +21,7 @@ Suite Teardown      Run Keyword    Cleanup
 @{SDCIO_CONFIGSET_INTENTS}    intent1    intent2
 @{SDCIO_CONFIG_INTENTS}    intent3    intent4    intent5
 &{intents}        intent1=vrf1    intent2=vrf2    intent3=vrf3    intent4=vrf4    intent5=vrf5
+&{intentsinterfaces}        intent1=ethernet-1/1    intent2=ethernet-1/2    intent3=ethernet-1/3    intent4=ethernet-1/4    intent5=ethernet-1/5
 
 *** Test Cases ***
 Create and Verify ConfigSet
@@ -55,13 +56,13 @@ Create and Verify ConfigSet
             # Note, as the gnmic output is not properly JSON formatted, we need to save the gnmic output initially to a file, 
             # to be able to compare it in consecutive runs.
             # ONLY UNCOMMENT THE FOLLOWING LINE IF YOU NEED TO UPDATE THE EXPECTED OUTPUT
-            #Save JSON to file    ${gnmicoutput}    ${CURDIR}/expectedoutput/srl/${intent}-srl.json
+            Save JSON to file    ${gnmicoutput}    ${CURDIR}/expectedoutput/srl/${intent}-srl.json
 
             # Load the previously saved expected output, and compare it with the actual gnmic output            
             @{expectedoutput} =    Load JSON from file    ${CURDIR}/expectedoutput/srl/${intent}-srl.json
 
             ${compare} =	JQ Compare JSON	${gnmicoutput}    ${expectedoutput}
-	    Should Be True	${compare}
+	        Should Be True	${compare}
         END
     END
 
@@ -103,7 +104,7 @@ Create and Verify Config
             # Note, as the gnmic output is not properly JSON formatted, we need to save the gnmic output initially to a file, 
             # to be able to compare it in consecutive runs.
             # ONLY UNCOMMENT THE FOLLOWING LINE IF YOU NEED TO UPDATE THE EXPECTED OUTPUT
-            #Save JSON to file    ${gnmicoutput}    ${CURDIR}/expectedoutput/srl/${intent}-srl.json
+            Save JSON to file    ${gnmicoutput}    ${CURDIR}/expectedoutput/srl/${intent}-srl.json
 
             # Load the previously saved expected output, and compare it with the actual gnmic output            
             @{expectedoutput} =    Load JSON from file    ${CURDIR}/expectedoutput/srl/${intent}-srl.json
@@ -112,7 +113,6 @@ Create and Verify Config
             Should Be True      ${compare}
         END
     END
-
 
 Delete and Verify Config
     [Documentation]    Delete Config resources are deleted in k8s and on SRL nodes
@@ -146,9 +146,9 @@ Delete and Verify Config
             ...    ${SRL_USERNAME}
             ...    ${SRL_PASSWORD}
             ...    "/network-instance[name=${intents.${intent}}]"
+            
             ${gnmicoutput} =    Get values from JSON    ${output}    $.[*].values
-
-	    Should Be Empty	${gnmicoutput}
+	        Should Be Empty	${gnmicoutput}
         END
     END
 
@@ -178,18 +178,18 @@ Delete and Verify ConfigSet
             ...    ${SRL_USERNAME}
             ...    ${SRL_PASSWORD}
             ...    "/network-instance[name=${intents.${intent}}]"
+            
             ${gnmicoutput} =    Get values from JSON    ${output}    $.[*].values
-
-	    Should Be Empty	${gnmicoutput}
+    	    Should Be Empty	${gnmicoutput}
         END
     END
 
 *** Keywords ***
 Setup
     Run    echo 'setup executed'
-    Wait Until Keyword Succeeds    15min    10s    Targets Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    srl1
-    Wait Until Keyword Succeeds    15min    10s    Targets Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    srl2
-    Wait Until Keyword Succeeds    15min    10s    Targets Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    srl3
+    FOR    ${node}    IN    @{SDCIO_SRL_NODES}
+        Wait Until Keyword Succeeds    15min    10s    Target Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    ${node}
+    END
 
 Cleanup
     Run    echo 'cleanup executed'
@@ -204,4 +204,20 @@ DeleteAll
         ...    ${SRL_USERNAME}
         ...    ${SRL_PASSWORD}
         ...    "/network-instance[name=vrf*]"
+        FOR   ${intent}    IN    @{SDCIO_CONFIG_INTENTS}
+            Delete Config from node
+            ...    ${node}
+            ...    --skip-verify -e PROTO
+            ...    ${SRL_USERNAME}
+            ...    ${SRL_PASSWORD}
+            ...    "/network-instance[name=${intentsinterfaces.${intent}}]"
+        END
+        FOR   ${intent}    IN    @{SDCIO_CONFIGSET_INTENTS}
+            Delete Config from node
+            ...    ${node}
+            ...    --skip-verify -e PROTO
+            ...    ${SRL_USERNAME}
+            ...    ${SRL_PASSWORD}
+            ...    "/network-instance[name=${intentsinterfaces.${intent}}]"
+        END
     END
