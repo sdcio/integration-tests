@@ -238,7 +238,7 @@ Replace and Verify Config
 Setup
     Run    echo 'setup executed'
     FOR    ${node}    IN    @{SDCIO_SRL_NODES}
-        Wait Until Keyword Succeeds    15min    10s    Target Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    ${node}
+        Wait Until Keyword Succeeds    15min    10s    Targets Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    ${node}
     END
     FOR    ${intent}    IN    @{SDCIO_CONFIGSET_INTENTS}
         kubectl apply    ${CURDIR}/input/srl/${intent}-srl.yaml

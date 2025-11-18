@@ -188,7 +188,7 @@ Delete and Verify ConfigSet
 Setup
     Run    echo 'setup executed'
     FOR    ${node}    IN    @{SDCIO_SRL_NODES}
-        Wait Until Keyword Succeeds    15min    10s    Target Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    ${node}
+        Wait Until Keyword Succeeds    15min    10s    Targets Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    ${node}
     END
 
 Cleanup
