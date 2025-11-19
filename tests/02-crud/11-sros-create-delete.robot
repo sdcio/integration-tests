@@ -149,6 +149,8 @@ Delete and Verify Config
             ...    "/configure/service/vprn[service-name=${intents.${intent}}]"
             
             ${gnmicoutput} =    Get values from JSON    ${output}    $.[*].values."configure/service/vprn"
+            # [HT] Fix, remove None values from gnmicoutput list, before checking if it's empty
+            ${gnmicoutput} =   Evaluate    [i for i in ${gnmicoutput} if i]
     	    Should Be Empty	${gnmicoutput}
         END
     END
@@ -181,6 +183,8 @@ Delete and Verify ConfigSet
             ...    "/configure/service/vprn[service-name=${intents.${intent}}]"
             
             ${gnmicoutput} =    Get values from JSON    ${output}    $.[*].values."configure/service/vprn"
+            # [HT] Fix, remove None values from gnmicoutput list, before checking if it's empty
+            ${gnmicoutput} =   Evaluate    [i for i in ${gnmicoutput} if i]
     	    Should Be Empty	${gnmicoutput}
         END
     END
