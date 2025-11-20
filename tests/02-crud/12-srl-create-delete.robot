@@ -7,9 +7,8 @@ Resource            ../variables.robot
 Resource            ../Keywords/k8s/kubectl.robot
 Resource            ../Keywords/targets.robot
 Resource            ../Keywords/config.robot
-Resource            ../Keywords/gnmic.robot
 Resource            ../Keywords/yq.robot
-Resource            ../Keywords/jq.robot
+Resource            ../Keywords/gnmic.robot
 
 Suite Setup         Setup
 Suite Teardown      Run Keyword    Cleanup
@@ -22,6 +21,7 @@ Suite Teardown      Run Keyword    Cleanup
 @{SDCIO_CONFIG_INTENTS}    intent3    intent4    intent5
 &{intents}        intent1=vrf1    intent2=vrf2    intent3=vrf3    intent4=vrf4    intent5=vrf5
 &{intentsinterfaces}        intent1=ethernet-1/1    intent2=ethernet-1/2    intent3=ethernet-1/3    intent4=ethernet-1/4    intent5=ethernet-1/5
+${options}    --skip-verify -e PROTO
 
 *** Test Cases ***
 Create and Verify ConfigSet
@@ -44,25 +44,30 @@ Create and Verify ConfigSet
         # Verify the Config is applied on the SRL nodes
         Log   Verify ConfigSet ${intent} on ${SDCIO_SRL_NODES}
         FOR    ${node}    IN    @{SDCIO_SRL_NODES}
-            ${rc}    ${output}=    Get Config from node
-            ...    ${node}
-            ...    --skip-verify -e PROTO
-            ...    ${SRL_USERNAME}
-            ...    ${SRL_PASSWORD}
-            ...    "/network-instance[name=${intents.${intent}}]"
-            
-            ${gnmicoutput} =    Get values from JSON    ${output}    $.[*].values
-
             # Note, as the gnmic output is not properly JSON formatted, we need to save the gnmic output initially to a file, 
             # to be able to compare it in consecutive runs.
             # ONLY UNCOMMENT THE FOLLOWING LINE IF YOU NEED TO UPDATE THE EXPECTED OUTPUT
+            # START BLOCK
+            # ${gnmicoutput} =    Get Config from node
+            # ...    ${node}
+            # ...    ${options}
+            # ...    ${SRL_USERNAME}
+            # ...    ${SRL_PASSWORD}
+            # ...    "/network-instance[name=${intents.${intent}}]"
             # Save JSON to file    ${gnmicoutput}    ${CURDIR}/expectedoutput/srl/${intent}-srl.json
+            # END BLOCK
 
-            # Load the previously saved expected output, and compare it with the actual gnmic output            
             @{expectedoutput} =    Load JSON from file    ${CURDIR}/expectedoutput/srl/${intent}-srl.json
 
-            ${compare} =	JQ Compare JSON	${gnmicoutput}    ${expectedoutput}
-	        Should Be True	${compare}
+            ${compare} =    Get Config from node and Verify Intent
+            ...    ${node}
+            ...    ${options}
+            ...    ${SRL_USERNAME}
+            ...    ${SRL_PASSWORD}
+            ...    "/network-instance[name=${intents.${intent}}]"
+            ...    ${expectedoutput}
+            
+            Should Be True      ${compare}
         END
     END
 
@@ -93,23 +98,29 @@ Create and Verify Config
                 Log   Skipping node ${node} as it is not the target device ${targetdevice}
                 Continue For Loop
             END
-            ${rc}    ${output}=    Get Config from node
-            ...    ${node}
-            ...    --skip-verify -e PROTO
-            ...    ${SRL_USERNAME}
-            ...    ${SRL_PASSWORD}
-            ...    "/network-instance[name=${intents.${intent}}]"
-            ${gnmicoutput} =    Get values from JSON    ${output}    $.[*].values
-
             # Note, as the gnmic output is not properly JSON formatted, we need to save the gnmic output initially to a file, 
             # to be able to compare it in consecutive runs.
             # ONLY UNCOMMENT THE FOLLOWING LINE IF YOU NEED TO UPDATE THE EXPECTED OUTPUT
+            # START BLOCK
+            # ${gnmicoutput} =    Get Config from node
+            # ...    ${node}
+            # ...    ${options}
+            # ...    ${SRL_USERNAME}
+            # ...    ${SRL_PASSWORD}
+            # ...    "/network-instance[name=${intents.${intent}}]"
             # Save JSON to file    ${gnmicoutput}    ${CURDIR}/expectedoutput/srl/${intent}-srl.json
+            # END BLOCK
 
-            # Load the previously saved expected output, and compare it with the actual gnmic output            
             @{expectedoutput} =    Load JSON from file    ${CURDIR}/expectedoutput/srl/${intent}-srl.json
 
-            ${compare} =        JQ Compare JSON	${gnmicoutput}    ${expectedoutput}
+            ${compare} =    Get Config from node and Verify Intent
+            ...    ${node}
+            ...    ${options}
+            ...    ${SRL_USERNAME}
+            ...    ${SRL_PASSWORD}
+            ...    "/network-instance[name=${intents.${intent}}]"
+            ...    ${expectedoutput}
+            
             Should Be True      ${compare}
         END
     END
@@ -140,15 +151,14 @@ Delete and Verify Config
                 Log   Skipping node ${node} as it is not the target device ${targetdevice}
                 Continue For Loop
             END
-            ${rc}    ${output}=    Get Config from node
+            ${output} =    Get Config from node
             ...    ${node}
-            ...    --skip-verify -e PROTO
+            ...    ${options}
             ...    ${SRL_USERNAME}
             ...    ${SRL_PASSWORD}
             ...    "/network-instance[name=${intents.${intent}}]"
-            
-            ${gnmicoutput} =    Get values from JSON    ${output}    $.[*].values
-	        Should Be Empty	${gnmicoutput}
+
+    	    Should Be Empty    ${output}
         END
     END
 
@@ -172,15 +182,14 @@ Delete and Verify ConfigSet
         Log   Verify ConfigSet ${intent} on ${SDCIO_SRL_NODES}
         # Verify the Config is gone on the SRL nodes
         FOR    ${node}    IN    @{SDCIO_SRL_NODES}
-            ${rc}    ${output}=    Get Config from node
+            ${output} =    Get Config from node
             ...    ${node}
-            ...    --skip-verify -e PROTO
+            ...    ${options}
             ...    ${SRL_USERNAME}
             ...    ${SRL_PASSWORD}
             ...    "/network-instance[name=${intents.${intent}}]"
-            
-            ${gnmicoutput} =    Get values from JSON    ${output}    $.[*].values
-    	    Should Be Empty	${gnmicoutput}
+
+    	    Should Be Empty    ${output}
         END
     END
 

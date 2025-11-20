@@ -7,9 +7,8 @@ Resource            ../variables.robot
 Resource            ../Keywords/k8s/kubectl.robot
 Resource            ../Keywords/targets.robot
 Resource            ../Keywords/config.robot
-Resource            ../Keywords/gnmic.robot
 Resource            ../Keywords/yq.robot
-Resource            ../Keywords/jq.robot
+Resource            ../Keywords/gnmic.robot
 
 Suite Setup         Setup
 Suite Teardown      Run Keyword    Cleanup
@@ -21,6 +20,8 @@ Suite Teardown      Run Keyword    Cleanup
 @{SDCIO_CONFIGSET_INTENTS}    intent1    intent2
 @{SDCIO_CONFIG_INTENTS}    intent3    intent4
 &{intents}        intent1=vprn123    intent2=vprn234    intent3=vprn789    intent4=vprn987
+${options}    --insecure -e JSON
+${filter}    "configure/service/vprn"
 
 *** Test Cases ***
 Create and Verify ConfigSet
@@ -43,23 +44,31 @@ Create and Verify ConfigSet
         # Verify the Config is applied on the SROS nodes
         Log   Verify ConfigSet ${intent} on ${SDCIO_SROS_NODES}
         FOR    ${node}    IN    @{SDCIO_SROS_NODES}
-            ${rc}    ${output}=    Get Config from node
+            # Note, as the gnmic output is not properly JSON formatted, we need to save the gnmic output initially to a file, 
+            # to be able to compare it in consecutive runs.
+            # ONLY UNCOMMENT THE FOLLOWING LINES IF YOU NEED TO UPDATE THE EXPECTED OUTPUT
+            # START BLOCK
+            # ${gnmicoutput} =    Get Config from node
+            # ...    ${node}
+            # ...    ${options}
+            # ...    ${SROS_USERNAME}
+            # ...    ${SROS_PASSWORD}
+            # ...    "/configure/service/vprn[service-name=${intents.${intent}}]"
+            # ...    ${filter}
+            # Save JSON to file    ${gnmicoutput}    ${CURDIR}/expectedoutput/sros/${intent}-sros.json
+            # END BLOCK
+
+            @{expectedoutput} =    Load JSON from file    ${CURDIR}/expectedoutput/sros/${intent}-sros.json
+
+            ${compare} =    Get Config from node and Verify Intent
             ...    ${node}
-            ...    --insecure -e JSON
+            ...    ${options}
             ...    ${SROS_USERNAME}
             ...    ${SROS_PASSWORD}
             ...    "/configure/service/vprn[service-name=${intents.${intent}}]"
-            ${gnmicoutput} =    Get values from JSON    ${output}    $.[*].values."configure/service/vprn"
-
-            # Note, as the gnmic output is not properly JSON formatted, we need to save the gnmic output initially to a file, 
-            # to be able to compare it in consecutive runs.
-            # ONLY UNCOMMENT THE FOLLOWING LINE IF YOU NEED TO UPDATE THE EXPECTED OUTPUT
-            # Save JSON to file    ${gnmicoutput}    ${CURDIR}/expectedoutput/sros/${intent}-sros.json
-
-            # Load the previously saved expected output, and compare it with the actual gnmic output            
-            @{expectedoutput} =    Load JSON from file    ${CURDIR}/expectedoutput/sros/${intent}-sros.json
-
-            ${compare} =        JQ Compare JSON	${gnmicoutput}    ${expectedoutput}
+            ...    ${filter}
+            ...    ${expectedoutput}
+            
             Should Be True      ${compare}
         END
     END
@@ -91,27 +100,32 @@ Create and Verify Config
                 Log   Skipping node ${node} as it is not the target device ${targetdevice}
                 Continue For Loop
             END
-            ${rc}    ${output}=    Get Config from node
+            # Note, as the gnmic output is not properly JSON formatted, we need to save the gnmic output initially to a file, 
+            # to be able to compare it in consecutive runs.
+            # ONLY UNCOMMENT THE FOLLOWING LINES IF YOU NEED TO UPDATE THE EXPECTED OUTPUT
+            # START BLOCK
+            # ${gnmicoutput} =    Get Config from node
+            # ...    ${node}
+            # ...    ${options}
+            # ...    ${SROS_USERNAME}
+            # ...    ${SROS_PASSWORD}
+            # ...    "/configure/service/vprn[service-name=${intents.${intent}}]"
+            # ...    ${filter}
+            # Save JSON to file    ${gnmicoutput}    ${CURDIR}/expectedoutput/sros/${intent}-sros.json
+            # END BLOCK
+
+            @{expectedoutput} =    Load JSON from file    ${CURDIR}/expectedoutput/sros/${intent}-sros.json
+
+            ${compare} =    Get Config from node and Verify Intent
             ...    ${node}
-            ...    --insecure -e JSON
+            ...    ${options}
             ...    ${SROS_USERNAME}
             ...    ${SROS_PASSWORD}
             ...    "/configure/service/vprn[service-name=${intents.${intent}}]"
-            ${gnmicoutput} =    Get values from JSON    ${output}    $.[*].values."configure/service/vprn"
-
-            # Note, as the gnmic output is not properly JSON formatted, we need to save the gnmic output initially to a file, 
-            # to be able to compare it in consecutive runs.
-            # ONLY UNCOMMENT THE FOLLOWING LINE IF YOU NEED TO UPDATE THE EXPECTED OUTPUT
-            # Save JSON to file    ${gnmicoutput}    ${CURDIR}/expectedoutput/sros/${intent}-sros.json
-
-            # Load the previously saved expected output, and compare it with the actual gnmic output            
-            @{expectedoutput} =    Load JSON from file    ${CURDIR}/expectedoutput/sros/${intent}-sros.json
-
-            ${compare} =        JQ Compare JSON	${gnmicoutput}    ${expectedoutput}
+            ...    ${filter}
+            ...    ${expectedoutput}
+            
             Should Be True      ${compare}
-            #${rc}    ${output} =    YQ file    ${CURDIR}/input/sros/${intent}-sros.yaml    '.spec.config.[].value.configure.service.vprn' -o json 
-            #${intentoutput} =    Convert string to JSON    ${output}
-            #Dictionaries Should Be Equal    ${gnmicoutput}    ${intentoutput}
         END
     END
 
@@ -141,17 +155,17 @@ Delete and Verify Config
                 Log   Skipping node ${node} as it is not the target device ${targetdevice}
                 Continue For Loop
             END
-            ${rc}    ${output}=    Get Config from node
+            ${output} =    Get Config from node
             ...    ${node}
-            ...    --insecure -e JSON
+            ...    ${options}
             ...    ${SROS_USERNAME}
             ...    ${SROS_PASSWORD}
             ...    "/configure/service/vprn[service-name=${intents.${intent}}]"
-            
-            ${gnmicoutput} =    Get values from JSON    ${output}    $.[*].values."configure/service/vprn"
-            # [HT] Fix, remove None values from gnmicoutput list, before checking if it's empty
-            ${gnmicoutput} =   Evaluate    [i for i in ${gnmicoutput} if i]
-    	    Should Be Empty	${gnmicoutput}
+            ...    ${filter}
+
+            # [HT] Fix, remove None values from output list, before checking if it's empty
+            ${output} =   Evaluate    [i for i in ${output} if i]
+    	    Should Be Empty    ${output}
         END
     END
 
@@ -175,17 +189,17 @@ Delete and Verify ConfigSet
         Log   Verify ConfigSet ${intent} on ${SDCIO_SROS_NODES}
         # Verify the Config is gone on the SROS nodes
         FOR    ${node}    IN    @{SDCIO_SROS_NODES}
-            ${rc}    ${output}=    Get Config from node
+            ${output} =    Get Config from node
             ...    ${node}
-            ...    --insecure -e JSON
+            ...    ${options}
             ...    ${SROS_USERNAME}
             ...    ${SROS_PASSWORD}
             ...    "/configure/service/vprn[service-name=${intents.${intent}}]"
-            
-            ${gnmicoutput} =    Get values from JSON    ${output}    $.[*].values."configure/service/vprn"
-            # [HT] Fix, remove None values from gnmicoutput list, before checking if it's empty
-            ${gnmicoutput} =   Evaluate    [i for i in ${gnmicoutput} if i]
-    	    Should Be Empty	${gnmicoutput}
+            ...    ${filter}
+
+            # [HT] Fix, remove None values from output list, before checking if it's empty
+            ${output} =   Evaluate    [i for i in ${output} if i]
+    	    Should Be Empty    ${output}
         END
     END
 
