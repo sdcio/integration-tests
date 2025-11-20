@@ -31,15 +31,25 @@ Create and Verify ConfigSet
         # Apply the ConfigSet Intent
         Log    Create ConfigSet for intent ${intent}
         ${rc}    ${output}=    kubectl apply    ${CURDIR}/input/sros/${intent}-sros.yaml
-
+        
         # Verify the ConfigSet is transitioning to a ready state in k8s
-        Log    Verify ConfigSet ${intent} is ready on k8s
-        Wait Until Keyword Succeeds
-        ...    2min
-        ...    10s
-        ...    ConfigSet Check Ready
-        ...    ${SDCIO_RESOURCE_NAMESPACE}
-        ...    ${intent}-sros
+        IF    ${intent}    IN    @{SDCIO_CONFIGSET_INTENTS}
+            Log    Verify ConfigSet ${intent} is ready on k8s
+            Wait Until Keyword Succeeds
+            ...    2min
+            ...    10s
+            ...    ConfigSet Check Ready
+            ...    ${SDCIO_RESOURCE_NAMESPACE}
+            ...    ${intent}-sros
+        ELSE
+            Log    Verify Config ${intent} is ready on k8s
+            Wait Until Keyword Succeeds
+            ...    2min
+            ...    10s
+            ...    Config Check Ready
+            ...    ${SDCIO_RESOURCE_NAMESPACE}
+            ...    ${intent}-sros
+        END
 
         # Verify the Config is applied on the SROS nodes
         Log   Verify ConfigSet ${intent} on ${SDCIO_SROS_NODES}
@@ -165,7 +175,7 @@ Delete and Verify Config
 
             # [HT] Fix, remove None values from output list, before checking if it's empty
             ${output} =   Evaluate    [i for i in ${output} if i]
-    	    Should Be Empty    ${output}
+            Should Be Empty    ${output}
         END
     END
 
@@ -199,7 +209,7 @@ Delete and Verify ConfigSet
 
             # [HT] Fix, remove None values from output list, before checking if it's empty
             ${output} =   Evaluate    [i for i in ${output} if i]
-    	    Should Be Empty    ${output}
+            Should Be Empty    ${output}
         END
     END
 
