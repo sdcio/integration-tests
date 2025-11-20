@@ -66,8 +66,8 @@ Create and Verify ConfigSet
             ...    ${SROS_USERNAME}
             ...    ${SROS_PASSWORD}
             ...    "/configure/service/vprn[service-name=${intents.${intent}}]"
-            ...    ${filter}
             ...    ${expectedoutput}
+            ...    ${filter}
             
             Should Be True      ${compare}
         END
@@ -122,8 +122,8 @@ Create and Verify Config
             ...    ${SROS_USERNAME}
             ...    ${SROS_PASSWORD}
             ...    "/configure/service/vprn[service-name=${intents.${intent}}]"
-            ...    ${filter}
             ...    ${expectedoutput}
+            ...    ${filter}
             
             Should Be True      ${compare}
         END
@@ -222,7 +222,7 @@ DeleteAll
     FOR  ${node}    IN    @{SDCIO_SROS_NODES}
         Delete Config from node
         ...    ${node}
-        ...    --insecure -e JSON
+        ...    ${options}
         ...    ${SROS_USERNAME}
         ...    ${SROS_PASSWORD}
         ...    "/configure/service/vprn[service-name=*]"

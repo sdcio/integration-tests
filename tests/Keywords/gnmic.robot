@@ -14,16 +14,16 @@ Get Config from node
     Log    ${output}
     Should Be Equal As Integers    ${rc}    0
     ${json} =    Convert string to JSON    ${output}
-    IF ${filter} IS DEFINED
-        ${values} =    Get values from JSON    ${json}    $.[*].updates.[*].values.${filter}
+    IF  ${filter} != ${None}
+        ${values} =    Get values from JSON    ${json}    $.[*].updates.[*].values.[*].${filter}
     ELSE
-        ${values} =    Get values from JSON    ${json}    $.[*].updates.[*].values
+        ${values} =    Get values from JSON    ${json}    $.[*].updates.[*].values.[*]
     END
     RETURN    ${rc}    ${values}
 
 Get Config from node and Verify Intent
     [Documentation]    Retrieve Config from a SRLinux node, through collecting a gNMI path and compare against expectedoutput
-    [Arguments]    ${node}    ${options}    ${username}    ${password}    ${path}    ${filter}=None    ${expectedoutput}
+    [Arguments]    ${node}    ${options}    ${username}    ${password}    ${path}    ${expectedoutput}    ${filter}=None
     ${output} =    Get Config from node
     ...    ${node}
     ...    ${options}
