@@ -25,76 +25,43 @@ ${options}    --insecure -e JSON
 ${filter}    "configure/service/vprn"
 
 *** Test Cases ***
-Update and Verify ConfigSet
-    [Documentation]    Verify ConfigSet resources are updated and verify on SROS nodes
-    FOR    ${intent}    IN    @{SDCIO_CONFIGSET_INTENTS}
-        # Update the ConfigSet Intent
-        Log    Update ConfigSet for intent ${intent}
+Update and Verify Config(Set)
+    [Documentation]    Verify Config(Set) resources are updated and verify on SROS nodes
+    @{SDCIO_ALL_INTENTS} =    Combine Lists    ${SDCIO_CONFIGSET_INTENTS}    ${SDCIO_CONFIG_INTENTS}
+
+    FOR    ${intent}    IN    @{SDCIO_ALL_INTENTS}
+        # Update the Config(Set) Intent
+        Log    Update Config(Set) for intent ${intent}
         ${rc}    ${output}=    kubectl apply    ${CURDIR}/input/sros/${intent}-sros-update.yaml
 
-        # Verify the (updated) ConfigSet is in a ready state in k8s
-        Log    Verify Updated ConfigSet ${intent} is ready on k8s
-        Wait Until Keyword Succeeds
-        ...    2min
-        ...    10s
-        ...    ConfigSet Check Ready
-        ...    ${SDCIO_RESOURCE_NAMESPACE}
-        ...    ${intent}-sros
+        IF    $intent in $SDCIO_CONFIGSET_INTENTS
+            # Verify the (updated) ConfigSet is in a ready state in k8s
+            Log    Verify Updated ConfigSet ${intent} is ready on k8s
+            Wait Until Keyword Succeeds
+            ...    2min
+            ...    10s
+            ...    ConfigSet Check Ready
+            ...    ${SDCIO_RESOURCE_NAMESPACE}
+            ...    ${intent}-sros
+        ELSE    
+            # Verify the (updated) Config is transitioning to a ready state in k8s
+            Log    Verify Updated Config ${intent} is ready on k8s
+            Wait Until Keyword Succeeds
+            ...    2min
+            ...    10s
+            ...    Config Check Ready
+            ...    ${SDCIO_RESOURCE_NAMESPACE}
+            ...    ${intent}-sros
+        END
+        ${rc}    ${targetdevice} =   YQ file    ${CURDIR}/input/sros/${intent}-sros.yaml    '.metadata.labels."config.sdcio.dev/targetName"'
 
         # Verify the Config is replaced on the SROS nodes
         Log   Verify Upgraded ConfigSet ${intent} on ${SDCIO_SROS_NODES}
         FOR    ${node}    IN    @{SDCIO_SROS_NODES}
-            # Note, as the gnmic output is not properly JSON formatted, we need to save the gnmic output initially to a file, 
-            # to be able to compare it in consecutive runs.
-            # ONLY UNCOMMENT THE FOLLOWING LINES IF YOU NEED TO UPDATE THE EXPECTED OUTPUT
-            # START BLOCK
-            # ${gnmicoutput} =    Get Config from node
-            # ...    ${node}
-            # ...    ${options}
-            # ...    ${SROS_USERNAME}
-            # ...    ${SROS_PASSWORD}
-            # ...    "/configure/service/vprn[service-name=${intents.${intent}}]"
-            # ...    ${filter}
-            # Save JSON to file    ${gnmicoutput}    ${CURDIR}/expectedoutput/sros/${intent}-sros-update.json
-            # END BLOCK
-
-            @{expectedoutput} =    Load JSON from file    ${CURDIR}/expectedoutput/sros/${intent}-sros-update.json
-
-            ${compare} =    Get Config from node and Verify Intent
-            ...    ${node}
-            ...    ${options}
-            ...    ${SROS_USERNAME}
-            ...    ${SROS_PASSWORD}
-            ...    "/configure/service/vprn[service-name=${intents.${intent}}]"
-            ...    ${expectedoutput}
-            ...    ${filter}
-            
-            Should Be True      ${compare}
-        END
-    END
-
-Update and Verify Config
-    [Documentation]    Verify Config resources are updated and verify on SROS nodes
-
-    FOR    ${intent}    IN    @{SDCIO_CONFIG_INTENTS}
-        # Update the ConfigSet Intent
-        Log    Update Config for intent ${intent}
-        ${rc}    ${output}=    kubectl apply    ${CURDIR}/input/sros/${intent}-sros-update.yaml
-
-        # Verify the (updated) Config is transitioning to a ready state in k8s
-        Log    Verify Updated Config ${intent} is ready on k8s
-        Wait Until Keyword Succeeds
-        ...    2min
-        ...    10s
-        ...    Config Check Ready
-        ...    ${SDCIO_RESOURCE_NAMESPACE}
-        ...    ${intent}-sros
-
-        ${rc}    ${targetdevice} =   YQ file    ${CURDIR}/input/sros/${intent}-sros.yaml    '.metadata.labels."config.sdcio.dev/targetName"'
-
-        # Verify the (updated) Config is updated on the SROS nodes
-        Log   Verify Updated Config ${intent} on ${SDCIO_SROS_NODES}
-        FOR    ${node}    IN    @{SDCIO_SROS_NODES}
+            # If the targetdevice is not defined in the intent yaml, assume all nodes.
+            IF    '${targetdevice}' == '${EMPTY}'
+                ${targetdevice} =    ${node}
+            END
             # considering we're looping through all SROS nodes, skip checking for config on nodes that are not defined in the input yaml.
             IF    '${node}' != '${targetdevice}'
                 Log   Skipping node ${node} as it is not the target device ${targetdevice}
@@ -129,26 +96,48 @@ Update and Verify Config
         END
     END
 
-Replace and Verify ConfigSet
-    [Documentation]    Verify ConfigSet resources are replaced and verify on SROS nodes
-    
-    FOR    ${intent}    IN    @{SDCIO_CONFIGSET_INTENTS}
-        # Replace the ConfigSet Intent
-        Log    Replace ConfigSet for intent ${intent}
+Replace and Verify Config(Set)
+    [Documentation]    Verify Config(Set) resources are replaced and verify on SROS nodes
+    @{SDCIO_ALL_INTENTS} =    Combine Lists    ${SDCIO_CONFIGSET_INTENTS}    ${SDCIO_CONFIG_INTENTS}
+
+    FOR    ${intent}    IN    @{SDCIO_ALL_INTENTS}
+        # Replace the Config(Set) Intent
+        Log    Replace Config(Set) for intent ${intent}
         ${rc}    ${output}=    kubectl apply    ${CURDIR}/input/sros/${intent}-sros-replace.yaml
 
-        # Verify the (replaced) ConfigSet is in a ready state in k8s
-        Log    Verify Replaced ConfigSet ${intent} is ready on k8s
-        Wait Until Keyword Succeeds
-        ...    2min
-        ...    10s
-        ...    ConfigSet Check Ready
-        ...    ${SDCIO_RESOURCE_NAMESPACE}
-        ...    ${intent}-sros
+        IF    $intent in $SDCIO_CONFIGSET_INTENTS
+            # Verify the (replaced) ConfigSet is in a ready state in k8s
+            Log    Verify Replaced ConfigSet ${intent} is ready on k8s
+            Wait Until Keyword Succeeds
+            ...    2min
+            ...    10s
+            ...    ConfigSet Check Ready
+            ...    ${SDCIO_RESOURCE_NAMESPACE}
+            ...    ${intent}-sros
+        ELSE
+            # Verify the (replaced) Config is transitioning to a ready state in k8s
+            Log    Verify Replaced Config ${intent} is ready on k8s
+            Wait Until Keyword Succeeds
+            ...    2min
+            ...    10s
+            ...    Config Check Ready
+            ...    ${SDCIO_RESOURCE_NAMESPACE}
+            ...    ${intent}-sros
+        END
+        ${rc}    ${targetdevice} =   YQ file    ${CURDIR}/input/sros/${intent}-sros.yaml    '.metadata.labels."config.sdcio.dev/targetName"'
 
         # Verify the Config is replaced on the SROS nodes
-        Log   Verify Replaced ConfigSet ${intent} on ${SDCIO_SROS_NODES}
+        Log   Verify Replaced Config(Set) ${intent} on ${SDCIO_SROS_NODES}
         FOR    ${node}    IN    @{SDCIO_SROS_NODES}
+            # If the targetdevice is not defined in the intent yaml, assume all nodes.
+            IF    '${targetdevice}' == '${EMPTY}'
+                ${targetdevice} =    ${node}
+            END
+            # considering we're looping through all SROS nodes, skip checking for config on nodes that are not defined in the input yaml.
+            IF    '${node}' != '${targetdevice}'
+                Log   Skipping node ${node} as it is not the target device ${targetdevice}
+                Continue For Loop
+            END
             # Note, as the gnmic output is not properly JSON formatted, we need to save the gnmic output initially to a file, 
             # to be able to compare it in consecutive runs.
             # ONLY UNCOMMENT THE FOLLOWING LINES IF YOU NEED TO UPDATE THE EXPECTED OUTPUT
@@ -178,79 +167,7 @@ Replace and Verify ConfigSet
         END
         
         # Verify the old Config is gone on the SROS nodes
-        Log   Verify Old ConfigSet ${intent} is gone on ${SDCIO_SROS_NODES}
-        FOR    ${node}    IN    @{SDCIO_SROS_NODES}
-            ${output} =    Get Config from node
-            ...    ${node}
-            ...    ${options}
-            ...    ${SROS_USERNAME}
-            ...    ${SROS_PASSWORD}
-            ...    "/configure/service/vprn[service-name=${intents.${intent}}]"
-            ...    ${filter}
-
-            # [HT] Fix, remove None values from output list, before checking if it's empty
-            ${output} =   Evaluate    [i for i in ${output} if i]
-    	    Should Be Empty    ${output}
-        END
-    END
-
-Replace and Verify Config
-    [Documentation]    Verify Config resources are replaced and verify on SROS nodes
-
-    FOR    ${intent}    IN    @{SDCIO_CONFIG_INTENTS}
-        # Replace the ConfigSet Intent
-        Log    Replace Config for intent ${intent}
-        ${rc}    ${output}=    kubectl apply    ${CURDIR}/input/sros/${intent}-sros-replace.yaml
-
-        # Verify the (replaced) Config is transitioning to a ready state in k8s
-        Log    Verify Replaced Config ${intent} is ready on k8s
-        Wait Until Keyword Succeeds
-        ...    2min
-        ...    10s
-        ...    Config Check Ready
-        ...    ${SDCIO_RESOURCE_NAMESPACE}
-        ...    ${intent}-sros
-
-        ${rc}    ${targetdevice} =   YQ file    ${CURDIR}/input/sros/${intent}-sros.yaml    '.metadata.labels."config.sdcio.dev/targetName"'
-
-        # Verify the (replaced) Config is replaced on the SROS nodes
-        Log   Verify Replaced Config ${intent} on ${SDCIO_SROS_NODES}
-        FOR    ${node}    IN    @{SDCIO_SROS_NODES}
-            # considering we're looping through all SROS nodes, skip checking for config on nodes that are not defined in the input yaml.
-            IF    '${node}' != '${targetdevice}'
-                Log   Skipping node ${node} as it is not the target device ${targetdevice}
-                Continue For Loop
-            END
-            # Note, as the gnmic output is not properly JSON formatted, we need to save the gnmic output initially to a file, 
-            # to be able to compare it in consecutive runs.
-            # ONLY UNCOMMENT THE FOLLOWING LINES IF YOU NEED TO UPDATE THE EXPECTED OUTPUT
-            # START BLOCK
-            # ${gnmicoutput} =    Get Config from node
-            # ...    ${node}
-            # ...    ${options}
-            # ...    ${SROS_USERNAME}
-            # ...    ${SROS_PASSWORD}
-            # ...    "/configure/service/vprn[service-name=${replaceintents.${intent}}]"
-            # ...    ${filter}
-            # Save JSON to file    ${gnmicoutput}    ${CURDIR}/expectedoutput/sros/${intent}-sros-replace.json
-            # END BLOCK
-
-            @{expectedoutput} =    Load JSON from file    ${CURDIR}/expectedoutput/sros/${intent}-sros-replace.json
-
-            ${compare} =    Get Config from node and Verify Intent
-            ...    ${node}
-            ...    ${options}
-            ...    ${SROS_USERNAME}
-            ...    ${SROS_PASSWORD}
-            ...    "/configure/service/vprn[service-name=${replaceintents.${intent}}]"
-            ...    ${expectedoutput}
-            ...    ${filter}
-            
-            Should Be True      ${compare}
-        END
-
-        # Verify the old Config is gone on the SROS nodes
-        Log   Verify Old Config ${intent} is gone on ${SDCIO_SROS_NODES}
+        Log   Verify Old Config(Set) ${intent} is gone on ${SDCIO_SROS_NODES}
         FOR    ${node}    IN    @{SDCIO_SROS_NODES}
             ${output} =    Get Config from node
             ...    ${node}

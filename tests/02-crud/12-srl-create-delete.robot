@@ -24,75 +24,43 @@ Suite Teardown      Run Keyword    Cleanup
 ${options}    --skip-verify -e PROTO
 
 *** Test Cases ***
-Create and Verify ConfigSet
-    [Documentation]    Verify ConfigSet resources are created and verify on SRL nodes
-    
-    FOR    ${intent}    IN    @{SDCIO_CONFIGSET_INTENTS}
-        # Apply the ConfigSet Intent
-        Log    Create ConfigSet for intent ${intent}
+Create and Verify Config(Set)
+    [Documentation]    Verify Config(Set) resources are created and verify on SRL nodes
+    @{SDCIO_ALL_INTENTS} =    Combine Lists    ${SDCIO_CONFIGSET_INTENTS}    ${SDCIO_CONFIG_INTENTS}
+
+    FOR    ${intent}    IN    @{SDCIO_ALL_INTENTS}
+        # Apply the Config(Set) Intent
+        Log    Create Config(Set) for intent ${intent}
         ${rc}    ${output}=    kubectl apply    ${CURDIR}/input/srl/${intent}-srl.yaml
 
         # Verify the ConfigSet is transitioning to a ready state in k8s
-        Log    Verify ConfigSet ${intent} is ready on k8s
-        Wait Until Keyword Succeeds
-        ...    2min
-        ...    10s
-        ...    ConfigSet Check Ready
-        ...    ${SDCIO_RESOURCE_NAMESPACE}
-        ...    ${intent}-srl
-
-        # Verify the Config is applied on the SRL nodes
-        Log   Verify ConfigSet ${intent} on ${SDCIO_SRL_NODES}
-        FOR    ${node}    IN    @{SDCIO_SRL_NODES}
-            # Note, as the gnmic output is not properly JSON formatted, we need to save the gnmic output initially to a file, 
-            # to be able to compare it in consecutive runs.
-            # ONLY UNCOMMENT THE FOLLOWING LINE IF YOU NEED TO UPDATE THE EXPECTED OUTPUT
-            # START BLOCK
-            # ${gnmicoutput} =    Get Config from node
-            # ...    ${node}
-            # ...    ${options}
-            # ...    ${SRL_USERNAME}
-            # ...    ${SRL_PASSWORD}
-            # ...    "/network-instance[name=${intents.${intent}}]"
-            # Save JSON to file    ${gnmicoutput}    ${CURDIR}/expectedoutput/srl/${intent}-srl.json
-            # END BLOCK
-
-            @{expectedoutput} =    Load JSON from file    ${CURDIR}/expectedoutput/srl/${intent}-srl.json
-
-            ${compare} =    Get Config from node and Verify Intent
-            ...    ${node}
-            ...    ${options}
-            ...    ${SRL_USERNAME}
-            ...    ${SRL_PASSWORD}
-            ...    "/network-instance[name=${intents.${intent}}]"
-            ...    ${expectedoutput}
-            
-            Should Be True      ${compare}
+        IF    $intent in $SDCIO_CONFIGSET_INTENTS
+            Log    Verify ConfigSet ${intent} is ready on k8s
+            Wait Until Keyword Succeeds
+            ...    2min
+            ...    10s
+            ...    ConfigSet Check Ready
+            ...    ${SDCIO_RESOURCE_NAMESPACE}
+            ...    ${intent}-srl
+        ELSE
+            Log    Verify Config ${intent} is ready on k8s
+            Wait Until Keyword Succeeds
+            ...    2min
+            ...    10s
+            ...    Config Check Ready
+            ...    ${SDCIO_RESOURCE_NAMESPACE}
+            ...    ${intent}-srl
         END
-    END
-
-Create and Verify Config
-    [Documentation]    Verify Config resources are created and verify on SRL nodes
-
-    FOR    ${intent}    IN    @{SDCIO_CONFIG_INTENTS}
-        # Apply the Config Intent
-        Log    Create Config for intent ${intent}
-        ${rc}    ${output}=    kubectl apply    ${CURDIR}/input/srl/${intent}-srl.yaml
-
-        # Verify the Config is transitioning to a ready state in k8s
-        Log    Verify Config ${intent} is ready on k8s
-        Wait Until Keyword Succeeds
-        ...    2min
-        ...    10s
-        ...    Config Check Ready
-        ...    ${SDCIO_RESOURCE_NAMESPACE}
-        ...    ${intent}-srl
 
         ${rc}    ${targetdevice} =   YQ file    ${CURDIR}/input/srl/${intent}-srl.yaml    '.metadata.labels."config.sdcio.dev/targetName"'
 
         # Verify the Config is applied on the SRL nodes
-        Log   Verify Config ${intent} on ${SDCIO_SRL_NODES}
+        Log   Verify Config(Set) ${intent} on ${SDCIO_SRL_NODES}
         FOR    ${node}    IN    @{SDCIO_SRL_NODES}
+            # If the targetdevice is not defined in the intent yaml, assume all nodes.
+            IF    '${targetdevice}' == '${EMPTY}'
+                ${targetdevice} =    ${node}
+            END
             # considering we're looping through all SRL nodes, skip checking for config on nodes that are not defined in the input yaml.
             IF    '${node}' != '${targetdevice}'
                 Log   Skipping node ${node} as it is not the target device ${targetdevice}
@@ -125,63 +93,50 @@ Create and Verify Config
         END
     END
 
-Delete and Verify Config
-    [Documentation]    Delete Config resources are deleted in k8s and on SRL nodes
+Delete and Verify Config(Set)
+    [Documentation]    Delete Config(Set) resources are deleted in k8s and on SRL nodes
+    @{SDCIO_ALL_INTENTS} =    Combine Lists    ${SDCIO_CONFIGSET_INTENTS}    ${SDCIO_CONFIG_INTENTS}
 
-    FOR    ${intent}    IN    @{SDCIO_CONFIG_INTENTS}
-        # Delete the Config Intent
-        Log    Delete Config for intent ${intent}
-        ${rc}    ${output} =    Delete Config    ${SDCIO_RESOURCE_NAMESPACE}    ${intent}-srl
-
-        # Verify the Config is gone in k8s
-        Log    Verify Config ${intent} is gone on k8s
-        Wait Until Keyword Succeeds
-        ...    2min
-        ...    10s
-        ...    Run Keyword And Expect Error    *
-        ...    kubectl get    -n ${SDCIO_RESOURCE_NAMESPACE} configs.config.sdcio.dev ${intent}-srl
-
+    FOR    ${intent}    IN    @{SDCIO_ALL_INTENTS}
+        IF    $intent in $SDCIO_CONFIGSET_INTENTS
+            # Delete the ConfigSet Intent
+            Log    Delete ConfigSet for intent ${intent}
+            ${rc}    ${output}=    Delete ConfigSet    ${SDCIO_RESOURCE_NAMESPACE}    ${intent}-srl
+            
+            # Verify the ConfigSet is gone in k8s
+            Log    Verify ConfigSet ${intent} is gone on k8s
+            Wait Until Keyword Succeeds
+            ...    2min
+            ...    10s
+            ...    Run Keyword And Expect Error    *
+            ...    kubectl get    -n ${SDCIO_RESOURCE_NAMESPACE} configsets.config.sdcio.dev ${intent}-srl
+        ELSE
+            # Delete the Config Intent
+            Log    Delete Config for intent ${intent}
+            ${rc}    ${output} =    Delete Config    ${SDCIO_RESOURCE_NAMESPACE}    ${intent}-srl
+    
+            # Verify the Config is gone in k8s
+            Log    Verify Config ${intent} is gone on k8s
+            Wait Until Keyword Succeeds
+            ...    2min
+            ...    10s
+            ...    Run Keyword And Expect Error    *
+            ...    kubectl get    -n ${SDCIO_RESOURCE_NAMESPACE} configs.config.sdcio.dev ${intent}-srl
+        END
 
         ${rc}    ${targetdevice} =   YQ file    ${CURDIR}/input/srl/${intent}-srl.yaml    '.metadata.labels."config.sdcio.dev/targetName"'
         # Verify the Config is gone on the SRL nodes
         Log   Verify Config ${intent} on ${SDCIO_SRL_NODES}
         FOR    ${node}    IN    @{SDCIO_SRL_NODES}
+            # If the targetdevice is not defined in the intent yaml, assume all nodes.
+            IF    '${targetdevice}' == '${EMPTY}'
+                ${targetdevice} =    ${node}
+            END
             # considering we're looping through all SRL nodes, skip checking for config on nodes that are not defined in the input yaml.
             IF    '${node}' != '${targetdevice}'
                 Log   Skipping node ${node} as it is not the target device ${targetdevice}
                 Continue For Loop
             END
-            ${output} =    Get Config from node
-            ...    ${node}
-            ...    ${options}
-            ...    ${SRL_USERNAME}
-            ...    ${SRL_PASSWORD}
-            ...    "/network-instance[name=${intents.${intent}}]"
-
-    	    Should Be Empty    ${output}
-        END
-    END
-
-Delete and Verify ConfigSet
-    [Documentation]    Delete ConfigSet resources are deleted in k8s and on SRL nodes
-
-    FOR    ${intent}    IN    @{SDCIO_CONFIGSET_INTENTS}
-        # Delete the ConfigSet Intent
-        Log    Delete ConfigSet for intent ${intent}
-        ${rc}    ${output}=    Delete ConfigSet    ${SDCIO_RESOURCE_NAMESPACE}    ${intent}-srl
-
-        # Verify the ConfigSet is gone in k8s
-        Log    Verify ConfigSet ${intent} is gone on k8s
-        Wait Until Keyword Succeeds
-        ...    2min
-        ...    10s
-        ...    Run Keyword And Expect Error    *
-        ...    kubectl get    -n ${SDCIO_RESOURCE_NAMESPACE} configsets.config.sdcio.dev ${intent}-srl
-
-        # Verify the Config is gone on the SRL nodes
-        Log   Verify ConfigSet ${intent} on ${SDCIO_SRL_NODES}
-        # Verify the Config is gone on the SRL nodes
-        FOR    ${node}    IN    @{SDCIO_SRL_NODES}
             ${output} =    Get Config from node
             ...    ${node}
             ...    ${options}
