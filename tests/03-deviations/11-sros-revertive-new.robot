@@ -34,8 +34,8 @@ Delete SROS device ConfigSet and Verify Revertive Deviations
         Log    Delete device config for intent ${intent}
         FOR    ${node}    IN    @{SDCIO_SROS_NODES}
             # If the targetdevice is not defined in the intent yaml, assume all nodes.
-            IF    '${targetdevice}' == '${EMPTY}'
-                ${targetdevice} =    ${node}
+            IF    '${targetdevice}' == 'null'
+                ${targetdevice} =    Set Variable    ${node}
             END
             # considering we're looping through all SROS nodes, skip checking for config on nodes that are not defined in the input yaml.
             IF    '${node}' != '${targetdevice}'
@@ -66,8 +66,8 @@ Delete SROS device ConfigSet and Verify Revertive Deviations
         END
         FOR    ${node}    IN    @{SDCIO_SROS_NODES}
             # If the targetdevice is not defined in the intent yaml, assume all nodes.
-            IF    '${targetdevice}' == '${EMPTY}'
-                ${targetdevice} =    ${node}
+            IF    '${targetdevice}' == 'null'
+                ${targetdevice} =    Set Variable    ${node}
             END
             # considering we're looping through all SROS nodes, skip checking for config on nodes that are not defined in the input yaml.
             IF    '${node}' != '${targetdevice}'
@@ -86,8 +86,8 @@ Delete SROS device ConfigSet and Verify Revertive Deviations
             ...    ${SROS_USERNAME}
             ...    ${SROS_PASSWORD}
             ...    "/configure/service/vprn[service-name=${intents.${intent}}]"
-            ...    ${filter}
             ...    ${expectedoutput}
+            ...    ${filter}
         END
     END
 
@@ -105,7 +105,7 @@ Delete ALL SROS device config and Verify Revertive Deviations
         ...    ${SROS_PASSWORD}
         ...    "/configure/service/vprn[service-name=*]"
         # Verify the config is deleted from the device using gNMIc
-        Log    Verify Deletion of ConfigSet ${intent} on ${node}
+        Log    Verify Deletion of Config(Set) intents on ${node}
         ${output} =    Get Config from node
         ...    ${node}
         ...    ${options}
@@ -122,8 +122,8 @@ Delete ALL SROS device config and Verify Revertive Deviations
 
         FOR    ${node}    IN    @{SDCIO_SROS_NODES}
             # If the targetdevice is not defined in the intent yaml, assume all nodes.
-            IF    '${targetdevice}' == '${EMPTY}'
-                ${targetdevice} =    ${node}
+            IF    '${targetdevice}' == 'null'
+                ${targetdevice} =    Set Variable    ${node}
             END
             # considering we're looping through all SROS nodes, skip checking for config on nodes that are not defined in the input yaml.
             IF    '${node}' != '${targetdevice}'
@@ -142,8 +142,8 @@ Delete ALL SROS device config and Verify Revertive Deviations
             ...    ${SROS_USERNAME}
             ...    ${SROS_PASSWORD}
             ...    "/configure/service/vprn[service-name=${intents.${intent}}]"
-            ...    ${filter}
             ...    ${expectedoutput}
+            ...    ${filter}
         END
     END
 
@@ -156,8 +156,8 @@ Adjust SROS device config and Verify Revertive Deviations
         Log    Adjust device config for intent ${intent}
         FOR    ${node}    IN    @{SDCIO_SROS_NODES}
             # If the targetdevice is not defined in the intent yaml, assume all nodes.
-            IF    '${targetdevice}' == '${EMPTY}'
-                ${targetdevice} =    ${node}
+            IF    '${targetdevice}' == 'null'
+                ${targetdevice} =    Set Variable    ${node}
             END
             # considering we're looping through all SROS nodes, skip checking for config on nodes that are not defined in the input yaml.
             IF    '${node}' != '${targetdevice}'
@@ -171,16 +171,16 @@ Adjust SROS device config and Verify Revertive Deviations
             ...    ${options}
             ...    ${SROS_USERNAME}
             ...    ${SROS_PASSWORD}
-            ...    "/configure/service/vprn[service-name=${intents.${intent}}]/
-            ...    ${CURDIR}/input/sros/deviation-${intent}-sros.json
+            ...    "/configure/service/vprn[service-name=${intents.${intent}}]/"
+            ...    ${CURDIR}/input/sros/deviation-${intent}.json
             # Verify the config is adjusted on the device using gNMIc
             Log    Verify Deviation Creation on ${node} of intent ${intent}
         END
         # The deviation has been created, now verify the system will rollback the deviation and the original intent is back in place
         FOR    ${node}    IN    @{SDCIO_SROS_NODES}
             # If the targetdevice is not defined in the intent yaml, assume all nodes.
-            IF    '${targetdevice}' == '${EMPTY}'
-                ${targetdevice} =    ${node}
+            IF    '${targetdevice}' == 'null'
+                ${targetdevice} =    Set Variable    ${node}
             END
             # considering we're looping through all SROS nodes, skip checking for config on nodes that are not defined in the input yaml.
             IF    '${node}' != '${targetdevice}'
@@ -198,12 +198,11 @@ Adjust SROS device config and Verify Revertive Deviations
             ...    ${SROS_USERNAME}
             ...    ${SROS_PASSWORD}
             ...    "/configure/service/vprn[service-name=${intents.${intent}}]"
-            ...    ${filter}
             ...    ${expectedoutput}
+            ...    ${filter}
         END
-
-            Log    Verify Deviation is reverted on 
     END
+
 *** Keywords ***
 Setup
     Run    echo 'setup executed'

@@ -22,7 +22,7 @@ Get Config from node
     RETURN    ${values}
 
 Get Config from node and Verify Intent
-    [Documentation]    Retrieve Config from a SRLinux node, through collecting a gNMI path and compare against expectedoutput
+    [Documentation]    Retrieve Config from a node, through collecting a gNMI path and compare against expectedoutput
     [Arguments]    ${node}    ${options}    ${username}    ${password}    ${path}    ${expectedoutput}    ${filter}=None
     ${output} =    Get Config from node
     ...    ${node}
