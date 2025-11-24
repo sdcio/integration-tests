@@ -46,3 +46,25 @@ Delete Config from node
     ${json} =    Convert string to JSON    ${output}
     ${values} =    Get values from JSON    ${json}    $.[*].updates.[*]
     RETURN    ${rc}    ${values}
+
+Set Config on node via file
+    [Documentation]    Set Config on a node, through collecting a gNMI path and file containing values
+    [Arguments]    ${node}    ${options}    ${username}    ${password}    ${path}    ${file}
+    ${rc}    ${output} =    Run And Return Rc And Output
+    ...    gnmic -a ${${node}} -p 57400 ${options} -u ${username} -p ${password} set --update-path ${path} --update-file ${file}
+    Log    ${output}
+    Should Be Equal As Integers    ${rc}    0
+    ${json} =    Convert string to JSON    ${output}
+    ${values} =    Get values from JSON    ${json}    $.[*].updates.[*]
+    RETURN    ${values}
+
+Replace Config on node via file
+    [Documentation]    Set Config on a node, through collecting a gNMI path and file containing values
+    [Arguments]    ${node}    ${options}    ${username}    ${password}    ${path}    ${file}
+    ${rc}    ${output} =    Run And Return Rc And Output
+    ...    gnmic -a ${${node}} -p 57400 ${options} -u ${username} -p ${password} set --replace-path ${path} --replace-file ${file}
+    Log    ${output}
+    Should Be Equal As Integers    ${rc}    0
+    ${json} =    Convert string to JSON    ${output}
+    ${values} =    Get values from JSON    ${json}    $.[*].updates.[*]
+    RETURN    ${values}
