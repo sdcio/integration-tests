@@ -17,5 +17,6 @@ spec:
           vprn:
             service-name: "vprn234"
             customer: "2"
-            service-id: "102"
+            service-id: "1102"
             admin-state: "enable"
+

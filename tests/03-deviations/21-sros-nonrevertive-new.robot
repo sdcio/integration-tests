@@ -265,7 +265,7 @@ Create Deviations, Partially accept and Verify, Fully accept and Verify
                 ...    10s
                 ...    Verify Deviation on k8s
                 ...    ${intent}-sros
-                ...    0
+                ...    2
             END
             # check if config matches here
             @{expectedoutput} =    Load JSON from file    ${CURDIR}/expectedoutput/sros/${intent}-sros-nonrevertive.json
