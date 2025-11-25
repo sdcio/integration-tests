@@ -29,21 +29,19 @@ Delete SROS device config and Verify Revertive Deviations
     @{SDCIO_ALL_INTENTS} =    Combine Lists    ${SDCIO_CONFIGSET_INTENTS}    ${SDCIO_CONFIG_INTENTS}
 
     FOR    ${intent}    IN    @{SDCIO_ALL_INTENTS}
-        ${rc}    ${targetdevice} =   YQ file    ${CURDIR}/input/sros/${intent}-sros.yaml    '.metadata.labels."config.sdcio.dev/targetName"'
-
         Log    Delete device config for intent ${intent}
         FOR    ${node}    IN    @{SDCIO_SROS_NODES}
-            # If the targetdevice is not defined in the intent yaml, assume all nodes.
-            IF    '${targetdevice}' == 'null'
+            # If the intent is a ConfigSet, we need to run on all nodes, else we get the targetdevice from the intent yaml.
+            IF    $intent in $SDCIO_CONFIGSET_INTENTS
                 ${targetdevice} =    Set Variable    ${node}
+            ELSE
+                ${rc}    ${targetdevice} =   YQ file    ${CURDIR}/input/sros/${intent}-sros.yaml    '.metadata.labels."config.sdcio.dev/targetName"'
             END
             # considering we're looping through all SROS nodes, skip checking for config on nodes that are not defined in the input yaml.
             IF    '${node}' != '${targetdevice}'
                 Log   Skipping node ${node} as it is not the target device ${targetdevice}
                 Continue For Loop
             END
-            # Clearing targetdevice variable for next iteration
-            ${targetdevice} =    Set Variable    'null'
             Log    Delete ConfigSet ${intent} on ${node}
             # Delete the config from the device using gNMIc
             Delete Config from node
@@ -67,17 +65,17 @@ Delete SROS device config and Verify Revertive Deviations
     	    Should Be Empty    ${output}
         END
         FOR    ${node}    IN    @{SDCIO_SROS_NODES}
-            # If the targetdevice is not defined in the intent yaml, assume all nodes.
-            IF    '${targetdevice}' == 'null'
+            # If the intent is a ConfigSet, we need to run on all nodes, else we get the targetdevice from the intent yaml.
+            IF    $intent in $SDCIO_CONFIGSET_INTENTS
                 ${targetdevice} =    Set Variable    ${node}
+            ELSE
+                ${rc}    ${targetdevice} =   YQ file    ${CURDIR}/input/sros/${intent}-sros.yaml    '.metadata.labels."config.sdcio.dev/targetName"'
             END
             # considering we're looping through all SROS nodes, skip checking for config on nodes that are not defined in the input yaml.
             IF    '${node}' != '${targetdevice}'
                 Log   Skipping node ${node} as it is not the target device ${targetdevice}
                 Continue For Loop
             END
-            # Clearing targetdevice variable for next iteration
-            ${targetdevice} =    Set Variable    'null'
             Log    Wait for Deviations to pick up and revert the config delete on ${node}
             @{expectedoutput} =    Load JSON from file    ${CURDIR}/expectedoutput/sros/${intent}-sros.json
             # Wait until the config is reverted back on the device using gNMIc
@@ -122,20 +120,18 @@ Delete ALL SROS device config and Verify Revertive Deviations
         Should Be Empty    ${output}
     END
     FOR    ${intent}    IN    @{SDCIO_ALL_INTENTS}
-        ${rc}    ${targetdevice} =   YQ file    ${CURDIR}/input/sros/${intent}-sros.yaml    '.metadata.labels."config.sdcio.dev/targetName"'
-
         FOR    ${node}    IN    @{SDCIO_SROS_NODES}
-            # If the targetdevice is not defined in the intent yaml, assume all nodes.
-            IF    '${targetdevice}' == 'null'
+            # If the intent is a ConfigSet, we need to run on all nodes, else we get the targetdevice from the intent yaml.
+            IF    $intent in $SDCIO_CONFIGSET_INTENTS
                 ${targetdevice} =    Set Variable    ${node}
+            ELSE
+                ${rc}    ${targetdevice} =   YQ file    ${CURDIR}/input/sros/${intent}-sros.yaml    '.metadata.labels."config.sdcio.dev/targetName"'
             END
             # considering we're looping through all SROS nodes, skip checking for config on nodes that are not defined in the input yaml.
             IF    '${node}' != '${targetdevice}'
                 Log   Skipping node ${node} as it is not the target device ${targetdevice}
                 Continue For Loop
             END
-            # Clearing targetdevice variable for next iteration
-            ${targetdevice} =    Set Variable    'null'
             Log    Wait for Deviations to pick up and revert the config delete on ${node}
             @{expectedoutput} =    Load JSON from file    ${CURDIR}/expectedoutput/sros/${intent}-sros.json
             # Wait until the config is reverted back on the device using gNMIc
@@ -157,21 +153,19 @@ Adjust SROS device config and Verify Revertive Deviations
     [Documentation]    Adjust (some) SROS device config and Verify Revertive Deviations
     @{SDCIO_ALL_INTENTS} =    Combine Lists    ${SDCIO_CONFIGSET_INTENTS}    ${SDCIO_CONFIG_INTENTS}
     FOR    ${intent}    IN    @{SDCIO_ALL_INTENTS}
-        ${rc}    ${targetdevice} =   YQ file    ${CURDIR}/input/sros/${intent}-sros.yaml    '.metadata.labels."config.sdcio.dev/targetName"'
-
         Log    Adjust device config for intent ${intent}
         FOR    ${node}    IN    @{SDCIO_SROS_NODES}
-            # If the targetdevice is not defined in the intent yaml, assume all nodes.
-            IF    '${targetdevice}' == 'null'
+            # If the intent is a ConfigSet, we need to run on all nodes, else we get the targetdevice from the intent yaml.
+            IF    $intent in $SDCIO_CONFIGSET_INTENTS
                 ${targetdevice} =    Set Variable    ${node}
+            ELSE
+                ${rc}    ${targetdevice} =   YQ file    ${CURDIR}/input/sros/${intent}-sros.yaml    '.metadata.labels."config.sdcio.dev/targetName"'
             END
             # considering we're looping through all SROS nodes, skip checking for config on nodes that are not defined in the input yaml.
             IF    '${node}' != '${targetdevice}'
                 Log   Skipping node ${node} as it is not the target device ${targetdevice}
                 Continue For Loop
             END
-            # Clearing targetdevice variable for next iteration
-            ${targetdevice} =    Set Variable    'null'
             Log    Creating Deviations on ${node} for intent ${intent}
             # Adjust the config on the device using gNMIc
             Set Config on node via file
@@ -186,17 +180,17 @@ Adjust SROS device config and Verify Revertive Deviations
         END
         # The deviation has been created, now verify the system will rollback the deviation and the original intent is back in place
         FOR    ${node}    IN    @{SDCIO_SROS_NODES}
-            # If the targetdevice is not defined in the intent yaml, assume all nodes.
-            IF    '${targetdevice}' == 'null'
+            # If the intent is a ConfigSet, we need to run on all nodes, else we get the targetdevice from the intent yaml.
+            IF    $intent in $SDCIO_CONFIGSET_INTENTS
                 ${targetdevice} =    Set Variable    ${node}
+            ELSE
+                ${rc}    ${targetdevice} =   YQ file    ${CURDIR}/input/sros/${intent}-sros.yaml    '.metadata.labels."config.sdcio.dev/targetName"'
             END
             # considering we're looping through all SROS nodes, skip checking for config on nodes that are not defined in the input yaml.
             IF    '${node}' != '${targetdevice}'
                 Log   Skipping node ${node} as it is not the target device ${targetdevice}
                 Continue For Loop
             END
-            # Clearing targetdevice variable for next iteration
-            ${targetdevice} =    Set Variable    'null'
             @{expectedoutput} =    Load JSON from file    ${CURDIR}/expectedoutput/sros/${intent}-sros.json
             # Wait until the deviation is applied on the device using gNMIc
             Wait Until Keyword Succeeds

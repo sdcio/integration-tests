@@ -54,22 +54,20 @@ Update and Verify Config(Set)
             ...    ${intent}-srl
         END
 
-        ${rc}    ${targetdevice} =   YQ file    ${CURDIR}/input/srl/${intent}-srl.yaml    '.metadata.labels."config.sdcio.dev/targetName"'
-
         # Verify the (updated) Config is applied on the SRL nodes
         Log   Verify Updated Config(Set) ${intent} on ${SDCIO_SRL_NODES}
         FOR    ${node}    IN    @{SDCIO_SRL_NODES}
-            # If the targetdevice is not defined in the intent yaml, assume all nodes.
-            IF    '${targetdevice}' == 'null'
+            # If the intent is a ConfigSet, we need to run on all nodes, else we get the targetdevice from the intent yaml.
+            IF    $intent in $SDCIO_CONFIGSET_INTENTS
                 ${targetdevice} =    Set Variable    ${node}
+            ELSE
+                ${rc}    ${targetdevice} =   YQ file    ${CURDIR}/input/sros/${intent}-sros.yaml    '.metadata.labels."config.sdcio.dev/targetName"'
             END
             # considering we're looping through all SRL nodes, skip checking for config on nodes that are not defined in the input yaml.
             IF    '${node}' != '${targetdevice}'
                 Log   Skipping node ${node} as it is not the target device ${targetdevice}
                 Continue For Loop
             END
-            # Clearing targetdevice variable for next iteration
-            ${targetdevice} =    Set Variable    'null'
             # Note, as the gnmic output is not properly JSON formatted, we need to save the gnmic output initially to a file, 
             # to be able to compare it in consecutive runs.
             # ONLY UNCOMMENT THE FOLLOWING LINE IF YOU NEED TO UPDATE THE EXPECTED OUTPUT
@@ -125,22 +123,21 @@ Replace and Verify Config(Set)
             ...    ${SDCIO_RESOURCE_NAMESPACE}
             ...    ${intent}-srl
         END
-        ${rc}    ${targetdevice} =   YQ file    ${CURDIR}/input/srl/${intent}-srl.yaml    '.metadata.labels."config.sdcio.dev/targetName"'
 
         # Verify the (replaced) Config is applied on the SRL nodes
         Log   Verify Replaced Config(Set) ${intent} on ${SDCIO_SRL_NODES}
         FOR    ${node}    IN    @{SDCIO_SRL_NODES}
-            # If the targetdevice is not defined in the intent yaml, assume all nodes.
-            IF    '${targetdevice}' == 'null'
+            # If the intent is a ConfigSet, we need to run on all nodes, else we get the targetdevice from the intent yaml.
+            IF    $intent in $SDCIO_CONFIGSET_INTENTS
                 ${targetdevice} =    Set Variable    ${node}
+            ELSE
+                ${rc}    ${targetdevice} =   YQ file    ${CURDIR}/input/sros/${intent}-sros.yaml    '.metadata.labels."config.sdcio.dev/targetName"'
             END
             # considering we're looping through all SRL nodes, skip checking for config on nodes that are not defined in the input yaml.
             IF    '${node}' != '${targetdevice}'
                 Log   Skipping node ${node} as it is not the target device ${targetdevice}
                 Continue For Loop
             END
-            # Clearing targetdevice variable for next iteration
-            ${targetdevice} =    Set Variable    'null'
             # Note, as the gnmic output is not properly JSON formatted, we need to save the gnmic output initially to a file, 
             # to be able to compare it in consecutive runs.
             # ONLY UNCOMMENT THE FOLLOWING LINE IF YOU NEED TO UPDATE THE EXPECTED OUTPUT
