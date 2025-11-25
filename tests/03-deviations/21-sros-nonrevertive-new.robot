@@ -24,136 +24,14 @@ ${options}    --insecure -e JSON
 ${filter}    "configure/service/vprn"
 
 *** Test Cases ***
-Delete SROS device config and Verify Revertive Deviations
-    [Documentation]    Delete device config and Verify Revertive Deviations on ConfigSets
+Create Deviations and Verify non-revertive behavior
+    [Documentation]    Create device deviations and Verify Non-Revertive Deviations on Config(Sets)
     @{SDCIO_ALL_INTENTS} =    Combine Lists    ${SDCIO_CONFIGSET_INTENTS}    ${SDCIO_CONFIG_INTENTS}
 
     FOR    ${intent}    IN    @{SDCIO_ALL_INTENTS}
         ${rc}    ${targetdevice} =   YQ file    ${CURDIR}/input/sros/${intent}-sros.yaml    '.metadata.labels."config.sdcio.dev/targetName"'
 
-        Log    Delete device config for intent ${intent}
-        FOR    ${node}    IN    @{SDCIO_SROS_NODES}
-            # If the targetdevice is not defined in the intent yaml, assume all nodes.
-            IF    '${targetdevice}' == 'null'
-                ${targetdevice} =    Set Variable    ${node}
-            END
-            # considering we're looping through all SROS nodes, skip checking for config on nodes that are not defined in the input yaml.
-            IF    '${node}' != '${targetdevice}'
-                Log   Skipping node ${node} as it is not the target device ${targetdevice}
-                Continue For Loop
-            END
-            Log    Delete ConfigSet ${intent} on ${node}
-            # Delete the config from the device using gNMIc
-            Delete Config from node
-            ...    ${node}
-            ...    ${options}
-            ...    ${SROS_USERNAME}
-            ...    ${SROS_PASSWORD}
-            ...    "/configure/service/vprn[service-name=${intents.${intent}}]"
-            # Verify the config is deleted from the device using gNMIc
-            Log    Verify Deletion of ConfigSet ${intent} on ${node}
-            ${output} =    Get Config from node
-            ...    ${node}
-            ...    ${options}
-            ...    ${SROS_USERNAME}
-            ...    ${SROS_PASSWORD}
-            ...    "/configure/service/vprn[service-name=${intents.${intent}}]"
-            ...    ${filter}
-
-            # [HT] Fix, remove None values from output list, before checking if it's empty
-            ${output} =   Evaluate    [i for i in ${output} if i]
-    	    Should Be Empty    ${output}
-        END
-        FOR    ${node}    IN    @{SDCIO_SROS_NODES}
-            # If the targetdevice is not defined in the intent yaml, assume all nodes.
-            IF    '${targetdevice}' == 'null'
-                ${targetdevice} =    Set Variable    ${node}
-            END
-            # considering we're looping through all SROS nodes, skip checking for config on nodes that are not defined in the input yaml.
-            IF    '${node}' != '${targetdevice}'
-                Log   Skipping node ${node} as it is not the target device ${targetdevice}
-                Continue For Loop
-            END
-            Log    Wait for Deviations to pick up and revert the config delete on ${node}
-            @{expectedoutput} =    Load JSON from file    ${CURDIR}/expectedoutput/sros/${intent}-sros.json
-            # Wait until the config is reverted back on the device using gNMIc
-            Wait Until Keyword Succeeds
-            ...    2min
-            ...    10s
-            ...    Get Config from node and Verify Intent
-            ...    ${node}
-            ...    ${options}
-            ...    ${SROS_USERNAME}
-            ...    ${SROS_PASSWORD}
-            ...    "/configure/service/vprn[service-name=${intents.${intent}}]"
-            ...    ${expectedoutput}
-            ...    ${filter}
-        END
-    END
-
-Delete ALL SROS device config and Verify Revertive Deviations
-    [Documentation]    Delete device config and Verify Revertive Deviations on Config(Set) -- multiple intents at once
-    @{SDCIO_ALL_INTENTS} =    Combine Lists    ${SDCIO_CONFIGSET_INTENTS}    ${SDCIO_CONFIG_INTENTS}
-
-    FOR    ${node}    IN    @{SDCIO_SROS_NODES}
-        Log    Deleting ALL Config(Set) intents on ${node}
-        # Delete the config from the device using gNMIc
-        Delete Config from node
-        ...    ${node}
-        ...    ${options}
-        ...    ${SROS_USERNAME}
-        ...    ${SROS_PASSWORD}
-        ...    "/configure/service/vprn[service-name=*]"
-        # Verify the config is deleted from the device using gNMIc
-        Log    Verify Deletion of Config(Set) intents on ${node}
-        ${output} =    Get Config from node
-        ...    ${node}
-        ...    ${options}
-        ...    ${SROS_USERNAME}
-        ...    ${SROS_PASSWORD}
-        ...    "/configure/service/vprn[service-name=*]"
-        ...    ${filter}
-        # [HT] Fix, remove None values from output list, before checking if it's empty
-        ${output} =   Evaluate    [i for i in ${output} if i]
-        Should Be Empty    ${output}
-    END
-    FOR    ${intent}    IN    @{SDCIO_ALL_INTENTS}
-        ${rc}    ${targetdevice} =   YQ file    ${CURDIR}/input/sros/${intent}-sros.yaml    '.metadata.labels."config.sdcio.dev/targetName"'
-
-        FOR    ${node}    IN    @{SDCIO_SROS_NODES}
-            # If the targetdevice is not defined in the intent yaml, assume all nodes.
-            IF    '${targetdevice}' == 'null'
-                ${targetdevice} =    Set Variable    ${node}
-            END
-            # considering we're looping through all SROS nodes, skip checking for config on nodes that are not defined in the input yaml.
-            IF    '${node}' != '${targetdevice}'
-                Log   Skipping node ${node} as it is not the target device ${targetdevice}
-                Continue For Loop
-            END
-            Log    Wait for Deviations to pick up and revert the config delete on ${node}
-            @{expectedoutput} =    Load JSON from file    ${CURDIR}/expectedoutput/sros/${intent}-sros.json
-            # Wait until the config is reverted back on the device using gNMIc
-            Wait Until Keyword Succeeds
-            ...    2min
-            ...    10s
-            ...    Get Config from node and Verify Intent
-            ...    ${node}
-            ...    ${options}
-            ...    ${SROS_USERNAME}
-            ...    ${SROS_PASSWORD}
-            ...    "/configure/service/vprn[service-name=${intents.${intent}}]"
-            ...    ${expectedoutput}
-            ...    ${filter}
-        END
-    END
-
-Adjust SROS device config and Verify Revertive Deviations
-    [Documentation]    Adjust (some) SROS device config and Verify Revertive Deviations
-    @{SDCIO_ALL_INTENTS} =    Combine Lists    ${SDCIO_CONFIGSET_INTENTS}    ${SDCIO_CONFIG_INTENTS}
-    FOR    ${intent}    IN    @{SDCIO_ALL_INTENTS}
-        ${rc}    ${targetdevice} =   YQ file    ${CURDIR}/input/sros/${intent}-sros.yaml    '.metadata.labels."config.sdcio.dev/targetName"'
-
-        Log    Adjust device config for intent ${intent}
+        Log    Creating Deviations for intent ${intent}
         FOR    ${node}    IN    @{SDCIO_SROS_NODES}
             # If the targetdevice is not defined in the intent yaml, assume all nodes.
             IF    '${targetdevice}' == 'null'
@@ -165,6 +43,7 @@ Adjust SROS device config and Verify Revertive Deviations
                 Continue For Loop
             END
             Log    Creating Deviations on ${node} for intent ${intent}
+            # Create a deviation for the intent by applying config directly on the device
             # Adjust the config on the device using gNMIc
             Set Config on node via file
             ...    ${node}
@@ -173,10 +52,10 @@ Adjust SROS device config and Verify Revertive Deviations
             ...    ${SROS_PASSWORD}
             ...    "/configure/service/vprn[service-name=${intents.${intent}}]/"
             ...    ${CURDIR}/input/sros/deviations-${intent}.json
-            # Verify the config is adjusted on the device using gNMIc
-            Log    Verify Deviation Creation on ${node} of intent ${intent}
         END
-        # The deviation has been created, now verify the system will rollback the deviation and the original intent is back in place
+        # Wait until the deviation is reflected on k8s
+        Log    Verifying Deviations are reflected on k8s for intent ${intent}
+        # The deviation has been created, now verify the system will not rollback the deviation.
         FOR    ${node}    IN    @{SDCIO_SROS_NODES}
             # If the targetdevice is not defined in the intent yaml, assume all nodes.
             IF    '${targetdevice}' == 'null'
@@ -187,7 +66,200 @@ Adjust SROS device config and Verify Revertive Deviations
                 Log   Skipping node ${node} as it is not the target device ${targetdevice}
                 Continue For Loop
             END
+            # Confirm in k8s that the config-server picks up the correct count of # deviations.
+            Wait Until Keyword Succeeds
+            ...    2min
+            ...    10s
+            ...    Verify Deviation on k8s
+            ...    ${intent}-sros-${node}
+            ...    3
+            @{expectedoutput} =    Load JSON from file    ${CURDIR}/expectedoutput/sros/${intent}-sros-nonrevertive.json
+            # Wait until the deviation is applied on the device using gNMIc
+            Wait Until Keyword Succeeds
+            ...    2min
+            ...    10s
+            ...    Get Config from node and Verify Intent
+            ...    ${node}
+            ...    ${options}
+            ...    ${SROS_USERNAME}
+            ...    ${SROS_PASSWORD}
+            ...    "/configure/service/vprn[service-name=${intents.${intent}}]"
+            ...    ${expectedoutput}
+            ...    ${filter}
+        END
+    END
+
+# Sleep 30s to allow system to stabilize before next test case
+# Can be removed once data-server implements deviations.
+WorkAround - Stabilise system before next test case
+    Sleep    30s
+    
+Reject Deviations and Verify revertive behavior
+    [Documentation]    Reject Deviations and Verify Revertive Deviations on Config(Sets)
+    @{SDCIO_ALL_INTENTS} =    Combine Lists    ${SDCIO_CONFIGSET_INTENTS}    ${SDCIO_CONFIG_INTENTS}
+
+    FOR    ${intent}    IN    @{SDCIO_ALL_INTENTS}
+        ${rc}    ${targetdevice} =   YQ file    ${CURDIR}/input/sros/${intent}-sros.yaml    '.metadata.labels."config.sdcio.dev/targetName"'
+        Log    Rejecting Deviations for intent ${intent}
+        FOR    ${node}    IN    @{SDCIO_SROS_NODES}
+            # If the targetdevice is not defined in the intent yaml, assume all nodes.
+            IF    '${targetdevice}' == 'null'
+                ${targetdevice} =    Set Variable    ${node}
+            END
+            # considering we're looping through all SROS nodes, skip checking for config on nodes that are not defined in the input yaml.
+            IF    '${node}' != '${targetdevice}'
+                Log   Skipping node ${node} as it is not the target device ${targetdevice}
+                Continue For Loop
+            END
+            Run Keyword
+            ...    Delete Deviation CR
+            ...    ${intent}-sros-${node}
+        END
+        # The deviation has been rejected, now verify the system will rollback the deviation.
+        # Wait until the deviation is reflected on k8s
+        Log    Verifying Deviations are reflected on k8s for intent ${intent}
+        FOR    ${node}    IN    @{SDCIO_SROS_NODES}
+            # If the targetdevice is not defined in the intent yaml, assume all nodes.
+            IF    '${targetdevice}' == 'null'
+                ${targetdevice} =    Set Variable    ${node}
+            END
+            # considering we're looping through all SROS nodes, skip checking for config on nodes that are not defined in the input yaml.
+            IF    '${node}' != '${targetdevice}'
+                Log   Skipping node ${node} as it is not the target device ${targetdevice}
+                Continue For Loop
+            END
+            # Confirm in k8s that the config-server clears the deviations.
+            Wait Until Keyword Succeeds
+            ...    2min
+            ...    10s
+            ...    Verify Deviation on k8s
+            ...    ${intent}-sros-${node}
+            ...    0
             @{expectedoutput} =    Load JSON from file    ${CURDIR}/expectedoutput/sros/${intent}-sros.json
+            # Wait until the deviation is applied on the device using gNMIc
+            Wait Until Keyword Succeeds
+            ...    2min
+            ...    10s
+            ...    Get Config from node and Verify Intent
+            ...    ${node}
+            ...    ${options}
+            ...    ${SROS_USERNAME}
+            ...    ${SROS_PASSWORD}
+            ...    "/configure/service/vprn[service-name=${intents.${intent}}]"
+            ...    ${expectedoutput}
+            ...    ${filter}
+        END
+    END
+
+# Sleep 30s to allow system to stabilize before next test case
+# Can be removed once data-server implements deviations.
+WorkAround - Stabilise system before next test case
+    Sleep    30s
+
+Create Deviations, Partially accept and Verify, Fully accept and Verify
+    [Documentation]    Create Deviations and Partially accept them on Config(Sets), then fully accept them and Verify
+    @{SDCIO_ALL_INTENTS} =    Combine Lists    ${SDCIO_CONFIGSET_INTENTS}    ${SDCIO_CONFIG_INTENTS}
+
+    FOR    ${intent}    IN    @{SDCIO_ALL_INTENTS}
+        ${rc}    ${targetdevice} =   YQ file    ${CURDIR}/input/sros/${intent}-sros.yaml    '.metadata.labels."config.sdcio.dev/targetName"'
+        # CREATE
+        Log    Creating Deviations for intent ${intent}
+        FOR    ${node}    IN    @{SDCIO_SROS_NODES}
+            # If the targetdevice is not defined in the intent yaml, assume all nodes.
+            IF    '${targetdevice}' == 'null'
+                ${targetdevice} =    Set Variable    ${node}
+            END
+            # considering we're looping through all SROS nodes, skip checking for config on nodes that are not defined in the input yaml.
+            IF    '${node}' != '${targetdevice}'
+                Log   Skipping node ${node} as it is not the target device ${targetdevice}
+                Continue For Loop
+            END
+            Log    Creating Deviations on ${node} for intent ${intent}
+            # Create a deviation for the intent by applying config directly on the device
+            # Adjust the config on the device using gNMIc
+            Set Config on node via file
+            ...    ${node}
+            ...    ${options}
+            ...    ${SROS_USERNAME}
+            ...    ${SROS_PASSWORD}
+            ...    "/configure/service/vprn[service-name=${intents.${intent}}]/"
+            ...    ${CURDIR}/input/sros/deviations-${intent}.json
+        END
+        # Wait until the deviation is reflected on k8s
+        Log    Verifying Deviations are reflected on k8s for intent ${intent}
+        FOR    ${node}    IN    @{SDCIO_SROS_NODES}
+            # If the targetdevice is not defined in the intent yaml, assume all nodes.
+            IF    '${targetdevice}' == 'null'
+                ${targetdevice} =    Set Variable    ${node}
+            END
+            # considering we're looping through all SROS nodes, skip checking for config on nodes that are not defined in the input yaml.
+            IF    '${node}' != '${targetdevice}'
+                Log   Skipping node ${node} as it is not the target device ${targetdevice}
+                Continue For Loop
+            END
+            Wait Until Keyword Succeeds
+            ...    2min
+            ...    10s
+            ...    Verify Deviation on k8s
+            ...    ${intent}-sros-${node}
+            ...    3
+        END
+        # PARTIALLY ACCEPT
+        # Deviations are created, now partially accept them for the intent.
+        kubectl apply    ${CURDIR}/input/sros/${intent}-sros-nonrevertive-partial.yaml
+        # Wait until the deviation is reflected on k8s
+        Log    Verifying Deviations are reflected on k8s for intent ${intent}
+        FOR    ${node}    IN    @{SDCIO_SROS_NODES}
+            IF    '${targetdevice}' == 'null'
+                ${targetdevice} =    Set Variable    ${node}
+            END
+            # considering we're looping through all SROS nodes, skip checking for config on nodes that are not defined in the input yaml.
+            IF    '${node}' != '${targetdevice}'
+                Log   Skipping node ${node} as it is not the target device ${targetdevice}
+                Continue For Loop
+            END
+            Wait Until Keyword Succeeds
+            ...    2min
+            ...    10s
+            ...    Verify Deviation on k8s
+            ...    ${intent}-sros-${node}
+            ...    2
+            # check if config matches here
+            @{expectedoutput} =    Load JSON from file    ${CURDIR}/expectedoutput/sros/${intent}-sros-nonrevertive.json
+            # Wait until the deviation is applied on the device using gNMIc
+            Wait Until Keyword Succeeds
+            ...    2min
+            ...    10s
+            ...    Get Config from node and Verify Intent
+            ...    ${node}
+            ...    ${options}
+            ...    ${SROS_USERNAME}
+            ...    ${SROS_PASSWORD}
+            ...    "/configure/service/vprn[service-name=${intents.${intent}}]"
+            ...    ${expectedoutput}
+            ...    ${filter}
+        END
+        # FULLY ACCEPT
+        # Deviations are created, now partially accept them for the intent.
+        kubectl apply    ${CURDIR}/input/sros/${intent}-sros-nonrevertive-full.yaml
+        Log    Verifying Deviations are reflected on k8s for intent ${intent}
+        FOR    ${node}    IN    @{SDCIO_SROS_NODES}
+            IF    '${targetdevice}' == 'null'
+                ${targetdevice} =    Set Variable    ${node}
+            END
+            # considering we're looping through all SROS nodes, skip checking for config on nodes that are not defined in the input yaml.
+            IF    '${node}' != '${targetdevice}'
+                Log   Skipping node ${node} as it is not the target device ${targetdevice}
+                Continue For Loop
+            END
+            Wait Until Keyword Succeeds
+            ...    2min
+            ...    10s
+            ...    Verify Deviation on k8s
+            ...    ${intent}-sros-${node}
+            ...    0
+            # check if config matches here
+            @{expectedoutput} =    Load JSON from file    ${CURDIR}/expectedoutput/sros/${intent}-sros-nonrevertive.json
             # Wait until the deviation is applied on the device using gNMIc
             Wait Until Keyword Succeeds
             ...    2min
@@ -213,6 +285,7 @@ Setup
     Wait Until Keyword Succeeds    2min    10s    ConfigSet Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    "customer"
     FOR    ${intent}    IN    @{SDCIO_CONFIGSET_INTENTS}
         kubectl apply    ${CURDIR}/input/sros/${intent}-sros.yaml
+        kubectl patch    configset    ${intent}-sros    '{"spec": {"revertive": false}}'
         Wait Until Keyword Succeeds
         ...    2min
         ...    10s
@@ -222,6 +295,7 @@ Setup
     END
     FOR    ${intent}    IN    @{SDCIO_CONFIG_INTENTS}
         kubectl apply    ${CURDIR}/input/sros/${intent}-sros.yaml
+        kubectl patch    config    ${intent}-sros    '{"spec": {"revertive": false}}'
         Wait Until Keyword Succeeds
         ...    2min
         ...    10s

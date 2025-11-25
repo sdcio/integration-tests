@@ -1,0 +1,20 @@
+apiVersion: config.sdcio.dev/v1alpha1
+kind: Config
+metadata:
+  name: intent3-sros
+  namespace: default
+  labels:
+    config.sdcio.dev/targetName: sr1
+    config.sdcio.dev/targetNamespace: default
+spec:
+  priority: 10
+  config:
+  - path: /
+    value:
+      configure:
+        service:
+          vprn:
+            service-name: "vprn789"
+            customer: "2"
+            service-id: "103"
+            admin-state: "enable"

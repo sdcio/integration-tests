@@ -58,8 +58,8 @@ Create and Verify Config(Set)
         Log   Verify Config(Set) ${intent} on ${SDCIO_SROS_NODES}
         FOR    ${node}    IN    @{SDCIO_SROS_NODES}
             # If the targetdevice is not defined in the intent yaml, assume all nodes.
-            IF    '${targetdevice}' == '${EMPTY}'
-                ${targetdevice} =    ${node}
+            IF    '${targetdevice}' == 'null'
+                ${targetdevice} =    Set Variable    ${node}
             END
             # considering we're looping through all SROS nodes, skip checking for config on nodes that are not defined in the input yaml.
             IF    '${node}' != '${targetdevice}'
@@ -131,8 +131,8 @@ Delete and Verify Config(Set)
         Log   Verify Config ${intent} on ${SDCIO_SROS_NODES}
         FOR    ${node}    IN    @{SDCIO_SROS_NODES}
             # If the targetdevice is not defined in the intent yaml, assume all nodes.
-            IF    '${targetdevice}' == '${EMPTY}'
-                ${targetdevice} =    ${node}
+            IF    '${targetdevice}' == 'null'
+                ${targetdevice} =    Set Variable    ${node}
             END
             # considering we're looping through all SROS nodes, skip checking for config on nodes that are not defined in the input yaml.
             IF    '${node}' != '${targetdevice}'

@@ -60,8 +60,8 @@ Update and Verify Config(Set)
         Log   Verify Updated Config(Set) ${intent} on ${SDCIO_SRL_NODES}
         FOR    ${node}    IN    @{SDCIO_SRL_NODES}
             # If the targetdevice is not defined in the intent yaml, assume all nodes.
-            IF    '${targetdevice}' == '${EMPTY}'
-                ${targetdevice} =    ${node}
+            IF    '${targetdevice}' == 'null'
+                ${targetdevice} =    Set Variable    ${node}
             END
             # considering we're looping through all SRL nodes, skip checking for config on nodes that are not defined in the input yaml.
             IF    '${node}' != '${targetdevice}'
@@ -129,8 +129,8 @@ Replace and Verify Config(Set)
         Log   Verify Replaced Config(Set) ${intent} on ${SDCIO_SRL_NODES}
         FOR    ${node}    IN    @{SDCIO_SRL_NODES}
             # If the targetdevice is not defined in the intent yaml, assume all nodes.
-            IF    '${targetdevice}' == '${EMPTY}'
-                ${targetdevice} =    ${node}
+            IF    '${targetdevice}' == 'null'
+                ${targetdevice} =    Set Variable    ${node}
             END
             # considering we're looping through all SRL nodes, skip checking for config on nodes that are not defined in the input yaml.
             IF    '${node}' != '${targetdevice}'
