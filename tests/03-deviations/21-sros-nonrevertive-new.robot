@@ -9,6 +9,7 @@ Resource            ../Keywords/targets.robot
 Resource            ../Keywords/config.robot
 Resource            ../Keywords/gnmic.robot
 Resource            ../Keywords/yq.robot
+Resource            ../Keywords/deviation.robot
 
 Suite Setup         Setup
 Suite Teardown      Run Keyword    Cleanup
