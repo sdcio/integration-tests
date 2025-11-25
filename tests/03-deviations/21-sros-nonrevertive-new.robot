@@ -121,9 +121,15 @@ Reject Deviations and Verify revertive behavior
                 Log   Skipping node ${node} as it is not the target device ${targetdevice}
                 Continue For Loop
             END
-            Run Keyword
-            ...    Delete Deviation CR
-            ...    ${intent}-sros-${node}
+            IF    $intent in $SDCIO_CONFIGSET_INTENTS
+                Run Keyword
+                ...    Delete Deviation CR
+                ...    ${intent}-sros-${node}
+            ELSE
+                Run Keyword
+                ...    Delete Deviation CR
+                ...    ${intent}-sros
+            END
         END
         # The deviation has been rejected, now verify the system will rollback the deviation.
         # Wait until the deviation is reflected on k8s
