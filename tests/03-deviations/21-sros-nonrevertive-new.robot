@@ -67,12 +67,21 @@ Create Deviations and Verify non-revertive behavior
                 Continue For Loop
             END
             # Confirm in k8s that the config-server picks up the correct count of # deviations.
-            Wait Until Keyword Succeeds
-            ...    2min
-            ...    10s
-            ...    Verify Deviation on k8s
-            ...    ${intent}-sros-${node}
-            ...    3
+            IF    $intent in $SDCIO_CONFIGSET_INTENTS
+                Wait Until Keyword Succeeds
+                ...    2min
+                ...    10s
+                ...    Verify Deviation on k8s
+                ...    ${intent}-sros-${node}
+                ...    3
+            ELSE
+                Wait Until Keyword Succeeds
+                ...    2min
+                ...    10s
+                ...    Verify Deviation on k8s
+                ...    ${intent}-sros
+                ...    3
+            END
             @{expectedoutput} =    Load JSON from file    ${CURDIR}/expectedoutput/sros/${intent}-sros-nonrevertive.json
             # Wait until the deviation is applied on the device using gNMIc
             Wait Until Keyword Succeeds
@@ -129,12 +138,21 @@ Reject Deviations and Verify revertive behavior
                 Continue For Loop
             END
             # Confirm in k8s that the config-server clears the deviations.
-            Wait Until Keyword Succeeds
-            ...    2min
-            ...    10s
-            ...    Verify Deviation on k8s
-            ...    ${intent}-sros-${node}
-            ...    0
+            IF    $intent in $SDCIO_CONFIGSET_INTENTS
+                Wait Until Keyword Succeeds
+                ...    2min
+                ...    10s
+                ...    Verify Deviation on k8s
+                ...    ${intent}-sros-${node}
+                ...    0
+            ELSE
+                Wait Until Keyword Succeeds
+                ...    2min
+                ...    10s
+                ...    Verify Deviation on k8s
+                ...    ${intent}-sros
+                ...    0
+            END
             @{expectedoutput} =    Load JSON from file    ${CURDIR}/expectedoutput/sros/${intent}-sros.json
             # Wait until the deviation is applied on the device using gNMIc
             Wait Until Keyword Succeeds
@@ -197,12 +215,21 @@ Create Deviations, Partially accept and Verify, Fully accept and Verify
                 Log   Skipping node ${node} as it is not the target device ${targetdevice}
                 Continue For Loop
             END
-            Wait Until Keyword Succeeds
-            ...    2min
-            ...    10s
-            ...    Verify Deviation on k8s
-            ...    ${intent}-sros-${node}
-            ...    3
+            IF    $intent in $SDCIO_CONFIGSET_INTENTS
+                Wait Until Keyword Succeeds
+                ...    2min
+                ...    10s
+                ...    Verify Deviation on k8s
+                ...    ${intent}-sros-${node}
+                ...    3
+            ELSE
+                Wait Until Keyword Succeeds
+                ...    2min
+                ...    10s
+                ...    Verify Deviation on k8s
+                ...    ${intent}-sros
+                ...    3
+            END
         END
         # PARTIALLY ACCEPT
         # Deviations are created, now partially accept them for the intent.
@@ -218,12 +245,21 @@ Create Deviations, Partially accept and Verify, Fully accept and Verify
                 Log   Skipping node ${node} as it is not the target device ${targetdevice}
                 Continue For Loop
             END
-            Wait Until Keyword Succeeds
-            ...    2min
-            ...    10s
-            ...    Verify Deviation on k8s
-            ...    ${intent}-sros-${node}
-            ...    2
+            IF    $intent in $SDCIO_CONFIGSET_INTENTS
+                Wait Until Keyword Succeeds
+                ...    2min
+                ...    10s
+                ...    Verify Deviation on k8s
+                ...    ${intent}-sros-${node}
+                ...    2
+            ELSE
+                Wait Until Keyword Succeeds
+                ...    2min
+                ...    10s
+                ...    Verify Deviation on k8s
+                ...    ${intent}-sros
+                ...    0
+            END
             # check if config matches here
             @{expectedoutput} =    Load JSON from file    ${CURDIR}/expectedoutput/sros/${intent}-sros-nonrevertive.json
             # Wait until the deviation is applied on the device using gNMIc
@@ -252,12 +288,21 @@ Create Deviations, Partially accept and Verify, Fully accept and Verify
                 Log   Skipping node ${node} as it is not the target device ${targetdevice}
                 Continue For Loop
             END
-            Wait Until Keyword Succeeds
-            ...    2min
-            ...    10s
-            ...    Verify Deviation on k8s
-            ...    ${intent}-sros-${node}
-            ...    0
+            IF    $intent in $SDCIO_CONFIGSET_INTENTS
+                Wait Until Keyword Succeeds
+                ...    2min
+                ...    10s
+                ...    Verify Deviation on k8s
+                ...    ${intent}-sros-${node}
+                ...    0
+            ELSE
+                Wait Until Keyword Succeeds
+                ...    2min
+                ...    10s
+                ...    Verify Deviation on k8s
+                ...    ${intent}-sros
+                ...    0
+            END
             # check if config matches here
             @{expectedoutput} =    Load JSON from file    ${CURDIR}/expectedoutput/sros/${intent}-sros-nonrevertive.json
             # Wait until the deviation is applied on the device using gNMIc
