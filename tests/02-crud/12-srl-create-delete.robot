@@ -66,6 +66,8 @@ Create and Verify Config(Set)
                 Log   Skipping node ${node} as it is not the target device ${targetdevice}
                 Continue For Loop
             END
+            # Clearing targetdevice variable for next iteration
+            ${targetdevice} =    Set Variable    'null'
             # Note, as the gnmic output is not properly JSON formatted, we need to save the gnmic output initially to a file, 
             # to be able to compare it in consecutive runs.
             # ONLY UNCOMMENT THE FOLLOWING LINE IF YOU NEED TO UPDATE THE EXPECTED OUTPUT
@@ -137,6 +139,8 @@ Delete and Verify Config(Set)
                 Log   Skipping node ${node} as it is not the target device ${targetdevice}
                 Continue For Loop
             END
+            # Clearing targetdevice variable for next iteration
+            ${targetdevice} =    Set Variable    'null'
             ${output} =    Get Config from node
             ...    ${node}
             ...    ${options}

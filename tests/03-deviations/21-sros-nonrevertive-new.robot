@@ -43,6 +43,8 @@ Create Deviations and Verify non-revertive behavior
                 Log   Skipping node ${node} as it is not the target device ${targetdevice}
                 Continue For Loop
             END
+            # Clearing targetdevice variable for next iteration
+            ${targetdevice} =    Set Variable    'null'
             Log    Creating Deviations on ${node} for intent ${intent}
             # Create a deviation for the intent by applying config directly on the device
             # Adjust the config on the device using gNMIc
@@ -67,6 +69,8 @@ Create Deviations and Verify non-revertive behavior
                 Log   Skipping node ${node} as it is not the target device ${targetdevice}
                 Continue For Loop
             END
+            # Clearing targetdevice variable for next iteration
+            ${targetdevice} =    Set Variable    'null'
             # Confirm in k8s that the config-server picks up the correct count of # deviations.
             IF    $intent in $SDCIO_CONFIGSET_INTENTS
                 Wait Until Keyword Succeeds
@@ -121,6 +125,8 @@ Reject Deviations and Verify revertive behavior
                 Log   Skipping node ${node} as it is not the target device ${targetdevice}
                 Continue For Loop
             END
+            # Clearing targetdevice variable for next iteration
+            ${targetdevice} =    Set Variable    'null'
             IF    $intent in $SDCIO_CONFIGSET_INTENTS
                 Run Keyword
                 ...    Delete Deviation CR
@@ -144,6 +150,8 @@ Reject Deviations and Verify revertive behavior
                 Log   Skipping node ${node} as it is not the target device ${targetdevice}
                 Continue For Loop
             END
+            # Clearing targetdevice variable for next iteration
+            ${targetdevice} =    Set Variable    'null'
             # Confirm in k8s that the config-server clears the deviations.
             IF    $intent in $SDCIO_CONFIGSET_INTENTS
                 Wait Until Keyword Succeeds
@@ -199,6 +207,8 @@ Create Deviations, Partially accept and Verify, Fully accept and Verify
                 Log   Skipping node ${node} as it is not the target device ${targetdevice}
                 Continue For Loop
             END
+            # Clearing targetdevice variable for next iteration
+            ${targetdevice} =    Set Variable    'null'
             Log    Creating Deviations on ${node} for intent ${intent}
             # Create a deviation for the intent by applying config directly on the device
             # Adjust the config on the device using gNMIc
@@ -222,6 +232,8 @@ Create Deviations, Partially accept and Verify, Fully accept and Verify
                 Log   Skipping node ${node} as it is not the target device ${targetdevice}
                 Continue For Loop
             END
+            # Clearing targetdevice variable for next iteration
+            ${targetdevice} =    Set Variable    'null'
             IF    $intent in $SDCIO_CONFIGSET_INTENTS
                 Wait Until Keyword Succeeds
                 ...    2min
@@ -252,6 +264,8 @@ Create Deviations, Partially accept and Verify, Fully accept and Verify
                 Log   Skipping node ${node} as it is not the target device ${targetdevice}
                 Continue For Loop
             END
+            # Clearing targetdevice variable for next iteration
+            ${targetdevice} =    Set Variable    'null'
             IF    $intent in $SDCIO_CONFIGSET_INTENTS
                 Wait Until Keyword Succeeds
                 ...    2min
@@ -295,6 +309,8 @@ Create Deviations, Partially accept and Verify, Fully accept and Verify
                 Log   Skipping node ${node} as it is not the target device ${targetdevice}
                 Continue For Loop
             END
+            # Clearing targetdevice variable for next iteration
+            ${targetdevice} =    Set Variable    'null'
             IF    $intent in $SDCIO_CONFIGSET_INTENTS
                 Wait Until Keyword Succeeds
                 ...    2min

@@ -42,6 +42,8 @@ Delete SROS device config and Verify Revertive Deviations
                 Log   Skipping node ${node} as it is not the target device ${targetdevice}
                 Continue For Loop
             END
+            # Clearing targetdevice variable for next iteration
+            ${targetdevice} =    Set Variable    'null'
             Log    Delete ConfigSet ${intent} on ${node}
             # Delete the config from the device using gNMIc
             Delete Config from node
@@ -74,6 +76,8 @@ Delete SROS device config and Verify Revertive Deviations
                 Log   Skipping node ${node} as it is not the target device ${targetdevice}
                 Continue For Loop
             END
+            # Clearing targetdevice variable for next iteration
+            ${targetdevice} =    Set Variable    'null'
             Log    Wait for Deviations to pick up and revert the config delete on ${node}
             @{expectedoutput} =    Load JSON from file    ${CURDIR}/expectedoutput/sros/${intent}-sros.json
             # Wait until the config is reverted back on the device using gNMIc
@@ -130,6 +134,8 @@ Delete ALL SROS device config and Verify Revertive Deviations
                 Log   Skipping node ${node} as it is not the target device ${targetdevice}
                 Continue For Loop
             END
+            # Clearing targetdevice variable for next iteration
+            ${targetdevice} =    Set Variable    'null'
             Log    Wait for Deviations to pick up and revert the config delete on ${node}
             @{expectedoutput} =    Load JSON from file    ${CURDIR}/expectedoutput/sros/${intent}-sros.json
             # Wait until the config is reverted back on the device using gNMIc
@@ -164,6 +170,8 @@ Adjust SROS device config and Verify Revertive Deviations
                 Log   Skipping node ${node} as it is not the target device ${targetdevice}
                 Continue For Loop
             END
+            # Clearing targetdevice variable for next iteration
+            ${targetdevice} =    Set Variable    'null'
             Log    Creating Deviations on ${node} for intent ${intent}
             # Adjust the config on the device using gNMIc
             Set Config on node via file
@@ -187,6 +195,8 @@ Adjust SROS device config and Verify Revertive Deviations
                 Log   Skipping node ${node} as it is not the target device ${targetdevice}
                 Continue For Loop
             END
+            # Clearing targetdevice variable for next iteration
+            ${targetdevice} =    Set Variable    'null'
             @{expectedoutput} =    Load JSON from file    ${CURDIR}/expectedoutput/sros/${intent}-sros.json
             # Wait until the deviation is applied on the device using gNMIc
             Wait Until Keyword Succeeds
