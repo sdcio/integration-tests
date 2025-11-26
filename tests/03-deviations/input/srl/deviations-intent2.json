@@ -1,0 +1,39 @@
+{
+    "interface": [
+        {
+            "name": "ethernet-1/2",
+            "admin-state": "disable",
+            "description": "Deviation revertive test - override description intent2",
+            "vlan-tagging": true,
+            "subinterface": [
+                {
+                    "index": 0,
+                    "vlan": {
+                        "encap": {
+                            "single-tagged": {
+                                "vlan-id": 200
+                            }
+                        }
+                    },
+                }
+            ]
+        }
+    ],
+    "network-instance": [
+        {
+            "name": "vrf2",
+            "admin-state": "disable",
+            "protocols": {
+                "bgp": {
+                    "autonomous-system": 2000,
+                    "afi-safi": [
+                        {
+                            "afi-safi-name": "ipv6-unicast",
+                            "admin-state": "disable"
+                        },
+                    ]
+                }
+            }
+        }
+    ]
+}

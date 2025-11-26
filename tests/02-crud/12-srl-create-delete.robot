@@ -75,7 +75,7 @@ Create and Verify Config(Set)
             # ...    ${options}
             # ...    ${SRL_USERNAME}
             # ...    ${SRL_PASSWORD}
-            # ...    "/network-instance[name=${intents.${intent}}]"
+            # ...    "/network-instance[name=${intents.${intent}}] --path /interface[name=${intentsinterfaces.${intent}}]"
             # Save JSON to file    ${gnmicoutput}    ${CURDIR}/expectedoutput/srl/${intent}-srl.json
             # END BLOCK
 
@@ -86,7 +86,7 @@ Create and Verify Config(Set)
             ...    ${options}
             ...    ${SRL_USERNAME}
             ...    ${SRL_PASSWORD}
-            ...    "/network-instance[name=${intents.${intent}}]"
+            ...    "/network-instance[name=${intents.${intent}}] --path /interface[name=${intentsinterfaces.${intent}}]"
             ...    ${expectedoutput}
             
             Should Be True      ${compare}
@@ -144,7 +144,7 @@ Delete and Verify Config(Set)
             ...    ${options}
             ...    ${SRL_USERNAME}
             ...    ${SRL_PASSWORD}
-            ...    "/network-instance[name=${intents.${intent}}]"
+            ...    "/network-instance[name=${intents.${intent}}] --path /interface[name=${intentsinterfaces.${intent}}]"
 
     	    Should Be Empty    ${output}
         END

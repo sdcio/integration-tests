@@ -1,0 +1,53 @@
+apiVersion: config.sdcio.dev/v1alpha1
+kind: Config
+metadata:
+  name: intent4-srl
+  namespace: default
+  labels:
+    config.sdcio.dev/targetName: srl2
+    config.sdcio.dev/targetNamespace: default
+spec:
+  priority: 10
+  config:
+  - path: /
+    value:
+      interface:
+      - name: ethernet-1/4
+        admin-state: "disable"
+        description: "Deviation revertive test - override description intent4"
+        vlan-tagging: true
+        subinterface:
+        - index: 0
+          type: routed
+          admin-state: enable
+          vlan:
+            encap:
+              single-tagged:
+                vlan-id: 400
+          ipv4:
+            admin-state: enable
+            unnumbered:
+              admin-state: disable
+            address:
+              - ip-prefix: "192.168.4.1/24"
+          ipv6:
+            admin-state: enable
+            address:
+              - ip-prefix: "fd00:0:0:4::1/64"
+      network-instance:
+      - name: vrf4
+        admin-state: "disable"
+        type: ip-vrf
+        description: "Intent4 Network-instance"
+        interface:
+          - name: ethernet-1/4.0
+        protocols:
+          bgp:
+            admin-state: "enable"
+            autonomous-system: 4000
+            router-id: 4.4.4.4
+            afi-safi:
+              - afi-safi-name: "ipv4-unicast"
+                admin-state: "enable"
+              - afi-safi-name: "ipv6-unicast"
+                admin-state: "disable"

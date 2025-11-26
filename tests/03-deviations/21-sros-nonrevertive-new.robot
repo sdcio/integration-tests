@@ -130,6 +130,8 @@ Reject Deviations and Verify revertive behavior
                 ...    ${intent}-sros
             END
         END
+        # Wait some time to allow the system to process the rejection
+        Sleep 5s
         # The deviation has been rejected, now verify the system will rollback the deviation.
         # Wait until the deviation is reflected on k8s
         Log    Verifying Deviations are reflected on k8s for intent ${intent}

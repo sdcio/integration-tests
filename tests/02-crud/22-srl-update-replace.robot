@@ -77,7 +77,7 @@ Update and Verify Config(Set)
             # ...    ${options}
             # ...    ${SRL_USERNAME}
             # ...    ${SRL_PASSWORD}
-            # ...    "/network-instance[name=${intents.${intent}}]"
+            # ...    "/network-instance[name=${intents.${intent}}] --path /interface[name=${intentsinterfaces.${intent}}]"
             # Save JSON to file    ${gnmicoutput}    ${CURDIR}/expectedoutput/srl/${intent}-srl-update.json
             # END BLOCK
 
@@ -88,7 +88,7 @@ Update and Verify Config(Set)
             ...    ${options}
             ...    ${SRL_USERNAME}
             ...    ${SRL_PASSWORD}
-            ...    "/network-instance[name=${intents.${intent}}]"
+            ...    "/network-instance[name=${intents.${intent}}] --path /interface[name=${intentsinterfaces.${intent}}]"
             ...    ${expectedoutput}
             
             Should Be True      ${compare}
@@ -147,7 +147,7 @@ Replace and Verify Config(Set)
             # ...    ${options}
             # ...    ${SRL_USERNAME}
             # ...    ${SRL_PASSWORD}
-            # ...    "/network-instance[name=${intents.${intent}}]"
+            # ...    "/network-instance[name=${replaceintents.${intent}}] --path /interface[name=${intentsinterfaces.${intent}}]"
             # Save JSON to file    ${gnmicoutput}    ${CURDIR}/expectedoutput/srl/${intent}-srl-replace.json
             # END BLOCK
 
@@ -158,7 +158,7 @@ Replace and Verify Config(Set)
             ...    ${options}
             ...    ${SRL_USERNAME}
             ...    ${SRL_PASSWORD}
-            ...    "/network-instance[name=${replaceintents.${intent}}]"
+            ...    "/network-instance[name=${replaceintents.${intent}}] --path /interface[name=${intentsinterfaces.${intent}}]"
             ...    ${expectedoutput}
             
             Should Be True      ${compare}
@@ -170,7 +170,7 @@ Replace and Verify Config(Set)
             ...    ${options}
             ...    ${SRL_USERNAME}
             ...    ${SRL_PASSWORD}
-            ...    "/network-instance[name=${intents.${intent}}]"
+            ...    "/network-instance[name=${intents.${intent}}] --path /interface[name=${intentsinterfaces.${intent}}]"
 
     	    Should Be Empty    ${output}
         END
