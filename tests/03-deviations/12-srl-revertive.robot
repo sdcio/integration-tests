@@ -85,7 +85,7 @@ Delete SRL device config and Verify Revertive Deviations
             ...    ${options}
             ...    ${SRL_USERNAME}
             ...    ${SRL_PASSWORD}
-            ...    "/network-instance[name=${intents.${intent}}] --path /interface[name=${intentsinterfaces.${intent}}]"
+            ...    "/network-instance[name=${intents.${intent}}]" --path "/interface[name=${intentsinterfaces.${intent}}]"
             ...    ${expectedoutput}
         END
     END
@@ -138,7 +138,7 @@ Delete ALL SRL device config and Verify Revertive Deviations
             ...    ${options}
             ...    ${SRL_USERNAME}
             ...    ${SRL_PASSWORD}
-            ...    "/network-instance[name=${intents.${intent}}] --path /interface[name=${intentsinterfaces.${intent}}]"
+            ...    "/network-instance[name=${intents.${intent}}]" --path "/interface[name=${intentsinterfaces.${intent}}]"
             ...    ${expectedoutput}
         END
     END
@@ -195,7 +195,7 @@ Adjust SRL device config and Verify Revertive Deviations
             ...    ${options}
             ...    ${SRL_USERNAME}
             ...    ${SRL_PASSWORD}
-            ...    "/network-instance[name=${intents.${intent}}] --path /interface[name=${intentsinterfaces.${intent}}]"
+            ...    "/network-instance[name=${intents.${intent}}]" --path "/interface[name=${intentsinterfaces.${intent}}]"
             ...    ${expectedoutput}
         END
     END

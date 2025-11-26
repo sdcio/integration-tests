@@ -95,7 +95,7 @@ Create Deviations and Verify non-revertive behavior
             ...    ${options}
             ...    ${SRL_USERNAME}
             ...    ${SRL_PASSWORD}
-            ...    "/network-instance[name=${intents.${intent}}] --path /interface[name=${intentsinterfaces.${intent}}]"
+            ...    "/network-instance[name=${intents.${intent}}]" --path "/interface[name=${intentsinterfaces.${intent}}]"
             ...    ${expectedoutput}
         END
     END
@@ -172,7 +172,7 @@ Reject Deviations and Verify revertive behavior
             ...    ${options}
             ...    ${SRL_USERNAME}
             ...    ${SRL_PASSWORD}
-            ...    "/network-instance[name=${intents.${intent}}] --path /interface[name=${intentsinterfaces.${intent}}]"
+            ...    "/network-instance[name=${intents.${intent}}]" --path "/interface[name=${intentsinterfaces.${intent}}]"
             ...    ${expectedoutput}
         END
     END
@@ -281,7 +281,7 @@ Create Deviations, Partially accept and Verify, Fully accept and Verify
             ...    ${options}
             ...    ${SRL_USERNAME}
             ...    ${SRL_PASSWORD}
-            ...    "/network-instance[name=${intents.${intent}}] --path /interface[name=${intentsinterfaces.${intent}}]"
+            ...    "/network-instance[name=${intents.${intent}}]" --path "/interface[name=${intentsinterfaces.${intent}}]"
             ...    ${expectedoutput}
         END
         # FULLY ACCEPT
@@ -326,7 +326,7 @@ Create Deviations, Partially accept and Verify, Fully accept and Verify
             ...    ${options}
             ...    ${SRL_USERNAME}
             ...    ${SRL_PASSWORD}
-            ...    "/network-instance[name=${intents.${intent}}] --path /interface[name=${intentsinterfaces.${intent}}]"
+            ...    "/network-instance[name=${intents.${intent}}]" --path "/interface[name=${intentsinterfaces.${intent}}]"
             ...    ${expectedoutput}
         END
     END
