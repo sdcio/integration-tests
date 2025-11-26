@@ -50,7 +50,7 @@ Delete SRL device config and Verify Revertive Deviations
             ...    ${options}
             ...    ${SRL_USERNAME}
             ...    ${SRL_PASSWORD}
-            ...    "/network-instance[name=${intentsinterfaces.${intent}}]"
+            ...    "/network-instance[name=${intents.${intent}}]"
             # Verify the config is deleted from the device using gNMIc
             Log    Verify Deletion of ConfigSet ${intent} on ${node}
             ${output} =    Get Config from node
