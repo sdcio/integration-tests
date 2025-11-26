@@ -37,7 +37,7 @@ Create Deviations and Verify non-revertive behavior
             IF    $intent in $SDCIO_CONFIGSET_INTENTS
                 ${targetdevice} =    Set Variable    ${node}
             ELSE
-                ${rc}    ${targetdevice} =   YQ file    ${CURDIR}/input/SRL/${intent}-srl.yaml    '.metadata.labels."config.sdcio.dev/targetName"'
+                ${rc}    ${targetdevice} =   YQ file    ${CURDIR}/input/srl/${intent}-srl.yaml    '.metadata.labels."config.sdcio.dev/targetName"'
             END
             # considering we're looping through all SRL nodes, skip checking for config on nodes that are not defined in the input yaml.
             IF    '${node}' != '${targetdevice}'
@@ -131,7 +131,7 @@ Reject Deviations and Verify revertive behavior
             END
         END
         # Wait some time to allow the system to process the rejection
-        Sleep 5s
+        Sleep    5s
         # The deviation has been rejected, now verify the system will rollback the deviation.
         # Wait until the deviation is reflected on k8s
         Log    Verifying Deviations are reflected on k8s for intent ${intent}
