@@ -166,18 +166,14 @@ DeleteAll
     FOR  ${node}    IN    @{SDCIO_SRL_NODES}
         Delete Config from node
         ...    ${node}
-        ...    ${options}
+        ...    --skip-verify -e PROTO
         ...    ${SRL_USERNAME}
         ...    ${SRL_PASSWORD}
         ...    "/network-instance[name=vrf*]"
-        @{SDCIO_ALL_INTENTS} =    Combine Lists    ${SDCIO_CONFIGSET_INTENTS}    ${SDCIO_CONFIG_INTENTS}
-
-        FOR   ${intent}    IN    @{SDCIO_ALL_INTENTS}
-            Delete Config from node
-            ...    ${node}
-            ...    ${options}
-            ...    ${SRL_USERNAME}
-            ...    ${SRL_PASSWORD}
-            ...    "/network-instance[name=${intentsinterfaces.${intent}}]"
-        END
+        Delete Config from node
+        ...    ${node}
+        ...    --skip-verify -e PROTO
+        ...    ${SRL_USERNAME}
+        ...    ${SRL_PASSWORD}
+        ...    "/interface[name=ethernet-1/*]"
     END
