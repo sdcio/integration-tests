@@ -338,8 +338,6 @@ Setup
     FOR    ${node}    IN    @{SDCIO_SRL_NODES}
         Wait Until Keyword Succeeds    15min    10s    Targets Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    ${node}
     END
-    kubectl apply    ${CURDIR}/input/srl/customer.yaml
-    Wait Until Keyword Succeeds    2min    10s    ConfigSet Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    "customer"
     FOR    ${intent}    IN    @{SDCIO_CONFIGSET_INTENTS}
         kubectl apply    ${CURDIR}/input/srl/${intent}-srl.yaml
         kubectl patch    configset    ${intent}-srl    '{"spec": {"revertive": false}}'
