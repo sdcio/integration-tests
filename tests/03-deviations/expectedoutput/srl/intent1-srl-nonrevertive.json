@@ -3,10 +3,10 @@
         "network-instance/type": "ip-vrf"
     },
     {
-        "network-instance/admin-state": "enable"
+        "network-instance/admin-state": "disable"
     },
     {
-        "network-instance/description": "Intent5 Network-instance"
+        "network-instance/description": "Intent1 Network-instance"
     },
     {
         "network-instance/interface": null
@@ -18,22 +18,22 @@
         "network-instance/protocols/bgp/admin-state": "enable"
     },
     {
-        "network-instance/protocols/bgp/autonomous-system": 65005
+        "network-instance/protocols/bgp/autonomous-system": 1000
     },
     {
-        "network-instance/protocols/bgp/router-id": "5.5.5.5"
+        "network-instance/protocols/bgp/router-id": "1.1.1.1"
+    },
+    {
+        "network-instance/protocols/bgp/afi-safi/admin-state": "disable"
     },
     {
         "network-instance/protocols/bgp/afi-safi/admin-state": "enable"
     },
     {
-        "network-instance/protocols/bgp/afi-safi/admin-state": "enable"
+        "interface/description": "Deviation revertive test - override description intent1"
     },
     {
-        "interface/description": "intent5"
-    },
-    {
-        "interface/admin-state": "enable"
+        "interface/admin-state": "disable"
     },
     {
         "interface/vlan-tagging": true
@@ -66,6 +66,6 @@
         "interface/subinterface/vlan/encap": null
     },
     {
-        "interface/subinterface/vlan/encap/single-tagged/vlan-id": 1
+        "interface/subinterface/vlan/encap/single-tagged/vlan-id": 100
     }
 ]
