@@ -378,7 +378,6 @@ Cleanup
         ...    kubectl get    -n ${SDCIO_RESOURCE_NAMESPACE} configsets.config.sdcio.dev ${intent}-srl
     END
     Run Keyword If Any Tests Failed     DeleteAll
-    Delete ConfigSet    ${SDCIO_RESOURCE_NAMESPACE}    "customer"
 
 DeleteAll
     Log    Deleting all SRL Config
