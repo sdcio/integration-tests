@@ -100,12 +100,8 @@ Create Deviations and Verify non-revertive behavior
             ...    ${filter}
         END
     END
+    Sleep    10s
 
-# Sleep 30s to allow system to stabilize before next test case
-# Can be removed once data-server implements deviations.
-WorkAround - Stabilise system before next test case
-    Sleep    30s
-    
 Reject Deviations and Verify revertive behavior
     [Documentation]    Reject Deviations and Verify Revertive Deviations on Config(Sets)
     @{SDCIO_ALL_INTENTS} =    Combine Lists    ${SDCIO_CONFIGSET_INTENTS}    ${SDCIO_CONFIG_INTENTS}
@@ -180,11 +176,7 @@ Reject Deviations and Verify revertive behavior
             ...    ${filter}
         END
     END
-
-# Sleep 30s to allow system to stabilize before next test case
-# Can be removed once data-server implements deviations.
-WorkAround - Stabilise system before next test case
-    Sleep    30s
+    Sleep    10s
 
 Create Deviations, Partially accept and Verify, Fully accept and Verify
     [Documentation]    Create Deviations and Partially accept them on Config(Sets), then fully accept them and Verify
