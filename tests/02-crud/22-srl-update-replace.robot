@@ -61,7 +61,7 @@ Update and Verify Config(Set)
             IF    $intent in $SDCIO_CONFIGSET_INTENTS
                 ${targetdevice} =    Set Variable    ${node}
             ELSE
-                ${rc}    ${targetdevice} =   YQ file    ${CURDIR}/input/sros/${intent}-sros.yaml    '.metadata.labels."config.sdcio.dev/targetName"'
+                ${rc}    ${targetdevice} =   YQ file    ${CURDIR}/input/srl/${intent}-srl.yaml    '.metadata.labels."config.sdcio.dev/targetName"'
             END
             # considering we're looping through all SRL nodes, skip checking for config on nodes that are not defined in the input yaml.
             IF    '${node}' != '${targetdevice}'
@@ -131,7 +131,7 @@ Replace and Verify Config(Set)
             IF    $intent in $SDCIO_CONFIGSET_INTENTS
                 ${targetdevice} =    Set Variable    ${node}
             ELSE
-                ${rc}    ${targetdevice} =   YQ file    ${CURDIR}/input/sros/${intent}-sros.yaml    '.metadata.labels."config.sdcio.dev/targetName"'
+                ${rc}    ${targetdevice} =   YQ file    ${CURDIR}/input/srl/${intent}-srl.yaml    '.metadata.labels."config.sdcio.dev/targetName"'
             END
             # considering we're looping through all SRL nodes, skip checking for config on nodes that are not defined in the input yaml.
             IF    '${node}' != '${targetdevice}'
