@@ -2,8 +2,8 @@
     "interface": [
         {
             "name": "ethernet-1/2",
-            "admin-state": "disable",
             "description": "Deviation revertive test - override description intent2",
+            "admin-state": "disable",
             "vlan-tagging": true,
             "subinterface": [
                 {
@@ -14,10 +14,10 @@
                                 "vlan-id": 200
                             }
                         }
-                    },
+                    }
                 }
             ]
-        }
+        },
     ],
     "network-instance": [
         {
@@ -28,9 +28,13 @@
                     "autonomous-system": 2000,
                     "afi-safi": [
                         {
+                            "afi-safi-name": "ipv4-unicast",
+                            "admin-state": "enable"
+                        },
+                        {
                             "afi-safi-name": "ipv6-unicast",
                             "admin-state": "disable"
-                        },
+                        }
                     ]
                 }
             }

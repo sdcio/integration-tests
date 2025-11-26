@@ -22,6 +22,7 @@ Suite Teardown      Run Keyword    Cleanup
 &{intents}        intent1=vrf1    intent2=vrf2    intent3=vrf3    intent4=vrf4    intent5=vrf5
 &{intentsinterfaces}        intent1=ethernet-1/1    intent2=ethernet-1/2    intent3=ethernet-1/3    intent4=ethernet-1/4    intent5=ethernet-1/5
 ${options}    --skip-verify -e PROTO
+${optionsSet}    --skip-verify -e JSON_IETF
 
 
 *** Test Cases ***
@@ -164,7 +165,7 @@ Adjust SRL device config and Verify Revertive Deviations
             # Adjust the config on the device using gNMIc
             Set Config on node via file
             ...    ${node}
-            ...    ${options}
+            ...    ${optionsSet}
             ...    ${SRL_USERNAME}
             ...    ${SRL_PASSWORD}
             ...    "/network-instance[name=${intents.${intent}}]"
