@@ -168,8 +168,9 @@ Adjust SRL device config and Verify Revertive Deviations
             ...    ${optionsSet}
             ...    ${SRL_USERNAME}
             ...    ${SRL_PASSWORD}
-            ...    "/network-instance[name=${intents.${intent}}]"
+            ...    "/"
             ...    ${CURDIR}/input/srl/deviations-${intent}.json
+            #...    "/network-instance[name=${intents.${intent}}]"            
             # Verify the config is adjusted on the device using gNMIc
             Log    Verify Deviation Creation on ${node} of intent ${intent}
         END
