@@ -53,7 +53,8 @@ Update and Verify Config(Set)
             ...    ${SDCIO_RESOURCE_NAMESPACE}
             ...    ${intent}-srl
         END
-
+        # Updating/Replacing the config intent will not cause the READY state to be changed, waiting a few seconds to ensure the intent is applied.
+        Sleep    5s
         # Verify the (updated) Config is applied on the SRL nodes
         Log   Verify Updated Config(Set) ${intent} on ${SDCIO_SRL_NODES}
         FOR    ${node}    IN    @{SDCIO_SRL_NODES}
@@ -123,7 +124,8 @@ Replace and Verify Config(Set)
             ...    ${SDCIO_RESOURCE_NAMESPACE}
             ...    ${intent}-srl
         END
-
+        # Updating/Replacing the config intent will not cause the READY state to be changed, waiting a few seconds to ensure the intent is applied.
+        Sleep    5s
         # Verify the (replaced) Config is applied on the SRL nodes
         Log   Verify Replaced Config(Set) ${intent} on ${SDCIO_SRL_NODES}
         FOR    ${node}    IN    @{SDCIO_SRL_NODES}

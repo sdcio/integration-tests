@@ -53,7 +53,8 @@ Update and Verify Config(Set)
             ...    ${SDCIO_RESOURCE_NAMESPACE}
             ...    ${intent}-sros
         END
-
+        # Updating/Replacing the config intent will not cause the READY state to be changed, waiting a few seconds to ensure the intent is applied.
+        Sleep    5s
         # Verify the Config is replaced on the SROS nodes
         Log   Verify Upgraded ConfigSet ${intent} on ${SDCIO_SROS_NODES}
         FOR    ${node}    IN    @{SDCIO_SROS_NODES}
@@ -125,7 +126,8 @@ Replace and Verify Config(Set)
             ...    ${SDCIO_RESOURCE_NAMESPACE}
             ...    ${intent}-sros
         END
-
+        # Updating/Replacing the config intent will not cause the READY state to be changed, waiting a few seconds to ensure the intent is applied.
+        Sleep    5s
         # Verify the Config is replaced on the SROS nodes
         Log   Verify Replaced Config(Set) ${intent} on ${SDCIO_SROS_NODES}
         FOR    ${node}    IN    @{SDCIO_SROS_NODES}

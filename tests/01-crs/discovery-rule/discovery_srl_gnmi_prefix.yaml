@@ -19,7 +19,7 @@ spec:
   targetConnectionProfiles:
   - credentials: srl.nokia.sdcio.dev 
     connectionProfile: test-srl-gnmi-proto
-    syncProfile: test-srl-gnmi-onchange
+    syncProfile: test-srl-gnmi-get
   targetTemplate:
     labels:
       sdcio.dev/region: eu-west
