@@ -50,6 +50,7 @@ ${SDCIO_INTEGRATION_TESTS_TARGETSYNCPROFILE_FILES_BASE}             ${CURDIR}/01
 @{SDCIO_INTEGRATION_TESTS_TARGETSYNCPROFILE_FILES}
 ...                                                                 sync_profile_sros_netconf.yaml
 ...                                                                 sync_profile_sros_gnmi.yaml
+...                                                                 sync_profile_sros_gnmi_onchange.yaml
 ...                                                                 sync_profile_srl_gnmi_get.yaml
 ...                                                                 sync_profile_srl_gnmi_onchange.yaml    
 
