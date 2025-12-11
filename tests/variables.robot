@@ -1,8 +1,8 @@
 *** Variables ***
-${CERT_MANAGER_VERSION}                                             %{CERT_MANAGER_VERSION=v1.14.1}
-${SDCIO_SYSTEM_NAMESPACE}                                           network-system
+${CERT_MANAGER_VERSION}                                             %{CERT_MANAGER_VERSION=v1.19.1}
+${SDCIO_SYSTEM_NAMESPACE}                                           sdc-system
 ${SDCIO_RESOURCE_NAMESPACE}                                         default
-${SDCIO_COLOCATED_DEPLOYMENT}                                       config-server
+${SDCIO_COLOCATED_DEPLOYMENT}                                       api-server
 @{SDCIO_APIServices}                                                v1alpha1.config.sdcio.dev    v1alpha1.inv.sdcio.dev
 ${SDCIO_CONFIG_SERVER_REPO_PATH}                                    ./config-server
 
