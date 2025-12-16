@@ -45,11 +45,15 @@ Verify - ${operation} ConfigSet intent1-srl is gone on ${SDCIO_SRL_NODES}
 Verify - ${operation} ConfigSet intent1-srl is recreated on ${SDCIO_SRL_NODES}
     Wait Until Keyword Succeeds
     ...    2min
-    ...    10s
+    ...    2s
     ...    Verify ConfigSet intent on nodes
     ...    "/network-instance[name=vrf1]"
     ...    ${intent1}
     ...    ${adminstate}
+
+    kubectl get    -o yaml configs intent1-srl-srl1
+    kubectl get    -o yaml configs intent1-srl-srl2
+    kubectl get    -o yaml configs intent1-srl-srl3
 
 ${operation} - Delete ConfigSet intent2-srl on ${SDCIO_SRL_NODES}
     Run Keyword
