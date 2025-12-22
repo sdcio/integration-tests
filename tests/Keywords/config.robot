@@ -26,8 +26,7 @@ Delete Config
     [Documentation]    Make sure the referenced Config is deleted properly
     [Arguments]    ${namespace}    ${object}
     # [HT]: temp fix --wait=false until we've fixed finalizer issue in config delete
-    #     ${rc}    ${output} =    kubectl delete    -n ${namespace} configs.config.sdcio.dev ${object} --wait=false
-    ${rc}    ${output} =    kubectl delete    -n ${namespace} configs.config.sdcio.dev ${object}
+    ${rc}    ${output} =    kubectl delete    -n ${namespace} configs.config.sdcio.dev ${object} --wait=false
     Log    ${output}
     Should Be Equal As Integers    ${rc}    0
     RETURN    ${rc}    ${output}
@@ -36,8 +35,7 @@ Delete ConfigSet
     [Documentation]    Make sure the referenced Config is deleted properly
     [Arguments]    ${namespace}    ${object}
     # [HT]: temp fix --wait=false until we've fixed finalizer issue in configset delete
-    #     ${rc}    ${output} =    kubectl delete    -n ${namespace} configsets.config.sdcio.dev ${object} --wait=false
-    ${rc}    ${output} =    kubectl delete    -n ${namespace} configsets.config.sdcio.dev ${object}
+    ${rc}    ${output} =    kubectl delete    -n ${namespace} configsets.config.sdcio.dev ${object} --wait=false
     Log    ${output}
     Should Be Equal As Integers    ${rc}    0
     RETURN    ${rc}    ${output}

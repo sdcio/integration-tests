@@ -15,11 +15,11 @@ spec:
   discoveryProfile:
     credentials: srl.nokia.sdcio.dev 
     connectionProfiles:
-    - test-srl-gnmi-proto
+    - test-srl-gnmi
   targetConnectionProfiles:
   - credentials: srl.nokia.sdcio.dev 
-    connectionProfile: test-srl-gnmi-proto
-    syncProfile: test-srl-gnmi-get
+    connectionProfile: test-srl-gnmi
+    syncProfile: test-srl-gnmi-onchange
   targetTemplate:
     labels:
       sdcio.dev/region: eu-west
