@@ -20,6 +20,7 @@ Suite Teardown      Run Keyword    Cleanup
 @{SDCIO_CONFIGSET_INTENTS}    intent1    intent2
 @{SDCIO_CONFIG_INTENTS}    intent3    intent4
 &{intents}        intent1=vprn123    intent2=vprn234    intent3=vprn789    intent4=vprn987
+${retry}    2s
 ${options}    --insecure -e JSON
 ${filter}    "configure/service/vprn"
 
@@ -81,7 +82,7 @@ Delete SROS device config and Verify Revertive Deviations
             # Wait until the config is reverted back on the device using gNMIc
             Wait Until Keyword Succeeds
             ...    2min
-            ...    10s
+            ...    ${retry}
             ...    Get Config from node and Verify Intent
             ...    ${node}
             ...    ${options}
@@ -137,7 +138,7 @@ Delete ALL SROS device config and Verify Revertive Deviations
             # Wait until the config is reverted back on the device using gNMIc
             Wait Until Keyword Succeeds
             ...    2min
-            ...    10s
+            ...    ${retry}
             ...    Get Config from node and Verify Intent
             ...    ${node}
             ...    ${options}
@@ -195,7 +196,7 @@ Adjust SROS device config and Verify Revertive Deviations
             # Wait until the deviation is applied on the device using gNMIc
             Wait Until Keyword Succeeds
             ...    2min
-            ...    10s
+            ...    ${retry}
             ...    Get Config from node and Verify Intent
             ...    ${node}
             ...    ${options}
@@ -211,15 +212,15 @@ Adjust SROS device config and Verify Revertive Deviations
 Setup
     Run    echo 'setup executed'
     FOR    ${node}    IN    @{SDCIO_SROS_NODES}
-        Wait Until Keyword Succeeds    15min    10s    Targets Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    ${node}
+        Wait Until Keyword Succeeds    15min    ${retry}    Targets Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    ${node}
     END
     kubectl apply    ${CURDIR}/input/sros/customer.yaml
-    Wait Until Keyword Succeeds    2min    10s    ConfigSet Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    "customer"
+    Wait Until Keyword Succeeds    2min    ${retry}    ConfigSet Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    "customer"
     FOR    ${intent}    IN    @{SDCIO_CONFIGSET_INTENTS}
         kubectl apply    ${CURDIR}/input/sros/${intent}-sros.yaml
         Wait Until Keyword Succeeds
         ...    2min
-        ...    10s
+        ...    ${retry}
         ...    ConfigSet Check Ready
         ...    ${SDCIO_RESOURCE_NAMESPACE}
         ...    ${intent}-sros
@@ -228,7 +229,7 @@ Setup
         kubectl apply    ${CURDIR}/input/sros/${intent}-sros.yaml
         Wait Until Keyword Succeeds
         ...    2min
-        ...    10s
+        ...    ${retry}
         ...    Config Check Ready
         ...    ${SDCIO_RESOURCE_NAMESPACE}
         ...    ${intent}-sros
@@ -240,7 +241,7 @@ Cleanup
         Delete Config    ${SDCIO_RESOURCE_NAMESPACE}    ${intent}-sros
         Wait Until Keyword Succeeds
         ...    2min
-        ...    10s
+        ...    ${retry}
         ...    Run Keyword And Expect Error    *
         ...    kubectl get    -n ${SDCIO_RESOURCE_NAMESPACE} configs.config.sdcio.dev ${intent}-sros
     END
@@ -248,7 +249,7 @@ Cleanup
         Delete ConfigSet    ${SDCIO_RESOURCE_NAMESPACE}    ${intent}-sros
         Wait Until Keyword Succeeds
         ...    2min
-        ...    10s
+        ...    ${retry}
         ...    Run Keyword And Expect Error    *
         ...    kubectl get    -n ${SDCIO_RESOURCE_NAMESPACE} configsets.config.sdcio.dev ${intent}-sros
     END

@@ -22,6 +22,7 @@ Suite Teardown      Run Keyword    Cleanup
 @{SDCIO_CONFIG_INTENTS}    intent3    intent4    intent5
 &{intents}        intent1=vrf1    intent2=vrf2    intent3=vrf3    intent4=vrf4    intent5=vrf5
 &{intentsinterfaces}        intent1=ethernet-1/1    intent2=ethernet-1/2    intent3=ethernet-1/3    intent4=ethernet-1/4    intent5=ethernet-1/5
+${retry}    2s
 ${options}    --skip-verify -e PROTO
 ${optionsSet}    --skip-verify -e JSON_IETF
 
@@ -74,14 +75,14 @@ Create Deviations and Verify non-revertive behavior
             IF    $intent in $SDCIO_CONFIGSET_INTENTS
                 Wait Until Keyword Succeeds
                 ...    2min
-                ...    10s
+                ...    ${retry}
                 ...    Verify Deviation on k8s
                 ...    ${intent}-srl-${node}
                 ...    6
             ELSE
                 Wait Until Keyword Succeeds
                 ...    2min
-                ...    10s
+                ...    ${retry}
                 ...    Verify Deviation on k8s
                 ...    ${intent}-srl
                 ...    6
@@ -90,7 +91,7 @@ Create Deviations and Verify non-revertive behavior
             # Wait until the deviation is applied on the device using gNMIc
             Wait Until Keyword Succeeds
             ...    2min
-            ...    10s
+            ...    ${retry}
             ...    Get Config from node and Verify Intent
             ...    ${node}
             ...    ${options}
@@ -151,14 +152,14 @@ Reject Deviations and Verify revertive behavior
             IF    $intent in $SDCIO_CONFIGSET_INTENTS
                 Wait Until Keyword Succeeds
                 ...    2min
-                ...    10s
+                ...    ${retry}
                 ...    Verify Deviation on k8s
                 ...    ${intent}-srl-${node}
                 ...    0
             ELSE
                 Wait Until Keyword Succeeds
                 ...    2min
-                ...    10s
+                ...    ${retry}
                 ...    Verify Deviation on k8s
                 ...    ${intent}-srl
                 ...    0
@@ -167,7 +168,7 @@ Reject Deviations and Verify revertive behavior
             # Wait until the deviation is applied on the device using gNMIc
             Wait Until Keyword Succeeds
             ...    2min
-            ...    10s
+            ...    ${retry}
             ...    Get Config from node and Verify Intent
             ...    ${node}
             ...    ${options}
@@ -226,14 +227,14 @@ Create Deviations, Partially accept and Verify, Fully accept and Verify
             IF    $intent in $SDCIO_CONFIGSET_INTENTS
                 Wait Until Keyword Succeeds
                 ...    2min
-                ...    10s
+                ...    ${retry}
                 ...    Verify Deviation on k8s
                 ...    ${intent}-srl-${node}
                 ...    6
             ELSE
                 Wait Until Keyword Succeeds
                 ...    2min
-                ...    10s
+                ...    ${retry}
                 ...    Verify Deviation on k8s
                 ...    ${intent}-srl
                 ...    6
@@ -259,14 +260,14 @@ Create Deviations, Partially accept and Verify, Fully accept and Verify
             IF    $intent in $SDCIO_CONFIGSET_INTENTS
                 Wait Until Keyword Succeeds
                 ...    2min
-                ...    10s
+                ...    ${retry}
                 ...    Verify Deviation on k8s
                 ...    ${intent}-srl-${node}
                 ...    3
             ELSE
                 Wait Until Keyword Succeeds
                 ...    2min
-                ...    10s
+                ...    ${retry}
                 ...    Verify Deviation on k8s
                 ...    ${intent}-srl
                 ...    3
@@ -276,7 +277,7 @@ Create Deviations, Partially accept and Verify, Fully accept and Verify
             # Wait until the deviation is applied on the device using gNMIc
             Wait Until Keyword Succeeds
             ...    2min
-            ...    10s
+            ...    ${retry}
             ...    Get Config from node and Verify Intent
             ...    ${node}
             ...    ${options}
@@ -304,14 +305,14 @@ Create Deviations, Partially accept and Verify, Fully accept and Verify
             IF    $intent in $SDCIO_CONFIGSET_INTENTS
                 Wait Until Keyword Succeeds
                 ...    2min
-                ...    10s
+                ...    ${retry}
                 ...    Verify Deviation on k8s
                 ...    ${intent}-srl-${node}
                 ...    0
             ELSE
                 Wait Until Keyword Succeeds
                 ...    2min
-                ...    10s
+                ...    ${retry}
                 ...    Verify Deviation on k8s
                 ...    ${intent}-srl
                 ...    0
@@ -321,7 +322,7 @@ Create Deviations, Partially accept and Verify, Fully accept and Verify
             # Wait until the deviation is applied on the device using gNMIc
             Wait Until Keyword Succeeds
             ...    2min
-            ...    10s
+            ...    ${retry}
             ...    Get Config from node and Verify Intent
             ...    ${node}
             ...    ${options}
@@ -336,14 +337,14 @@ Create Deviations, Partially accept and Verify, Fully accept and Verify
 Setup
     Run    echo 'setup executed'
     FOR    ${node}    IN    @{SDCIO_SRL_NODES}
-        Wait Until Keyword Succeeds    15min    10s    Targets Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    ${node}
+        Wait Until Keyword Succeeds    15min    ${retry}    Targets Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    ${node}
     END
     FOR    ${intent}    IN    @{SDCIO_CONFIGSET_INTENTS}
         kubectl apply    ${CURDIR}/input/srl/${intent}-srl.yaml
         kubectl patch    configset    ${intent}-srl    '{"spec": {"revertive": false}}'
         Wait Until Keyword Succeeds
         ...    2min
-        ...    10s
+        ...    ${retry}
         ...    ConfigSet Check Ready
         ...    ${SDCIO_RESOURCE_NAMESPACE}
         ...    ${intent}-srl
@@ -353,7 +354,7 @@ Setup
         kubectl patch    config    ${intent}-srl    '{"spec": {"revertive": false}}'
         Wait Until Keyword Succeeds
         ...    2min
-        ...    10s
+        ...    ${retry}
         ...    Config Check Ready
         ...    ${SDCIO_RESOURCE_NAMESPACE}
         ...    ${intent}-srl
@@ -365,7 +366,7 @@ Cleanup
         Delete Config    ${SDCIO_RESOURCE_NAMESPACE}    ${intent}-srl
         Wait Until Keyword Succeeds
         ...    2min
-        ...    10s
+        ...    ${retry}
         ...    Run Keyword And Expect Error    *
         ...    kubectl get    -n ${SDCIO_RESOURCE_NAMESPACE} configs.config.sdcio.dev ${intent}-srl
     END
@@ -373,7 +374,7 @@ Cleanup
         Delete ConfigSet    ${SDCIO_RESOURCE_NAMESPACE}    ${intent}-srl
         Wait Until Keyword Succeeds
         ...    2min
-        ...    10s
+        ...    ${retry}
         ...    Run Keyword And Expect Error    *
         ...    kubectl get    -n ${SDCIO_RESOURCE_NAMESPACE} configsets.config.sdcio.dev ${intent}-srl
     END

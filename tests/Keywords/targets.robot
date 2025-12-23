@@ -7,7 +7,8 @@ Library     RPA.JSON
 Targets Check Ready
     [Documentation]    Make sure the discovered Targets are ready
     [Arguments]    ${namespace}    ${node}
-
+    ${rc}    ${output} =    kubectl get    -n ${namespace} targets.inv.sdcio.dev -o=json ${node}
+    Log     ${output}
     ${rc}    ${output} =    kubectl get    -n ${namespace} targets.inv.sdcio.dev -o=jsonpath='{.status}' ${node}
     ${json} =    Convert string to JSON    ${output}
     ${status} =    Get values from JSON    ${json}    $.conditions[*].status

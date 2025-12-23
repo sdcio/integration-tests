@@ -7,6 +7,9 @@ Schemas Check Loaded
     [Documentation]    Make sure the referenced schemas is being loaded properly
     [Arguments]    ${namespace}    ${schema}
     
+
+    ${rc}    ${output} =    kubectl get     -n ${namespace} schemas.inv.sdcio.dev -o=json ${schema}
+    Log    ${output}
     ${rc}    ${output} =    kubectl get     -n ${namespace} schemas.inv.sdcio.dev -o=jsonpath='{.status.conditions[0]}' ${schema}
 
     Should Contain    ${output}    "status":"True"
