@@ -145,10 +145,15 @@ jobs:
         run: |
           robot --consolecolors on -r none -l ./integration-tests/tests/out/03-deviations-log --output ./integration-tests/tests/out/03-deviations-out.xml ./integration-tests/tests/03-deviations/
 
+      - name: Run Robot Tests 99 - End
+        run: |
+          robot --consolecolors on -r none -l ./integration-tests/tests/out/99-end-log --output ./integration-tests/tests/out/99-end-out.xml ./integration-tests/tests/99-end/
+
+
       # upload test reports as a zip file
       - name: Upload test reports
         uses: actions/upload-artifact@v4
         if: always()
         with:
           name: single-robot-tests-log-config-server_${{ env.CONFIG_VERSION }}-data-server_${{ env.DATA_VERSION }}
-          path: ./integration-tests/tests/out/*.html
+          path: ./integration-tests/tests/out/*
