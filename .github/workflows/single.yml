@@ -146,6 +146,7 @@ jobs:
           robot --consolecolors on -r none -l ./integration-tests/tests/out/03-deviations-log --output ./integration-tests/tests/out/03-deviations-out.xml ./integration-tests/tests/03-deviations/
 
       - name: Run Robot Tests 99 - End
+        if: always()
         run: |
           robot --consolecolors on -r none -l ./integration-tests/tests/out/99-end-log --output ./integration-tests/tests/out/99-end-out.xml ./integration-tests/tests/99-end/
 
