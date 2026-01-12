@@ -117,7 +117,7 @@ jobs:
           ls
           # adjust trace level of data-server
           yq -i 'select(.kind == "Deployment" and .metadata.name == "config-server") .spec.template.spec.containers[] |= select(.name == "data-server") .args = (.args // []) + ["-t"]' ./artifacts/out/artifacts.yaml
-          yq ./artifacts/out/artifacts.yaml
+          yq 'select(.kind == "Deployment" and .metadata.name == "config-server")' ./artifacts/out/artifacts.yaml
           cd -
 
       - name: Create k8s Kind Cluster
