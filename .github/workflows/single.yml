@@ -108,9 +108,11 @@ jobs:
           CLAB_LABDIR_BASE: "/home/runner/_work/_clab"
         run: |
           sudo -E containerlab deploy -t ./integration-tests/containerlab/citest.clab.yml --reconfigure
-      
+
       - name: Set the versions to test
         run: |
+          # adjust trace level of data-server
+          yq -i 'select(.kind == "Deployment" and .metadata.name == "config-server") .spec.template.spec.containers[] |= select(.name == "data-server") .args = (.args // []) + ["-t"]' ./config-server/artifacts/out/artifacts.yaml
           cat ./integration-tests/artifacts/kform/configmap-input-vars.yaml.tmpl | envsubst > ./config-server/artifacts/in/configmap-input-vars.yaml
           cd ./config-server
           make artifacts
@@ -158,3 +160,5 @@ jobs:
         with:
           name: single-robot-tests-log-config-server_${{ env.CONFIG_VERSION }}-data-server_${{ env.DATA_VERSION }}
           path: ./integration-tests/tests/out/*
+          exclude-patterns: |
+            **/*.xml
