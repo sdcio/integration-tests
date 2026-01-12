@@ -142,7 +142,7 @@ jobs:
       - name: Start collecting data-server logs for 02-CRUD
         run: |
           mkdir -p ./integration-tests/tests/out/02-crud-logs
-          kubectl logs -f deployment/config-server -c data-server --tail=0 --since=0s > ./integration-tests/tests/out/02-crud-logs/data-server.log 2>&1 &
+          kubectl logs -f deployment/config-server -c data-server -n network-system --tail=0 --since=0s > ./integration-tests/tests/out/02-crud-logs/data-server.log 2>&1 &
           echo $! > /tmp/crud-logs-pid.txt
 
       - name: Run Robot Tests 02 - CRUD testing
@@ -160,7 +160,7 @@ jobs:
       - name: Start collecting data-server logs for 03-Deviations
         run: |
           mkdir -p ./integration-tests/tests/out/03-deviations-logs
-          kubectl logs -f deployment/config-server -c data-server --tail=0 --since=0s > ./integration-tests/tests/out/03-deviations-logs/data-server.log 2>&1 &
+          kubectl logs -f deployment/config-server -c data-server -n network-system --tail=0 --since=0s > ./integration-tests/tests/out/03-deviations-logs/data-server.log 2>&1 &
           echo $! > /tmp/deviations-logs-pid.txt
 
       - name: Run Robot Tests 03 - Deviations testing
