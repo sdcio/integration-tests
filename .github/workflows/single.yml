@@ -114,10 +114,8 @@ jobs:
           cat ./integration-tests/artifacts/kform/configmap-input-vars.yaml.tmpl | envsubst > ./config-server/artifacts/in/configmap-input-vars.yaml
           cd ./config-server
           make artifacts
-          ls
           # adjust trace level of data-server
           yq -i 'select(.kind == "Deployment" and .metadata.name == "config-server") .spec.template.spec.containers[] |= select(.name == "data-server") .args = (.args // []) + ["-t"]' ./artifacts/out/artifacts.yaml
-          yq 'select(.kind == "Deployment" and .metadata.name == "config-server")' ./artifacts/out/artifacts.yaml
           cd -
 
       - name: Create k8s Kind Cluster
@@ -141,13 +139,41 @@ jobs:
         run: |
           robot --consolecolors on -r none -l ./integration-tests/tests/out/01-crs-log --output ./integration-tests/tests/out/01-crs-out.xml ./integration-tests/tests/01-crs/
 
+      - name: Start collecting data-server logs for 02-CRUD
+        run: |
+          mkdir -p ./integration-tests/tests/out/02-crud-logs
+          kubectl logs -f deployment/config-server -c data-server > ./integration-tests/tests/out/02-crud-logs/data-server.log 2>&1 &
+          echo $! > /tmp/crud-logs-pid.txt
+
       - name: Run Robot Tests 02 - CRUD testing
         run: |
           robot --consolecolors on -r none -l ./integration-tests/tests/out/02-crud-log --output ./integration-tests/tests/out/02-crud-out.xml ./integration-tests/tests/02-crud/
 
+      - name: Stop collecting data-server logs for 02-CRUD
+        if: always()
+        run: |
+          if [ -f /tmp/crud-logs-pid.txt ]; then
+            kill $(cat /tmp/crud-logs-pid.txt) 2>/dev/null || true
+            sleep 1
+          fi
+
+      - name: Start collecting data-server logs for 03-Deviations
+        run: |
+          mkdir -p ./integration-tests/tests/out/03-deviations-logs
+          kubectl logs -f deployment/config-server -c data-server > ./integration-tests/tests/out/03-deviations-logs/data-server.log 2>&1 &
+          echo $! > /tmp/deviations-logs-pid.txt
+
       - name: Run Robot Tests 03 - Deviations testing
         run: |
           robot --consolecolors on -r none -l ./integration-tests/tests/out/03-deviations-log --output ./integration-tests/tests/out/03-deviations-out.xml ./integration-tests/tests/03-deviations/
+
+      - name: Stop collecting data-server logs for 03-Deviations
+        if: always()
+        run: |
+          if [ -f /tmp/deviations-logs-pid.txt ]; then
+            kill $(cat /tmp/deviations-logs-pid.txt) 2>/dev/null || true
+            sleep 1
+          fi
 
       - name: Run Robot Tests 99 - End
         if: always()
