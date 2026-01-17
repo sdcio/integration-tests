@@ -26,6 +26,8 @@ on:
 env:
   PY_VER: "3.10"
   GO_VER: "1.23.3"
+  SDC_NAMESPACE: sdc-system
+
 
 jobs:
   setup-clab-cluster-and-test:
@@ -115,7 +117,7 @@ jobs:
           cd ./config-server
           make artifacts
           # adjust trace level of data-server
-          yq -i 'select(.kind == "Deployment" and .metadata.name == "config-server") .spec.template.spec.containers[] |= select(.name == "data-server") .args = (.args // []) + ["-t"]' ./artifacts/out/artifacts.yaml
+          yq -i 'select(.kind == "StatefulSet" and .metadata.name == "data-server-controller") .spec.template.spec.containers[] |= select(.name == "controller") .args = (.args // []) + ["-t"]' ./artifacts/out/artifacts.yaml
           cd -
 
       - name: Create k8s Kind Cluster
@@ -144,12 +146,12 @@ jobs:
           mkdir -p ./integration-tests/tests/out/02-crud-logs
           
           # Start data-server log collection
-          kubectl logs -f deployment/config-server -c data-server -n network-system --tail=0 --since=0s > ./integration-tests/tests/out/02-crud-logs/data-server.log 2>&1 &
+          kubectl logs -f statefulset/data-server-controller -c controller -n ${{ env.SDC_NAMESPACE }} --tail=0 --since=0s > ./integration-tests/tests/out/02-crud-logs/data-server.log 2>&1 &
           echo $! > /tmp/data-server-pid.txt
           
-          # Start config-server log collection
-          kubectl logs -f deployment/config-server -c config-server -n network-system --tail=0 --since=0s > ./integration-tests/tests/out/02-crud-logs/config-server.log 2>&1 &
-          echo $! > /tmp/config-server-pid.txt
+          # Start api-server log collection
+          kubectl logs -f deployment/api-server -c api-server -n ${{ env.SDC_NAMESPACE }} --tail=0 --since=0s > ./integration-tests/tests/out/02-crud-logs/api-server.log 2>&1 &
+          echo $! > /tmp/api-server-pid.txt
 
       - name: Run Robot Tests 02 - CRUD testing
         run: |
@@ -160,7 +162,7 @@ jobs:
         run: |
           # Kill processes using the standard PID files
           [ -f /tmp/data-server-pid.txt ] && kill $(cat /tmp/data-server-pid.txt) 2>/dev/null || true
-          [ -f /tmp/config-server-pid.txt ] && kill $(cat /tmp/config-server-pid.txt) 2>/dev/null || true
+          [ -f /tmp/api-server-pid.txt ] && kill $(cat /tmp/api-server-pid.txt) 2>/dev/null || true
           sleep 1
 
       - name: Start collecting logs for 03-Deviations
@@ -168,12 +170,12 @@ jobs:
           mkdir -p ./integration-tests/tests/out/03-deviations-logs
           
           # Collect data-server logs
-          kubectl logs -f deployment/config-server -c data-server -n network-system --tail=0 --since=0s > ./integration-tests/tests/out/03-deviations-logs/data-server.log 2>&1 &
+          kubectl logs -f statefulset/data-server-controller -c controller -n ${{ env.SDC_NAMESPACE }} --tail=0 --since=0s > ./integration-tests/tests/out/03-deviations-logs/data-server.log 2>&1 &
           echo $! > /tmp/data-server-pid.txt
           
-          # Collect config-server logs
-          kubectl logs -f deployment/config-server -c config-server -n network-system --tail=0 --since=0s > ./integration-tests/tests/out/03-deviations-logs/config-server.log 2>&1 &
-          echo $! > /tmp/config-server-pid.txt
+          # Collect api-server logs
+          kubectl logs -f deployment/api-server -c api-server -n ${{ env.SDC_NAMESPACE }} --tail=0 --since=0s > ./integration-tests/tests/out/03-deviations-logs/api-server.log 2>&1 &
+          echo $! > /tmp/api-server-pid.txt
 
       - name: Run Robot Tests 03 - Deviations testing
         run: |
@@ -187,9 +189,9 @@ jobs:
             kill $(cat /tmp/data-server-pid.txt) 2>/dev/null || true
           fi
           
-          # Stop config-server logging
-          if [ -f /tmp/config-server-pid.txt ]; then
-            kill $(cat /tmp/config-server-pid.txt) 2>/dev/null || true
+          # Stop api-server logging
+          if [ -f /tmp/api-server-pid.txt ]; then
+            kill $(cat /tmp/api-server-pid.txt) 2>/dev/null || true
           fi
           
           sleep 1
