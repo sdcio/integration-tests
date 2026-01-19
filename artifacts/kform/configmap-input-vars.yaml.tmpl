@@ -2,6 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: context
-data: 
-  configServerImage: ghcr.io/sdcio/config-server:${CONFIG_VERSION}
+data:
+  sdcApiServerImage: ghcr.io/sdcio/sdc-apiserver:${CONFIG_VERSION}
+  sdcControllerImage: ghcr.io/sdcio/sdc-controller:${CONFIG_VERSION}
   dataServerImage: ghcr.io/sdcio/data-server:${DATA_VERSION}
