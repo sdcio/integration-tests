@@ -12,7 +12,7 @@ Config Check Ready
     Log    ${output}
     ${json} =    Convert string to JSON    ${output}
     ${status} =    Get values from JSON    ${json}    $.status.conditions[*].status
-    Should be equal as strings    ${status}    ['True']
+    Should be equal as strings    ${status}    ['True', 'True', 'True']
 
 ConfigSet Check Ready
     [Documentation]    Make sure the referenced ConfigSet is applied properly
@@ -22,7 +22,7 @@ ConfigSet Check Ready
     Log    ${output}
     ${json} =    Convert string to JSON    ${output}
     ${status} =    Get values from JSON    ${json}    $.status.conditions[*].status
-    Should be equal as strings    ${status}    ['True']
+    Should be equal as strings    ${status}    ['True', 'True', 'True']
 
 Delete Config
     [Documentation]    Make sure the referenced Config is deleted properly
