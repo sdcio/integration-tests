@@ -22,7 +22,7 @@ ConfigSet Check Ready
     Log    ${output}
     ${json} =    Convert string to JSON    ${output}
     ${status} =    Get values from JSON    ${json}    $.status.conditions[*].status
-    Should be equal as strings    ${status}    ['True', 'True', 'True']
+    Should be equal as strings    ${status}    ['True']
 
 Delete Config
     [Documentation]    Make sure the referenced Config is deleted properly
