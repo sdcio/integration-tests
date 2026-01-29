@@ -39,6 +39,8 @@ jobs:
           echo "DATA_VERSION=${{ inputs.dataserver_version }}" >> $GITHUB_ENV
           echo "CACHE_VERSION=${{ inputs.cache_version }}" >> $GITHUB_ENV
           echo "CONFIG_VERSION=${{ inputs.configserver_version }}" >> $GITHUB_ENV
+          CONFIG_VERSION="${{ inputs.configserver_version }}"
+          echo "CONFIG_REF=${CONFIG_VERSION##*-}" >> $GITHUB_ENV
           echo "CERT_MANAGER_VERSION=${{ inputs.certmanager_version }}" >> $GITHUB_ENV
 
       - name: Checkout integration-tests
@@ -65,6 +67,7 @@ jobs:
         if: "contains(env.CONFIG_VERSION, 'v0.0.0')"
         with:
           path: config-server
+          ref: ${{ env.CONFIG_REF }}
           repository: sdcio/config-server
           token: ${{ secrets.GITHUB_TOKEN }} # `GH_PAT` is a secret that contains your PAT
 
