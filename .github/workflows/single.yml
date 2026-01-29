@@ -40,7 +40,19 @@ jobs:
           echo "CACHE_VERSION=${{ inputs.cache_version }}" >> $GITHUB_ENV
           echo "CONFIG_VERSION=${{ inputs.configserver_version }}" >> $GITHUB_ENV
           CONFIG_VERSION="${{ inputs.configserver_version }}"
-          echo "CONFIG_REF=${CONFIG_VERSION##*-}" >> $GITHUB_ENV
+          CONFIG_PR="${CONFIG_VERSION#*PR}"
+          CONFIG_PR="${CONFIG_PR%%-*}"
+          CONFIG_SHA="${CONFIG_VERSION##*-}"
+          if [ ${#CONFIG_SHA} -eq 40 ]; then
+            echo "CONFIG_REF=${CONFIG_SHA}" >> $GITHUB_ENV
+          else
+            FULL_SHA=$(git ls-remote https://github.com/sdcio/config-server.git "${CONFIG_SHA}*" | awk 'NR==1{print $1}')
+            if [ -n "$FULL_SHA" ]; then
+              echo "CONFIG_REF=${FULL_SHA}" >> $GITHUB_ENV
+            else
+              echo "CONFIG_REF=refs/pull/${CONFIG_PR}/head" >> $GITHUB_ENV
+            fi
+          fi
           echo "CERT_MANAGER_VERSION=${{ inputs.certmanager_version }}" >> $GITHUB_ENV
 
       - name: Checkout integration-tests
@@ -57,6 +69,7 @@ jobs:
         with:
           ref: ${{ env.CONFIG_VERSION }}
           path: config-server
+          fetch-depth: 0
           repository: sdcio/config-server
           token: ${{ secrets.GITHUB_TOKEN }} # `GH_PAT` is a secret that contains your PAT
 
@@ -68,6 +81,7 @@ jobs:
         with:
           path: config-server
           ref: ${{ env.CONFIG_REF }}
+          fetch-depth: 0
           repository: sdcio/config-server
           token: ${{ secrets.GITHUB_TOKEN }} # `GH_PAT` is a secret that contains your PAT
 
