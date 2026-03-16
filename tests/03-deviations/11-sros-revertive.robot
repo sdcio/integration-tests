@@ -212,7 +212,7 @@ Adjust SROS device config and Verify Revertive Deviations
 Setup
     Run    echo 'setup executed'
     FOR    ${node}    IN    @{SDCIO_SROS_NODES}
-        Wait Until Keyword Succeeds    15min    ${retry}    Targets Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    ${node}
+        Wait Until Keyword Succeeds    5min    ${retry}    Targets Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    ${node}
     END
     kubectl apply    ${CURDIR}/input/sros/customer.yaml
     Wait Until Keyword Succeeds    2min    ${retry}    ConfigSet Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    "customer"
