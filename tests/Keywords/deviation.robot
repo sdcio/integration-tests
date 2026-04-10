@@ -19,7 +19,7 @@ Verify Deviation on k8s
     Should Be Equal As Integers    ${rc}    0
     Should Be Equal As Integers    ${result}    ${match}
 
-Delete Deviation CR
+Delete Deviation
     [Documentation]    Delete the deviation CR on k8s
     [Arguments]    ${name}
     ${rc}    ${output} =    Run And Return Rc And Output

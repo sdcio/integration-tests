@@ -17,5 +17,7 @@ spec:
           customer:
             - customer-name: "1"
               customer-id: 1
+              description: "mumafoobar"
             - customer-name: "2"
               customer-id: 2
+              description: "other"
