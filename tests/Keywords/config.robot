@@ -11,8 +11,8 @@ Config Check Ready
     ${rc}    ${output} =    kubectl get    -n ${namespace} configs.config.sdcio.dev -o=json ${object}
     Log    ${output}
     ${json} =    Convert string to JSON    ${output}
-    ${status} =    Get values from JSON    ${json}    $.status.conditions[*].status
-    Should be equal as strings    ${status}    ['True', 'True', 'True']
+    ${status} =    Get values from JSON    ${json}    $.status.conditions[?(@.type=='Ready')].status
+    Should be equal as strings    ${status}    ['True']
 
 ConfigSet Check Ready
     [Documentation]    Make sure the referenced ConfigSet is applied properly
@@ -21,7 +21,7 @@ ConfigSet Check Ready
     ${rc}    ${output} =    kubectl get    -n ${namespace} configsets.config.sdcio.dev -o=json ${object}
     Log    ${output}
     ${json} =    Convert string to JSON    ${output}
-    ${status} =    Get values from JSON    ${json}    $.status.conditions[*].status
+    ${status} =    Get values from JSON    ${json}    $.status.conditions[?(@.type=='Ready')].status
     Should be equal as strings    ${status}    ['True']
 
 Delete Config

@@ -10,7 +10,7 @@ Resource            ../Keywords/deviation.robot
 Resource            ../Keywords/discovery.robot
 
 Suite Setup         Setup
-# Suite Teardown      Run Keyword    Cleanup
+Suite Teardown      Run Keyword    Cleanup
 
 *** Variables ***
 ${retry}                    10s
@@ -88,6 +88,7 @@ Apply SROS Customer Context
 
 Apply SROS Intent4 Config
     kubectl apply    ${CURDIR}/input/sros/intent4-sros.yaml
+    kubectl patch    config    intent4-sros    '{"spec": {"revertive": false}}'
     Wait Until Keyword Succeeds
     ...    ${eventual_timeout}
     ...    ${retry}
@@ -132,7 +133,7 @@ Verify SROS Intent4 Deviation
     ...    3
 
 Cleanup SROS Intent And Deviations
-    Run Keyword And Ignore Error    Delete Deviation CR    intent4-sros
+    Run Keyword And Ignore Error    Delete Deviation    intent4-sros
     ${status}    ${message} =    Run Keyword And Ignore Error
     ...    Delete Config
     ...    ${SDCIO_RESOURCE_NAMESPACE}

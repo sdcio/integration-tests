@@ -104,6 +104,7 @@ Assert SRL Default Discovery State
 
 Apply SRL Intent1 ConfigSet
     kubectl apply    ${CURDIR}/input/srl/intent1-srl.yaml
+    kubectl patch    configset    intent1-srl    '{"spec": {"revertive": false}}'
     Wait Until Keyword Succeeds
     ...    ${eventual_timeout}
     ...    ${retry}
@@ -134,7 +135,7 @@ Verify SRL Intent1 Deviations
 
 Cleanup SRL Intent And Deviations
     FOR    ${node}    IN    @{SDCIO_SRL_NODES}
-        Run Keyword And Ignore Error    Delete Deviation CR    intent1-srl-${node}
+        Run Keyword And Ignore Error    Delete Deviation    intent1-srl-${node}
     END
     ${status}    ${message} =    Run Keyword And Ignore Error
     ...    Delete ConfigSet
