@@ -1,0 +1,24 @@
+apiVersion: inv.sdcio.dev/v1alpha1
+kind: DiscoveryRule
+metadata:
+  name: dr-srl-gnmi-srl1-proto-onchange
+  namespace: default
+spec:
+  period: 1m
+  concurrentScans: 2
+  addresses:
+  - address: 172.21.0.11
+    hostName: srl1
+  discoveryProfile:
+    credentials: srl.nokia.sdcio.dev
+    connectionProfiles:
+    - test-srl-gnmi-proto
+  targetConnectionProfiles:
+  - credentials: srl.nokia.sdcio.dev
+    connectionProfile: test-srl-gnmi-proto
+    syncProfile: test-srl-gnmi-onchange
+  targetTemplate:
+    labels:
+      sdcio.dev/region: eu-west
+      scdio.dev/env: ci-test
+      sdcio.dev/device: srl

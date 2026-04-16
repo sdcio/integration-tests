@@ -1,7 +1,7 @@
 apiVersion: inv.sdcio.dev/v1alpha1
 kind: TargetSyncProfile
 metadata:
-  name: test-sros-gnmi-onchange
+  name: test-sros-gnmi-onchange-json
   namespace: default
 spec:
   buffer: 0
@@ -12,5 +12,5 @@ spec:
     protocol: gnmi
     paths:
     - /configure
-    mode: get
-    encoding: PROTO
+    mode: onChange
+    encoding: JSON

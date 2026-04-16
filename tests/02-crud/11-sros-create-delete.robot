@@ -9,6 +9,7 @@ Resource            ../Keywords/targets.robot
 Resource            ../Keywords/config.robot
 Resource            ../Keywords/yq.robot
 Resource            ../Keywords/gnmic.robot
+Resource            ../Keywords/intent-routing.robot
 
 Suite Setup         Setup
 Suite Teardown      Run Keyword    Cleanup
@@ -16,143 +17,57 @@ Suite Teardown      Run Keyword    Cleanup
 *** Variables ***
 # sr1 = netconf ; sr2 = gNMI get
 
-@{SDCIO_SROS_NODES}     sr1    sr2
+@{SDCIO_SROS_NODES}           sr1    sr2
 @{SDCIO_CONFIGSET_INTENTS}    intent1    intent2
-@{SDCIO_CONFIG_INTENTS}    intent3    intent4
-&{intents}        intent1=vprn123    intent2=vprn234    intent3=vprn789    intent4=vprn987
-${options}    --insecure -e JSON
-${filter}    "configure/service/vprn"
+@{SDCIO_CONFIG_INTENTS}       intent3    intent4
+&{intents}                    intent1=vprn123    intent2=vprn234    intent3=vprn789    intent4=vprn987
+${options}                    --insecure -e JSON
+${filter}                     "configure/service/vprn"
+${eventual_timeout}           2min
+${retry}                      2s
+${orphan_reconcile_grace}     30s
+${INTENT_TARGET_CACHE}        ${None}    # populated by Initialize Intent Target Cache in Setup
 
 *** Test Cases ***
-Create and Verify Config(Set)
-    [Documentation]    Verify Config(Set) resources are created and verify on SROS nodes
-    @{SDCIO_ALL_INTENTS} =    Combine Lists    ${SDCIO_CONFIGSET_INTENTS}    ${SDCIO_CONFIG_INTENTS}
+Create And Verify intent1
+    [Tags]    create
+    Create And Verify Intent    intent1
 
-    FOR    ${intent}    IN    @{SDCIO_ALL_INTENTS}
-        # Apply the Config(Set) Intent
-        Log    Create Config(Set) for intent ${intent}
-        ${rc}    ${output}=    kubectl apply    ${CURDIR}/input/sros/${intent}-sros.yaml
-        
-        # Verify the Config(Set) is transitioning to a ready state in k8s
-        IF    $intent in $SDCIO_CONFIGSET_INTENTS
-            Log    Verify ConfigSet ${intent} is ready on k8s
-            Wait Until Keyword Succeeds
-            ...    2min
-            ...    10s
-            ...    ConfigSet Check Ready
-            ...    ${SDCIO_RESOURCE_NAMESPACE}
-            ...    ${intent}-sros
-        ELSE
-            Log    Verify Config ${intent} is ready on k8s
-            Wait Until Keyword Succeeds
-            ...    2min
-            ...    10s
-            ...    Config Check Ready
-            ...    ${SDCIO_RESOURCE_NAMESPACE}
-            ...    ${intent}-sros
-        END
+Create And Verify intent2
+    [Tags]    create
+    Create And Verify Intent    intent2
 
-        # Verify the Config is applied on the SROS nodes
-        Log   Verify Config(Set) ${intent} on ${SDCIO_SROS_NODES}
-        FOR    ${node}    IN    @{SDCIO_SROS_NODES}
-            # If the intent is a ConfigSet, we need to run on all nodes, else we get the targetdevice from the intent yaml.
-            IF    $intent in $SDCIO_CONFIGSET_INTENTS
-                ${targetdevice} =    Set Variable    ${node}
-            ELSE
-                ${rc}    ${targetdevice} =   YQ file    ${CURDIR}/input/sros/${intent}-sros.yaml    '.metadata.labels."config.sdcio.dev/targetName"'
-            END
-            # considering we're looping through all SROS nodes, skip checking for config on nodes that are not defined in the input yaml.
-            IF    '${node}' != '${targetdevice}'
-                Log   Skipping node ${node} as it is not the target device ${targetdevice}
-                Continue For Loop
-            END
-            # Note, as the gnmic output is not properly JSON formatted, we need to save the gnmic output initially to a file, 
-            # to be able to compare it in consecutive runs.
-            # ONLY UNCOMMENT THE FOLLOWING LINES IF YOU NEED TO UPDATE THE EXPECTED OUTPUT
-            # START BLOCK
-            # ${gnmicoutput} =    Get Config from node
-            # ...    ${node}
-            # ...    ${options}
-            # ...    ${SROS_USERNAME}
-            # ...    ${SROS_PASSWORD}
-            # ...    "/configure/service/vprn[service-name=${intents.${intent}}]"
-            # ...    ${filter}
-            # Save JSON to file    ${gnmicoutput}    ${CURDIR}/expectedoutput/sros/${intent}-sros.json
-            # END BLOCK
+Create And Verify intent3
+    [Tags]    create
+    Create And Verify Intent    intent3
 
-            @{expectedoutput} =    Load JSON from file    ${CURDIR}/expectedoutput/sros/${intent}-sros.json
+Create And Verify intent4
+    [Tags]    create
+    Create And Verify Intent    intent4
 
-            ${compare} =    Get Config from node and Verify Intent
-            ...    ${node}
-            ...    ${options}
-            ...    ${SROS_USERNAME}
-            ...    ${SROS_PASSWORD}
-            ...    "/configure/service/vprn[service-name=${intents.${intent}}]"
-            ...    ${expectedoutput}
-            ...    ${filter}
-            
-            Should Be True      ${compare}
-        END
-    END
+Delete And Verify intent1
+    [Tags]    delete
+    Delete And Verify Intent    intent1
 
-Delete and Verify Config(Set)
-    [Documentation]    Delete Config(Set) resources are deleted in k8s and on SROS nodes
-    @{SDCIO_ALL_INTENTS} =    Combine Lists    ${SDCIO_CONFIGSET_INTENTS}    ${SDCIO_CONFIG_INTENTS}
+Delete And Verify intent2
+    [Tags]    delete
+    Delete And Verify Intent    intent2
 
-    FOR    ${intent}    IN    @{SDCIO_ALL_INTENTS}
-        IF    $intent in $SDCIO_CONFIGSET_INTENTS
-            # Delete the ConfigSet Intent
-            Log    Delete ConfigSet for intent ${intent}
-            ${rc}    ${output}=    Delete ConfigSet    ${SDCIO_RESOURCE_NAMESPACE}    ${intent}-sros
-    
-            # Verify the ConfigSet is gone in k8s
-            Log    Verify ConfigSet ${intent} is gone on k8s
-            Wait Until Keyword Succeeds
-            ...    2min
-            ...    10s
-            ...    Run Keyword And Expect Error    *
-            ...    kubectl get    -n ${SDCIO_RESOURCE_NAMESPACE} configsets.config.sdcio.dev ${intent}-sros
-        ELSE
-            # Delete the Config Intent
-            Log    Delete Config for intent ${intent}
-            ${rc}    ${output} =    Delete Config    ${SDCIO_RESOURCE_NAMESPACE}    ${intent}-sros
-            
-            # Verify the Config is gone in k8s
-            Log    Verify Config ${intent} is gone on k8s
-            Wait Until Keyword Succeeds
-            ...    2min
-            ...    10s
-            ...    Run Keyword And Expect Error    *
-            ...    kubectl get    -n ${SDCIO_RESOURCE_NAMESPACE} configs.config.sdcio.dev ${intent}-sros
-        END
-        
-        # Verify the Config is gone on the SROS nodes
-        Log   Verify Config ${intent} on ${SDCIO_SROS_NODES}
-        FOR    ${node}    IN    @{SDCIO_SROS_NODES}
-            # If the intent is a ConfigSet, we need to run on all nodes, else we get the targetdevice from the intent yaml.
-            IF    $intent in $SDCIO_CONFIGSET_INTENTS
-                ${targetdevice} =    Set Variable    ${node}
-            ELSE
-                ${rc}    ${targetdevice} =   YQ file    ${CURDIR}/input/sros/${intent}-sros.yaml    '.metadata.labels."config.sdcio.dev/targetName"'
-            END
-            # considering we're looping through all SROS nodes, skip checking for config on nodes that are not defined in the input yaml.
-            IF    '${node}' != '${targetdevice}'
-                Log   Skipping node ${node} as it is not the target device ${targetdevice}
-                Continue For Loop
-            END
-            ${output} =    Get Config from node
-            ...    ${node}
-            ...    ${options}
-            ...    ${SROS_USERNAME}
-            ...    ${SROS_PASSWORD}
-            ...    "/configure/service/vprn[service-name=${intents.${intent}}]"
-            ...    ${filter}
+Delete And Verify intent3
+    [Tags]    delete
+    Delete And Verify Intent    intent3
 
-            # [HT] Fix, remove None values from output list, before checking if it's empty
-            ${output} =   Evaluate    [i for i in ${output} if i]
-            Should Be Empty    ${output}
-        END
-    END
+Delete And Verify intent4
+    [Tags]    delete
+    Delete And Verify Intent    intent4
+
+Delete Config Intent with orphan policy keeps device config - intent3
+    [Tags]    orphan    delete    config
+    Verify Orphan Deletion Policy For Intent    intent3
+
+Delete ConfigSet with orphan policy keeps device config on all targets - intent1
+    [Tags]    orphan    delete    configset
+    Verify Orphan Deletion Policy For ConfigSet    intent1
 
 *** Keywords ***
 Setup
@@ -162,6 +77,7 @@ Setup
     END
     kubectl apply    ${CURDIR}/input/sros/customer.yaml
     Wait Until Keyword Succeeds    2min    10s    ConfigSet Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    "customer"
+    Initialize Intent Target Cache    ${CURDIR}/input/sros    -sros
 
 Cleanup
     Run    echo 'cleanup executed'
@@ -170,11 +86,121 @@ Cleanup
 
 DeleteAll
     Log    Deleting all SROS Config
-    FOR  ${node}    IN    @{SDCIO_SROS_NODES}
+    FOR    ${node}    IN    @{SDCIO_SROS_NODES}
         Delete Config from node
         ...    ${node}
         ...    ${options}
         ...    ${SROS_USERNAME}
         ...    ${SROS_PASSWORD}
         ...    "/configure/service/vprn[service-name=*]"
+    END
+
+Verify Intent Config On Node
+    [Arguments]    ${intent}    ${node}    ${expected_file}
+    @{expectedoutput} =    Load JSON from file    ${expected_file}
+    ${compare} =    Get Config from node and Verify Intent
+    ...    ${node}
+    ...    ${options}
+    ...    ${SROS_USERNAME}
+    ...    ${SROS_PASSWORD}
+    ...    "/configure/service/vprn[service-name=${intents.${intent}}]"
+    ...    ${expectedoutput}
+    ...    ${filter}
+    Should Be True    ${compare}
+
+Verify Intent Config Deleted On Node
+    [Arguments]    ${intent}    ${node}
+    ${output} =    Get Config from node
+    ...    ${node}
+    ...    ${options}
+    ...    ${SROS_USERNAME}
+    ...    ${SROS_PASSWORD}
+    ...    "/configure/service/vprn[service-name=${intents.${intent}}]"
+    ...    ${filter}
+    ${output} =    Evaluate    [i for i in ${output} if i]
+    Should Be Empty    ${output}
+
+Create And Verify Intent
+    [Arguments]    ${intent}
+    Apply Intent On K8s    ${intent}    ${EMPTY}    ${CURDIR}/input/sros    -sros
+    @{nodes} =    Get Target Nodes For Intent    ${intent}    ${SDCIO_SROS_NODES}
+    FOR    ${node}    IN    @{nodes}
+        Verify Intent Config On Node    ${intent}    ${node}    ${CURDIR}/expectedoutput/sros/${intent}-sros.json
+    END
+
+Delete And Verify Intent
+    [Arguments]    ${intent}
+    Delete Intent From K8s    ${intent}    -sros
+    @{nodes} =    Get Target Nodes For Intent    ${intent}    ${SDCIO_SROS_NODES}
+    FOR    ${node}    IN    @{nodes}
+        Wait Until Keyword Succeeds    ${eventual_timeout}    ${retry}
+        ...    Verify Intent Config Deleted On Node    ${intent}    ${node}
+    END
+
+Verify Orphan Deletion Policy For Intent
+    [Arguments]    ${intent}
+    Apply Intent On K8s    ${intent}    ${EMPTY}    ${CURDIR}/input/sros    -sros
+    kubectl patch    config    ${intent}-sros    '{"spec": {"lifecycle": {"deletionPolicy": "orphan"}}}'
+    Wait Until Keyword Succeeds
+    ...    ${eventual_timeout}
+    ...    ${retry}
+    ...    Config Check Ready
+    ...    ${SDCIO_RESOURCE_NAMESPACE}
+    ...    ${intent}-sros
+    @{nodes} =    Get Target Nodes For Intent    ${intent}    ${SDCIO_SROS_NODES}
+    FOR    ${node}    IN    @{nodes}
+        Verify Intent Config On Node    ${intent}    ${node}    ${CURDIR}/expectedoutput/sros/${intent}-sros.json
+    END
+    Delete Intent From K8s    ${intent}    -sros
+    Sleep    ${orphan_reconcile_grace}
+    FOR    ${node}    IN    @{nodes}
+        Wait Until Keyword Succeeds    ${eventual_timeout}    ${retry}
+        ...    Verify Intent Config On Node
+        ...    ${intent}
+        ...    ${node}
+        ...    ${CURDIR}/expectedoutput/sros/${intent}-sros.json
+    END
+    FOR    ${node}    IN    @{nodes}
+        Delete Config from node
+        ...    ${node}
+        ...    ${options}
+        ...    ${SROS_USERNAME}
+        ...    ${SROS_PASSWORD}
+        ...    "/configure/service/vprn[service-name=${intents.${intent}}]"
+        Wait Until Keyword Succeeds    ${eventual_timeout}    ${retry}
+        ...    Verify Intent Config Deleted On Node    ${intent}    ${node}
+    END
+
+Verify Orphan Deletion Policy For ConfigSet
+    [Arguments]    ${intent}
+    Apply Intent On K8s    ${intent}    ${EMPTY}    ${CURDIR}/input/sros    -sros
+    kubectl patch    configset    ${intent}-sros    '{"spec": {"lifecycle": {"deletionPolicy": "orphan"}}}'
+    Wait Until Keyword Succeeds
+    ...    ${eventual_timeout}
+    ...    ${retry}
+    ...    ConfigSet Check Ready
+    ...    ${SDCIO_RESOURCE_NAMESPACE}
+    ...    ${intent}-sros
+    @{nodes} =    Get Target Nodes For Intent    ${intent}    ${SDCIO_SROS_NODES}
+    FOR    ${node}    IN    @{nodes}
+        Verify Intent Config On Node    ${intent}    ${node}    ${CURDIR}/expectedoutput/sros/${intent}-sros.json
+    END
+    Delete Intent From K8s    ${intent}    -sros
+    Sleep    ${orphan_reconcile_grace}
+    FOR    ${node}    IN    @{nodes}
+        Wait Until Keyword Succeeds    ${eventual_timeout}    ${retry}
+        ...    Verify Intent Config On Node
+        ...    ${intent}
+        ...    ${node}
+        ...    ${CURDIR}/expectedoutput/sros/${intent}-sros.json
+    END
+    FOR    ${node}    IN    @{nodes}
+        Delete Config from node
+        ...    ${node}
+        ...    ${options}
+        ...    ${SROS_USERNAME}
+        ...    ${SROS_PASSWORD}
+        ...    "/configure/service/vprn[service-name=${intents.${intent}}]"
+        Wait Until Keyword Succeeds    ${eventual_timeout}    ${retry}
+        ...    Verify Intent Config Deleted On Node    ${intent}    ${node}
     END

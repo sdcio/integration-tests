@@ -52,7 +52,8 @@ ${SDCIO_INTEGRATION_TESTS_TARGETSYNCPROFILE_FILES_BASE}             ${CURDIR}/01
 ...                                                                 sync_profile_sros_gnmi.yaml
 ...                                                                 sync_profile_sros_gnmi_onchange.yaml
 ...                                                                 sync_profile_srl_gnmi_get.yaml
-...                                                                 sync_profile_srl_gnmi_onchange.yaml    
+...                                                                 sync_profile_srl_gnmi_onchange.yaml
+...                                                                 sync_profile_srl_gnmi_onchange_jsonietf.yaml
 
 # DiscoveryVendorProfiles
 ${SDCIO_CONFIG_SERVER_DISCOVERYVENDORPROFILE_FILES_BASE}	${SDCIO_CONFIG_SERVER_REPO_PATH}/example/discoveryvendor-profile

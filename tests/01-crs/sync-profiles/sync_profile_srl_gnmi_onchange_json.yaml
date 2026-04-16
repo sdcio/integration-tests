@@ -1,7 +1,7 @@
 apiVersion: inv.sdcio.dev/v1alpha1
 kind: TargetSyncProfile
 metadata:
-  name: test-sros-netconf-getconfig
+  name: test-srl-gnmi-onchange-json
   namespace: default
 spec:
   buffer: 0
@@ -9,10 +9,8 @@ spec:
   validate: true
   sync:
   - name: config
-    protocol: netconf
-    port: 830
+    protocol: gnmi
     paths:
     - /
-    mode: get
-    encoding: CONFIG
-    interval: "5s"
+    mode: onChange
+    encoding: JSON

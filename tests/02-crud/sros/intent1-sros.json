@@ -1,0 +1,17 @@
+[
+    {
+      "path": "/",
+      "value": {
+        "configure": {
+          "service": {
+            "vprn": {
+              "service-name": "vprn123",
+              "customer": "1",
+              "service-id": "101",
+              "admin-state": "enable"
+            }
+          }
+        }
+      }
+    }
+  ]
