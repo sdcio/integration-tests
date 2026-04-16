@@ -28,7 +28,6 @@ env:
   GO_VER: "1.25.8"
   SDC_NAMESPACE: sdc-system
 
-
 jobs:
   setup-clab-cluster-and-test:
     runs-on: ubuntu-22.04
@@ -145,7 +144,8 @@ jobs:
         uses: helm/kind-action@v1.14.0
         with:
           cluster_name: ci-kind-${{ github.actor }}
-          version: v0.25.0
+          version: v0.30.0
+          kubectl_version: v1.34.7
           ignore_failed_clean: true
           #config: ./integration-tests/k8s/kind-config.yml
 
