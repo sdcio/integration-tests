@@ -225,4 +225,3 @@ jobs:
           name: single-robot-tests-log-config-server_${{ env.CONFIG_VERSION }}-data-server_${{ env.DATA_VERSION }}
           path: |
             ./integration-tests/tests/out/*
-            !./integration-tests/tests/**/*.xml
