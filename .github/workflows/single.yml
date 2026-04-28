@@ -167,9 +167,13 @@ jobs:
           mkdir -p ./integration-tests/tests/out/02-crud-logs
           
           # Start data-server log collection
-          kubectl logs -f statefulset/data-server-controller -c controller -n ${{ env.SDC_NAMESPACE }} --tail=0 --since=0s > ./integration-tests/tests/out/02-crud-logs/data-server.log 2>&1 &
+          kubectl logs -f statefulset/data-server-controller -c data-server -n ${{ env.SDC_NAMESPACE }} --tail=0 --since=0s > ./integration-tests/tests/out/02-crud-logs/data-server.log 2>&1 &
           echo $! > /tmp/data-server-pid.txt
           
+          # Start data-server-controller log collection
+          kubectl logs -f statefulset/data-server-controller -c controller -n ${{ env.SDC_NAMESPACE }} --tail=0 --since=0s > ./integration-tests/tests/out/02-crud-logs/data-server-controller.log 2>&1 &
+          echo $! > /tmp/data-server-controller-pid.txt
+
           # Start api-server log collection
           kubectl logs -f deployment/api-server -c api-server -n ${{ env.SDC_NAMESPACE }} --tail=0 --since=0s > ./integration-tests/tests/out/02-crud-logs/api-server.log 2>&1 &
           echo $! > /tmp/api-server-pid.txt
@@ -183,6 +187,7 @@ jobs:
         run: |
           # Kill processes using the standard PID files
           [ -f /tmp/data-server-pid.txt ] && kill $(cat /tmp/data-server-pid.txt) 2>/dev/null || true
+          [ -f /tmp/data-server-controller-pid.txt ] && kill $(cat /tmp/data-server-controller-pid.txt) 2>/dev/null || true
           [ -f /tmp/api-server-pid.txt ] && kill $(cat /tmp/api-server-pid.txt) 2>/dev/null || true
           sleep 1
 
@@ -191,9 +196,13 @@ jobs:
           mkdir -p ./integration-tests/tests/out/03-deviations-logs
           
           # Collect data-server logs
-          kubectl logs -f statefulset/data-server-controller -c controller -n ${{ env.SDC_NAMESPACE }} --tail=0 --since=0s > ./integration-tests/tests/out/03-deviations-logs/data-server.log 2>&1 &
+          kubectl logs -f statefulset/data-server-controller -c data-server -n ${{ env.SDC_NAMESPACE }} --tail=0 --since=0s > ./integration-tests/tests/out/03-deviations-logs/data-server.log 2>&1 &
           echo $! > /tmp/data-server-pid.txt
           
+          # Collect data-server-controller logs
+          kubectl logs -f statefulset/data-server-controller -c controller -n ${{ env.SDC_NAMESPACE }} --tail=0 --since=0s > ./integration-tests/tests/out/03-deviations-logs/data-server-controller.log 2>&1 &
+          echo $! > /tmp/data-server-controller-pid.txt
+
           # Collect api-server logs
           kubectl logs -f deployment/api-server -c api-server -n ${{ env.SDC_NAMESPACE }} --tail=0 --since=0s > ./integration-tests/tests/out/03-deviations-logs/api-server.log 2>&1 &
           echo $! > /tmp/api-server-pid.txt
@@ -205,16 +214,10 @@ jobs:
       - name: Stop collecting logs for 03-Deviations
         if: always()
         run: |
-          # Stop data-server logging
-          if [ -f /tmp/data-server-pid.txt ]; then
-            kill $(cat /tmp/data-server-pid.txt) 2>/dev/null || true
-          fi
-          
-          # Stop api-server logging
-          if [ -f /tmp/api-server-pid.txt ]; then
-            kill $(cat /tmp/api-server-pid.txt) 2>/dev/null || true
-          fi
-          
+          # Kill processes using the standard PID files
+          [ -f /tmp/data-server-pid.txt ] && kill $(cat /tmp/data-server-pid.txt) 2>/dev/null || true
+          [ -f /tmp/data-server-controller-pid.txt ] && kill $(cat /tmp/data-server-controller-pid.txt) 2>/dev/null || true
+          [ -f /tmp/api-server-pid.txt ] && kill $(cat /tmp/api-server-pid.txt) 2>/dev/null || true
           sleep 1
 
       # upload test reports as a zip file
