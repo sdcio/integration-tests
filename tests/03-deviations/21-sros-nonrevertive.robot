@@ -295,9 +295,10 @@ Partial Revert Deviations For Intent by Admin State
     @{targetnodes} =    Get Target Nodes For Intent    ${intent}    ${SDCIO_SROS_NODES}
     ${targetnode} =    Get From List    ${targetnodes}    0
     ${deviation_name} =    Get Deviation Name    ${intent}    ${targetnode}
+    ${deviation_resource} =    Get Config Deviation Resource Name    ${deviation_name}
     ${filter_path} =    Set Variable    /configure/service/vprn[service-name=${intents.${intent}}]/admin-state
     ${rc}    ${output} =    Run And Return Rc And Output
-    ...    kubectl sdc deviation --deviation ${deviation_name} --filter-path ${filter_path} --revert
+    ...    kubectl sdc deviation --deviation ${deviation_resource} --filter-path ${filter_path} --revert
     Log    ${output}
     Should Be Equal As Integers    ${rc}    0
     Wait Until Keyword Succeeds
