@@ -136,6 +136,7 @@ jobs:
           cat ./integration-tests/artifacts/kform/configmap-input-vars.yaml.tmpl | envsubst > ./config-server/artifacts/in/configmap-input-vars.yaml
           cd ./config-server
           make artifacts
+          yq -i 'select(.kind == "StatefulSet" and .metadata.name == "data-server-controller") |= (with(.spec.template.spec.containers[] | select(.name == "data-server"); .env = ((.env // []) | map(select(.name != "DEVIATION_INTERVAL"))) + [{"name":"DEVIATION_INTERVAL","value":"10s"}]))' ./artifacts/out/artifacts.yaml
           # adjust trace level of data-server
           yq -i 'select(.kind == "StatefulSet" and .metadata.name == "data-server-controller") .spec.template.spec.containers[] |= select(.name == "controller") .args = (.args // []) + ["-t"]' ./artifacts/out/artifacts.yaml
           cd -
