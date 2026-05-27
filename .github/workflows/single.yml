@@ -16,7 +16,7 @@ on:
         required: true
         type: string
       configserver_version:
-        description: "config-server semver release (vX.Y.Z)"
+        description: "config-server image tag = git ref: SemVer tag (vX.Y.Z), **main** (default branch + :main images; also accepts refs/heads/main), or 40-char commit."
         required: true
         type: string
       certmanager_version:
@@ -34,24 +34,14 @@ jobs:
     steps:
       - name: Set env vars
         run: |
+          cfg="${{ inputs.configserver_version }}"
+          case "${cfg,,}" in
+            main|refs/heads/main|origin/main) cfg=main ;;
+          esac
           echo "SCHEMA_VERSION=${{ inputs.schemaserver_version }}" >> $GITHUB_ENV
           echo "DATA_VERSION=${{ inputs.dataserver_version }}" >> $GITHUB_ENV
           echo "CACHE_VERSION=${{ inputs.cache_version }}" >> $GITHUB_ENV
-          echo "CONFIG_VERSION=${{ inputs.configserver_version }}" >> $GITHUB_ENV
-          CONFIG_VERSION="${{ inputs.configserver_version }}"
-          CONFIG_PR="${CONFIG_VERSION#*PR}"
-          CONFIG_PR="${CONFIG_PR%%-*}"
-          CONFIG_SHA="${CONFIG_VERSION##*-}"
-          if [ ${#CONFIG_SHA} -eq 40 ]; then
-            echo "CONFIG_REF=${CONFIG_SHA}" >> $GITHUB_ENV
-          else
-            FULL_SHA=$(git ls-remote https://github.com/sdcio/config-server.git "${CONFIG_SHA}*" | awk 'NR==1{print $1}')
-            if [ -n "$FULL_SHA" ]; then
-              echo "CONFIG_REF=${FULL_SHA}" >> $GITHUB_ENV
-            else
-              echo "CONFIG_REF=refs/pull/${CONFIG_PR}/head" >> $GITHUB_ENV
-            fi
-          fi
+          echo "CONFIG_VERSION=${cfg}" >> $GITHUB_ENV
           echo "CERT_MANAGER_VERSION=${{ inputs.certmanager_version }}" >> $GITHUB_ENV
 
       - name: Checkout integration-tests
@@ -60,26 +50,11 @@ jobs:
           repository: sdcio/integration-tests
           path: integration-tests
 
-      # Checkout config-server with specific tag if version is not v0.0.0
-      # next checkout job will be skipped if this is the case
       - name: Checkout config-server
         uses: actions/checkout@v6
-        if: "!contains(env.CONFIG_VERSION, 'v0.0.0')"
         with:
+          path: config-server
           ref: ${{ env.CONFIG_VERSION }}
-          path: config-server
-          fetch-depth: 0
-          repository: sdcio/config-server
-          token: ${{ secrets.GITHUB_TOKEN }} # `GH_PAT` is a secret that contains your PAT
-
-      # Checkout config-server main branch IF tag is v0.0.0
-      # previous checkout job will be skipped if this is the case
-      - name: Checkout config-server
-        uses: actions/checkout@v6
-        if: "contains(env.CONFIG_VERSION, 'v0.0.0')"
-        with:
-          path: config-server
-          ref: ${{ env.CONFIG_REF }}
           fetch-depth: 0
           repository: sdcio/config-server
           token: ${{ secrets.GITHUB_TOKEN }} # `GH_PAT` is a secret that contains your PAT

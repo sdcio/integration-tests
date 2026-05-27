@@ -8,7 +8,7 @@ on:
         required: true
         type: string
       configserver_version:
-        description: "config-server semver release (vX.Y.Z)"
+        description: "config-server: **main** (tip of default branch), SemVer tag (vX.Y.Z), or 40-char commit SHA."
         required: true
         type: string
 env:
