@@ -326,9 +326,10 @@ Partial Revert Deviations For Intent by Interface
     @{targetnodes} =    Get Target Nodes For Intent    ${intent}    ${SDCIO_SRL_NODES}
     ${targetnode} =    Get From List    ${targetnodes}    0
     ${deviation_name} =    Get Deviation Name    ${intent}    ${targetnode}
+    ${deviation_resource} =    Get Config Deviation Resource Name    ${deviation_name}
     ${interface_path} =    Set Variable    /interface[name=${intentsinterfaces.${intent}}]
     ${rc}    ${output} =    Run And Return Rc And Output
-    ...    kubectl sdc deviation --deviation ${deviation_name} --filter-path ${interface_path} --revert
+    ...    kubectl sdc deviation --deviation ${deviation_resource} --filter-path ${interface_path} --revert
     Log    ${output}
     Should Be Equal As Integers    ${rc}    0
     Wait Until Keyword Succeeds
