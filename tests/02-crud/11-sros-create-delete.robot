@@ -204,3 +204,10 @@ Verify Orphan Deletion Policy For ConfigSet
         Wait Until Keyword Succeeds    ${eventual_timeout}    ${retry}
         ...    Verify Intent Config Deleted On Node    ${intent}    ${node}
     END
+    # Wait for data-server to observe the direct gNMI device change via deviation polling.
+    # Delete Config from node bypasses data-server entirely; data-server only learns about
+    # device changes through periodic deviation polls (10s interval in CI). Without this
+    # sleep the suite Cleanup fires immediately after, and data-server v0.0.69 still sees
+    # the VPRN in its cached running state, causing a leafref validation failure when
+    # deleting the customer ConfigSet (VPRN references customer/customer-name).
+    Sleep    15s
