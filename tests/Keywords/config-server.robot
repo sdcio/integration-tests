@@ -1,9 +1,11 @@
 *** Settings ***
 Resource     k8s/deployments.robot
+Resource     k8s/kubectl.robot
 Resource     ../variables.robot
 Resource    k8s/apiservice.robot
 Resource    k8s/services.robot
 Library    String
+Library    OperatingSystem
 
 
 *** Keywords ***
@@ -12,6 +14,26 @@ Wait until Config-Server Ready
     Config-Server until config-Server deployment ready
     Config-Server until Service Endpoints
     Config-Server until APIService ready
+    Config-Server until data-server-controller StatefulSet ready
+
+Config-Server until data-server-controller StatefulSet ready
+    [Documentation]    Schema CRs (suite 01) need gRPC to schema-server:56000; that is the data-server container in this StatefulSet. Not covered by api-server Deployment checks above.
+    ${ready}=    Run Keyword And Return Status    Wait Until Keyword Succeeds    10 min    5 sec    StatefulSet Ready Replicas    ${SDCIO_SYSTEM_NAMESPACE}    ${SDCIO_DATA_SERVER_CONTROLLER_STATEFULSET}
+    IF    not ${ready}
+        Log data-server-controller diagnostics
+        Fail    data-server-controller StatefulSet not ready within 10m (schema-server gRPC / suite 01 depends on this)
+    END
+
+Log data-server-controller diagnostics
+    [Documentation]    Best-effort kubectl snapshot when data-server-controller fails readiness (logs at WARN).
+    Log    === data-server-controller / schema-server diagnostics ===    WARN
+    Kubectl log diagnostic    get statefulset ${SDCIO_DATA_SERVER_CONTROLLER_STATEFULSET} -n ${SDCIO_SYSTEM_NAMESPACE} -o wide
+    Kubectl log diagnostic    get pods -n ${SDCIO_SYSTEM_NAMESPACE} -l app.kubernetes.io/name=sdc-data-server-controller -o wide
+    Kubectl log diagnostic    describe statefulset ${SDCIO_DATA_SERVER_CONTROLLER_STATEFULSET} -n ${SDCIO_SYSTEM_NAMESPACE}
+    Kubectl log diagnostic    get endpointslices -n ${SDCIO_SYSTEM_NAMESPACE} -l kubernetes.io/service-name=schema-server -o wide
+    Kubectl log diagnostic    get endpoints schema-server -n ${SDCIO_SYSTEM_NAMESPACE} -o yaml
+    Kubectl log diagnostic    logs statefulset/${SDCIO_DATA_SERVER_CONTROLLER_STATEFULSET} -n ${SDCIO_SYSTEM_NAMESPACE} -c data-server --tail=400
+    Kubectl log diagnostic    logs statefulset/${SDCIO_DATA_SERVER_CONTROLLER_STATEFULSET} -n ${SDCIO_SYSTEM_NAMESPACE} -c controller --tail=250
 
 Config-Server until config-Server deployment ready
     [Documentation]     Will wait for the Colocated Deployment to become available

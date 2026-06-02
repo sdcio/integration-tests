@@ -38,3 +38,9 @@ kubectl patch
     Log    ${output}
     Should Be Equal As Integers    ${rc}    0
     RETURN    ${rc}    ${output}
+
+Kubectl log diagnostic
+    [Documentation]    Run `kubectl` with the rest of the CLI (everything after the word kubectl). Logs at WARN; does not fail on non-zero exit (for CI troubleshooting).
+    [Arguments]    ${kubectl_arguments}
+    ${rc}    ${output} =    Run And Return Rc And Output    kubectl ${kubectl_arguments}
+    Log    DIAG: kubectl ${kubectl_arguments}\nrc=${rc}\n${output}    WARN

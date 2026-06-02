@@ -3,6 +3,7 @@ ${CERT_MANAGER_VERSION}                                             %{CERT_MANAG
 ${SDCIO_SYSTEM_NAMESPACE}                                           sdc-system
 ${SDCIO_RESOURCE_NAMESPACE}                                         default
 ${SDCIO_COLOCATED_DEPLOYMENT}                                       api-server
+${SDCIO_DATA_SERVER_CONTROLLER_STATEFULSET}                         data-server-controller
 @{SDCIO_APIServices}                                                v1alpha1.config.sdcio.dev    v1alpha1.inv.sdcio.dev
 ${SDCIO_CONFIG_SERVER_REPO_PATH}                                    ./config-server
 

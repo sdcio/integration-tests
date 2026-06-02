@@ -27,9 +27,10 @@ ConfigSet Check Ready
 Delete Config
     [Documentation]    Make sure the referenced Config is deleted properly
     [Arguments]    ${namespace}    ${object}
-    # [HT]: temp fix --wait=false until we've fixed finalizer issue in config delete
-    #     ${rc}    ${output} =    kubectl delete    -n ${namespace} configs.config.sdcio.dev ${object} --wait=false
-    ${rc}    ${output} =    kubectl delete    -n ${namespace} configs.config.sdcio.dev ${object}
+    # Bounded wait: without --timeout, kubectl can block until API server / finalizers
+    # complete (see e.g. intent4-sros teardown: validation errors holding finalizer).
+    ${delete_opts}=    Set Variable    -n ${namespace} configs.config.sdcio.dev ${object} --timeout=15m
+    ${rc}    ${output} =    kubectl delete    ${delete_opts}
     Log    ${output}
     Should Be Equal As Integers    ${rc}    0
     RETURN    ${rc}    ${output}
@@ -37,9 +38,9 @@ Delete Config
 Delete ConfigSet
     [Documentation]    Make sure the referenced Config is deleted properly
     [Arguments]    ${namespace}    ${object}
-    # [HT]: temp fix --wait=false until we've fixed finalizer issue in configset delete
-    #     ${rc}    ${output} =    kubectl delete    -n ${namespace} configsets.config.sdcio.dev ${object} --wait=false
-    ${rc}    ${output} =    kubectl delete    -n ${namespace} configsets.config.sdcio.dev ${object}
+    # Same rationale as Delete Config: avoid unbounded kubectl wait on stuck finalizers.
+    ${delete_opts}=    Set Variable    -n ${namespace} configsets.config.sdcio.dev ${object} --timeout=15m
+    ${rc}    ${output} =    kubectl delete    ${delete_opts}
     Log    ${output}
     Should Be Equal As Integers    ${rc}    0
     RETURN    ${rc}    ${output}
