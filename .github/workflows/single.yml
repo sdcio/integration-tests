@@ -205,6 +205,53 @@ jobs:
           [ -f /tmp/api-server-pid.txt ] && kill $(cat /tmp/api-server-pid.txt) 2>/dev/null || true
           sleep 1
 
+      # Runs any numbered suites beyond 03 that are present in the checked-out integration-tests
+      # branch (e.g. 04-sensitive, 05-foo). Suites 00-03 above are handled by explicit steps.
+      # This step is a no-op when no additional suites exist, so merging it to main once is enough
+      # — feature branches that add new suites are picked up automatically via integration_tests_ref.
+      - name: Run Robot Tests 04+ - Additional suites (auto-discovered)
+        run: |
+          shopt -s nullglob
+          additional=( ./integration-tests/tests/0[4-9]-* ./integration-tests/tests/[1-9][0-9]-* )
+          if [ ${#additional[@]} -eq 0 ]; then
+            echo "No additional test suites found (04+), skipping."
+            exit 0
+          fi
+          for dir in "${additional[@]}"; do
+            [ -d "$dir" ] || continue
+            suite=$(basename "$dir")
+            echo "=== Running suite: ${suite} ==="
+            mkdir -p "./integration-tests/tests/out/${suite}-logs"
+
+            kubectl logs -f statefulset/data-server-controller -c data-server \
+              -n ${{ env.SDC_NAMESPACE }} --tail=0 --since=0s \
+              > "./integration-tests/tests/out/${suite}-logs/data-server.log" 2>&1 &
+            echo $! > /tmp/extra-ds-pid.txt
+
+            kubectl logs -f statefulset/data-server-controller -c controller \
+              -n ${{ env.SDC_NAMESPACE }} --tail=0 --since=0s \
+              > "./integration-tests/tests/out/${suite}-logs/data-server-controller.log" 2>&1 &
+            echo $! > /tmp/extra-dsc-pid.txt
+
+            kubectl logs -f deployment/api-server -c api-server \
+              -n ${{ env.SDC_NAMESPACE }} --tail=0 --since=0s \
+              > "./integration-tests/tests/out/${suite}-logs/api-server.log" 2>&1 &
+            echo $! > /tmp/extra-api-pid.txt
+
+            robot --consolecolors on -r none \
+              -l  "./integration-tests/tests/out/${suite}-log" \
+              --output "./integration-tests/tests/out/${suite}-out.xml" \
+              "$dir"
+            ROBOT_RC=$?
+
+            [ -f /tmp/extra-ds-pid.txt ]  && kill "$(cat /tmp/extra-ds-pid.txt)"  2>/dev/null || true
+            [ -f /tmp/extra-dsc-pid.txt ] && kill "$(cat /tmp/extra-dsc-pid.txt)" 2>/dev/null || true
+            [ -f /tmp/extra-api-pid.txt ] && kill "$(cat /tmp/extra-api-pid.txt)" 2>/dev/null || true
+            sleep 1
+
+            [ $ROBOT_RC -ne 0 ] && exit $ROBOT_RC
+          done
+
       # upload test reports as a zip file
       - name: Upload test reports
         uses: actions/upload-artifact@v7
