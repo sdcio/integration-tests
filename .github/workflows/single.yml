@@ -53,14 +53,14 @@ jobs:
           echo "CERT_MANAGER_VERSION=${{ inputs.certmanager_version }}" >> $GITHUB_ENV
 
       - name: Checkout integration-tests
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           repository: sdcio/integration-tests
           ref: ${{ inputs.integration_tests_ref }}
           path: integration-tests
 
       - name: Checkout config-server
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           path: config-server
           ref: ${{ env.CONFIG_VERSION }}
