@@ -8,6 +8,7 @@ metadata:
     config.sdcio.dev/targetNamespace: default
 spec:
   priority: 10
+  revertive: false
   vars:
   - name: desc
     secretRef:
