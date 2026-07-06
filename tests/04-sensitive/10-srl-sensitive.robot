@@ -124,12 +124,9 @@ Cleanup
     ...    kubectl get    -n ${SDCIO_RESOURCE_NAMESPACE} configs.config.sdcio.dev ${SENSITIVE_CONFIG_NAME}
     Run Keyword And Ignore Error
     ...    Run And Return Rc And Output    kubectl delete secret sensitive-payload -n ${SDCIO_RESOURCE_NAMESPACE} --ignore-not-found
-    Run Keyword If Any Tests Failed
-    ...    Delete Config from node
-    ...    ${SENSITIVE_TARGET}
-    ...    ${options}
-    ...    ${SRL_USERNAME}
-    ...    ${SRL_PASSWORD}
+    Run Keyword And Ignore Error
+    ...    Run Keyword If Any Tests Failed    Delete Config from node
+    ...    ${SENSITIVE_TARGET}    ${options}    ${SRL_USERNAME}    ${SRL_PASSWORD}
     ...    "/interface[name=${SENSITIVE_IFACE}]"
 
 Verify Config Spec Retains Placeholder
