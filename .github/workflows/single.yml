@@ -238,11 +238,13 @@ jobs:
               > "./integration-tests/tests/out/${suite}-logs/api-server.log" 2>&1 &
             echo $! > /tmp/extra-api-pid.txt
 
+            echo "robot binary: $(which robot) ($(robot --version 2>&1 | head -1))"
             robot --consolecolors on -r none \
               -l  "./integration-tests/tests/out/${suite}-log" \
               --output "./integration-tests/tests/out/${suite}-out.xml" \
               "$dir"
             ROBOT_RC=$?
+            echo "ROBOT_RC=${ROBOT_RC} for suite ${suite}"
 
             [ -f /tmp/extra-ds-pid.txt ]  && kill "$(cat /tmp/extra-ds-pid.txt)"  2>/dev/null || true
             [ -f /tmp/extra-dsc-pid.txt ] && kill "$(cat /tmp/extra-dsc-pid.txt)" 2>/dev/null || true
