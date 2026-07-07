@@ -249,7 +249,7 @@ jobs:
             [ -f /tmp/extra-api-pid.txt ] && kill "$(cat /tmp/extra-api-pid.txt)" 2>/dev/null || true
             sleep 1
 
-            [ $ROBOT_RC -ne 0 ] && exit $ROBOT_RC
+            if [ "$ROBOT_RC" -ne 0 ]; then exit "$ROBOT_RC"; fi
           done
 
       # upload test reports as a zip file
