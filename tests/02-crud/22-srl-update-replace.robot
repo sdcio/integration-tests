@@ -22,7 +22,7 @@ Suite Teardown      Run Keyword    Cleanup
 &{replaceintents}             intent1=vrf11    intent2=vrf12    intent3=vrf13    intent4=vrf14    intent5=vrf15
 &{intentsinterfaces}          intent1=ethernet-1/1    intent2=ethernet-1/2    intent3=ethernet-1/3    intent4=ethernet-1/4    intent5=ethernet-1/5
 ${options}                    --skip-verify -e PROTO
-${eventual_timeout}           2min
+${eventual_timeout}           5min
 ${retry}                      2s
 ${INTENT_TARGET_CACHE}        ${None}    # populated by Initialize Intent Target Cache in Setup
 
@@ -87,6 +87,18 @@ Setup
         Wait Until Keyword Succeeds
         ...    2min
         ...    10s
+        ...    Config Check Ready
+        ...    ${SDCIO_RESOURCE_NAMESPACE}
+        ...    ${intent}-srl
+    END
+    # Verify all intents are genuinely stable before starting update/replace
+    # tests. A brief srl3 dsctx drop during setup can leave TargetForConfig=Failed
+    # even though the Config CR just became Ready. This extra pass confirms
+    # all conditions have settled.
+    FOR    ${intent}    IN    @{SDCIO_CONFIG_INTENTS}
+        Wait Until Keyword Succeeds
+        ...    ${eventual_timeout}
+        ...    5s
         ...    Config Check Ready
         ...    ${SDCIO_RESOURCE_NAMESPACE}
         ...    ${intent}-srl
