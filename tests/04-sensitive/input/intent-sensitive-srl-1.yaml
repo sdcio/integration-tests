@@ -1,7 +1,7 @@
 apiVersion: config.sdcio.dev/v1alpha1
 kind: Config
 metadata:
-  name: intent-sensitive-srl
+  name: intent-sensitive-srl-1
   namespace: default
   labels:
     config.sdcio.dev/targetName: srl1
@@ -10,9 +10,13 @@ spec:
   priority: 10
   revertive: false
   vars:
-  - name: desc
+  - name: desc-a
     secretRef:
-      name: sensitive-payload
+      name: sensitive-1a
+      key: description
+  - name: desc-b
+    secretRef:
+      name: sensitive-1b
       key: description
   config:
   - path: /
@@ -20,4 +24,7 @@ spec:
       interface:
       - name: ethernet-1/6
         admin-state: "enable"
-        description: "${vars.desc}"
+        description: "${vars.desc-a}"
+      - name: ethernet-1/7
+        admin-state: "enable"
+        description: "${vars.desc-b}"
