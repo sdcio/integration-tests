@@ -17,16 +17,10 @@ Verify Deviation on k8s
     [Arguments]    ${name}    ${match}    ${namespace}=${SDCIO_RESOURCE_NAMESPACE}
     ${deviation_name} =    Get Config Deviation Resource Name    ${name}
     ${rc}    ${output} =    Run And Return Rc And Output
-    ...    kubectl get deviation.config.sdcio.dev/${deviation_name} -n ${namespace} -o json
+    ...    bash -c "set -o pipefail; kubectl get deviation.config.sdcio.dev/${deviation_name} -n ${namespace} -o json | jq '.spec.deviations // [] | length'"
     Log    ${output}
-    ${rc}    ${output} =    Run And Return Rc And Output
-    ...    kubectl get configs.config.sdcio.dev/${name} -n ${namespace} -o json
-    Log    ${output}
-    ${rc}    ${output} =    Run And Return Rc And Output
-    ...    kubectl get deviation.config.sdcio.dev/${deviation_name} -n ${namespace} -o json | jq '.spec.deviations // [] | length'
-    Log    ${output}
-    ${result} =	    Convert To Integer    ${output}
     Should Be Equal As Integers    ${rc}    0
+    ${result} =    Convert To Integer    ${output}
     Should Be Equal As Integers    ${result}    ${match}
 
 Delete Deviation
