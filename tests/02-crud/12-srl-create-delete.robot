@@ -79,7 +79,7 @@ Delete ConfigSet with orphan policy keeps device config on all targets - intent1
 Setup
     Run    echo 'setup executed'
     FOR    ${node}    IN    @{SDCIO_SRL_NODES}
-        Wait Until Keyword Succeeds    15min    10s    Targets Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    ${node}
+        Wait Until Target Ready    ${SDCIO_RESOURCE_NAMESPACE}    ${node}
     END
     Initialize Intent Target Cache    ${CURDIR}/input/srl    -srl
 

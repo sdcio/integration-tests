@@ -135,7 +135,7 @@ Partially Revert Deviations by Filter Path and Verify remaining deviations - int
 Setup
     Run    echo 'setup executed'
     FOR    ${node}    IN    @{SDCIO_SRL_NODES}
-        Wait Until Keyword Succeeds    15min    ${retry}    Targets Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    ${node}
+        Wait Until Target Ready    ${SDCIO_RESOURCE_NAMESPACE}    ${node}    retry=${retry}
     END
     FOR    ${intent}    IN    @{SDCIO_CONFIGSET_INTENTS}
         kubectl apply    ${CURDIR}/input/srl/${intent}-srl.yaml
