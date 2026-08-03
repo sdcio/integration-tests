@@ -114,7 +114,7 @@ Partially Revert Deviations by Filter Path and Verify remaining deviations - int
 Setup
     Run    echo 'setup executed'
     FOR    ${node}    IN    @{SDCIO_SROS_NODES}
-        Wait Until Keyword Succeeds    15min    10s    Targets Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    ${node}
+        Wait Until Target Ready    ${SDCIO_RESOURCE_NAMESPACE}    ${node}
     END
     kubectl apply    ${CURDIR}/input/sros/customer.yaml
     Wait Until Keyword Succeeds

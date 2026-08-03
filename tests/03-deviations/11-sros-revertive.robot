@@ -78,7 +78,7 @@ Adjust SROS device config and Verify Revertive Deviations - intent4
 Setup
     Run    echo 'setup executed'
     FOR    ${node}    IN    @{SDCIO_SROS_NODES}
-        Wait Until Keyword Succeeds    5min    ${retry}    Targets Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    ${node}
+        Wait Until Target Ready    ${SDCIO_RESOURCE_NAMESPACE}    ${node}    timeout=5min    retry=${retry}
     END
     kubectl apply    ${CURDIR}/input/sros/customer.yaml
     Wait Until Keyword Succeeds    ${eventual_timeout}    ${retry}    ConfigSet Check Ready    ${SDCIO_RESOURCE_NAMESPACE}    "customer"
