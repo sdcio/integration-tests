@@ -4,6 +4,8 @@ Tracks implementation status of the tickets derived from [`../spec.md`](../spec.
 
 External prerequisite (not a ticket here, tracked upstream): `sdcio/integration-tests` PR [#113](https://github.com/sdcio/integration-tests/pull/113) must merge before any of these can retarget from a stacked branch to `main` — see ticket 03's acceptance criteria.
 
+**Branching (mirrors `sdcio/data-server`'s pattern):** tickets 01/02 land on the `config-server-cache-backend` branch, PR [#115](https://github.com/sdcio/integration-tests/pull/115), targeting `feat/sensitiveData` (PR #108) — not `main` — the same way `sdcio/data-server`'s `config-server-cache-backend` branch (PR [#471](https://github.com/sdcio/data-server/pull/471)) targets `sensitive` (PR #460) instead of `main`. PR #115 bundles PR #113's `config-keyring` Secret fix directly (rather than only pairing with it) since it's a hard, cache-backend-independent prerequisite for any `data-server-controller` deploy. `sdcio/data-server`#471 now pairs with `sdcio/integration-tests`#115 instead of #113.
+
 | # | Ticket | Blocked by | Status | Done |
 |---|--------|------------|--------|------|
 | 01 | [`single.yml`: `cache_type` + suite-selection inputs](01-single-yml-cache-type-inputs.md) | None | in-progress | [ ] |
