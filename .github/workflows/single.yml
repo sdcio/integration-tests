@@ -42,10 +42,10 @@ on:
         type: string
       suites_to_run:
         description: >
-          Comma-separated list of hardcoded suite steps (00-setup, 01-crs, 02-crud, 03-deviations)
-          to run. Defaults to all four (today's behavior). Does not affect the 04+ auto-discovery
-          step, which always runs whichever additional suite directories exist in the checked-out
-          integration-tests ref.
+          Comma-separated list of suite steps to run. Controls the explicit 00–03 steps and, when
+          any 04+ suite name is listed (e.g. 05-cache-backend), filters the 04+ auto-discovery step
+          to only those suites; otherwise 04+ runs every discovered suite directory (today's default).
+          Defaults to all four hardcoded steps (00-setup, 01-crs, 02-crud, 03-deviations).
         required: false
         default: "00-setup,01-crs,02-crud,03-deviations"
         type: string
@@ -77,8 +77,8 @@ jobs:
           # time), so a config-server-backed job must not also select those suites.
           if [ "${{ inputs.cache_type }}" = "config-server" ]; then
             case ",${{ inputs.suites_to_run }}," in
-              *,02-crud,*|*,03-deviations,*)
-                echo "::error::cache_type=config-server cannot be combined with 02-crud/03-deviations in suites_to_run (got '${{ inputs.suites_to_run }}') — these suites must run against the local-backed deployment only."
+              *,02-crud,*|*,03-deviations,*|*,04-sensitive,*)
+                echo "::error::cache_type=config-server cannot be combined with 02-crud/03-deviations/04-sensitive in suites_to_run (got '${{ inputs.suites_to_run }}') — these suites must run against the local-backed deployment only."
                 exit 1
                 ;;
             esac
@@ -259,9 +259,32 @@ jobs:
             echo "No additional test suites found (04+), skipping."
             exit 0
           fi
+          suites_csv=",${{ inputs.suites_to_run }},"
+          has_04_selection=false
+          if [ "${{ inputs.cache_type }}" = "config-server" ]; then
+            # config-server-backed deploys must not auto-run every 04+ suite (e.g. 04-sensitive)
+            has_04_selection=true
+          else
+            IFS=',' read -ra suite_tokens <<< "${{ inputs.suites_to_run }}"
+            for token in "${suite_tokens[@]}"; do
+              if [[ "$token" =~ ^0[4-9]- ]] || [[ "$token" =~ ^[1-9][0-9]- ]]; then
+                has_04_selection=true
+                break
+              fi
+            done
+          fi
           for dir in "${additional[@]}"; do
             [ -d "$dir" ] || continue
             suite=$(basename "$dir")
+            if [ "$has_04_selection" = true ]; then
+              case "$suites_csv" in
+                *,"${suite}",*) ;;
+                *)
+                  echo "Skipping suite ${suite} (not listed in suites_to_run)"
+                  continue
+                  ;;
+              esac
+            fi
             echo "=== Running suite: ${suite} ==="
             mkdir -p "./integration-tests/tests/out/${suite}-logs"
 
@@ -301,6 +324,6 @@ jobs:
         uses: actions/upload-artifact@v7
         if: always()
         with:
-          name: single-robot-tests-log-config-server_${{ env.CONFIG_VERSION }}-data-server_${{ env.DATA_VERSION }}
+          name: single-robot-tests-log-cache_${{ inputs.cache_type }}-config-server_${{ env.CONFIG_VERSION }}-data-server_${{ env.DATA_VERSION }}
           path: |
             ./integration-tests/tests/out/*

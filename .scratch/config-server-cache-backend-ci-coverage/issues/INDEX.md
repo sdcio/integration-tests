@@ -10,7 +10,7 @@ External prerequisite (not a ticket here, tracked upstream): `sdcio/integration-
 |---|--------|------------|--------|------|
 | 01 | [`single.yml`: `cache_type` + suite-selection inputs](01-single-yml-cache-type-inputs.md) | None | in-progress | [ ] |
 | 02 | [`tests/05-cache-backend` suite (CRUD round-trip + restart-recovery)](02-cache-backend-suite.md) | 01 | in-progress | [ ] |
-| 03 | [`cicd.yml`: second job for the config-server-backed cache](03-cicd-yml-cache-backend-job.md) | 01, 02 | ready-for-agent | [ ] |
+| 03 | [`cicd.yml`: second job for the config-server-backed cache](03-cicd-yml-cache-backend-job.md) | 01, 02 | done | [x] |
 
 ## Status legend
 

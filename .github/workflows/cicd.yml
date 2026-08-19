@@ -33,3 +33,17 @@ jobs:
       cache_version: ${{ needs.latest-versions.outputs.cacheversion }}
       certmanager_version: ${{ needs.latest-versions.outputs.certmanagerversion }}
     secrets: inherit
+
+  integration-tests-cache-backend:
+    name: integration-tests (config-server cache backend)
+    needs: latest-versions
+    uses: ./.github/workflows/single.yml
+    with:
+      configserver_version: ${{ needs.latest-versions.outputs.configversion }}
+      dataserver_version: ${{ needs.latest-versions.outputs.dataversion }}
+      schemaserver_version: ${{ needs.latest-versions.outputs.schemaversion }}
+      cache_version: ${{ needs.latest-versions.outputs.cacheversion }}
+      certmanager_version: ${{ needs.latest-versions.outputs.certmanagerversion }}
+      cache_type: config-server
+      suites_to_run: 00-setup,01-crs,05-cache-backend
+    secrets: inherit
