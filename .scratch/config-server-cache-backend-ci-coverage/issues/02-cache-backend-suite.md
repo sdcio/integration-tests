@@ -13,7 +13,8 @@ Explicitly deferred (do not attempt here): multi-target `ConfigSet` fan-out unde
 
 **Status:** in-progress (code complete; final CI-dispatch verification below still needs a maintainer with GH Actions dispatch access — same constraint as ticket 01)
 
-- [x] `tests/05-cache-backend/` suite exists (`10-srl-cache-backend.robot` + `input/intent-cache-backend-srl.yaml`), auto-discovered by `single.yml`'s "Run Robot Tests 04+ - Additional suites" step (matches the `0[4-9]-*` glob; no workflow changes needed for discovery itself — confirmed via `robot --dryrun` against the checked-out suite, which resolves and lists both test cases with no missing keywords)
+- [x] `tests/05-cache-backend/` suite exists (`10-srl-cache-backend.robot` + `input/intent-cache-backend-srl.yaml`), run via explicit `single.yml` step gated by `suites_to_run` (not auto-discovered; see ADR 0001 refinement)
+- [x] Suite Setup fails fast when deployed `cache.type` is not `config-server` (`Assert Deployed Cache Type Is Config Server`)
 - [x] CRUD round-trip scenario (TC1): Suite Setup creates the intent and waits for it to go `Ready`; TC1 confirms the device applies it (`Verify Interface Description On Device`), then confirms both `GetIntent` (`Verify Running Config Contains Description`, via `kubectl sdc runningconfig`) and `BlameConfig` (`Verify Blame Contains Description`, via `kubectl sdc blame`) read back the expected description
 - [x] Restart-recovery scenario (TC2): restarts the `data-server-controller` StatefulSet via `kubectl rollout restart`, then polls/retries (`Wait Until Keyword Succeeds` wrapping `Config-Server until data-server-controller StatefulSet ready` and `Config Check Ready` — not an immediate assertion) before re-confirming the previously-applied intent is still readable via the device, `GetIntent`, and `BlameConfig`
 - [x] Suite is scoped to SR Linux only — only `srl1` is referenced; no SR OS fixtures/scenarios added

@@ -12,5 +12,5 @@ Not added to `matrix-cicd.yml` — the matrix's purpose is version-compatibility
 - [x] The new job deploys its own cluster independently of the existing `local`-backend job (no shared cluster, no mid-job restart of `data-server-controller` against the existing job's deployment)
 - [x] The existing `local`-backend job in `cicd.yml` is unchanged and continues to run `00`–`04` as today
 - [x] `matrix-cicd.yml` is not modified
-- [ ] A full `cicd.yml` run (e.g. via `workflow_dispatch`) shows both jobs passing, with the new job's logs/artifacts confirming `cache.type: config-server` was applied and `05-cache-backend` passed
+- [ ] A full `cicd.yml` run (e.g. via `workflow_dispatch`) shows both jobs passing, with the new job's logs/artifacts confirming `cache.type: config-server` was applied and `05-cache-backend` passed — **still pending**; guardrails above prevent false positives on the local job
 - [ ] PR for this work (and tickets 01/02) is based on and targets/stacks against `sdcio/integration-tests` PR [#113](https://github.com/sdcio/integration-tests/pull/113) per the branching decision in the spec, retargeting to `main` once #113 merges
