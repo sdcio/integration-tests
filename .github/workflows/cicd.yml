@@ -45,5 +45,5 @@ jobs:
       cache_version: ${{ needs.latest-versions.outputs.cacheversion }}
       certmanager_version: ${{ needs.latest-versions.outputs.certmanagerversion }}
       cache_type: config-server
-      suites_to_run: 00-setup,01-crs,05-cache-backend
+      suites_to_run: 00-setup,01-crs,02-crud,03-deviations,05-cache-backend
     secrets: inherit

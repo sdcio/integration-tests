@@ -40,8 +40,20 @@ _Avoid_: Sensitive intent, test intent
 Seven cases in `10-srl-sensitive.robot`: (1) K8s pipeline happy path, (2) southbound runningconfig unredacted, (3) blame redacts `***`, (4) deviation on sensitive leaf masked, (5) missing secret → ConfigResolverFailed + last-good SC preserved, (6) pod-restart recovery via TargetSnapshot, (7) TODO placeholder for `include_sensitive` admin bypass pending kubectl-sdc flag.
 
 **Cache-backend suite (`05-cache-backend`)**:
-Dedicated Robot suite proving the config-server-backed `Cache.Type` implementation works, run against its own separately-deployed cluster in CI (never against the same deployment as `02-crud`/`03-deviations`, since `Cache.Type` is fixed at deploy time). Scoped to the seam — a CRUD round-trip through `ConfigReadService` plus a `data-server-controller` restart-recovery check — not a re-run of the full CRUD/deviation matrix.
-_Avoid_: Cache backend tests, config-server cache suite
+Dedicated Robot suite proving the config-server-backed `Cache.Type` implementation works. It never switches `Cache.Type`; a caller must already have deployed a cluster with that backend. Scoped to the seam — a CRUD round-trip through `ConfigReadService` plus a `data-server-controller` restart-recovery check. The cache-backend job also runs `02-crud` and `03-deviations` against that same deploy; `04-sensitive` stays on the local-backed job only.
+_Avoid_: Cache backend tests, config-server cache suite, reconfiguring the environment
+
+**Cache-backend job**:
+A CI job that deploys with `Cache.Type: config-server` and then runs `00-setup`, `01-crs`, `02-crud`, `03-deviations`, and `05-cache-backend`. Requested by data-server and config-server PR CI, and by this repo’s dispatch `cicd.yml`. Not by Pairs-with, and not by `matrix-cicd.yml`.
+_Avoid_: the cache test, the cicd.yml job (too vague — this repo’s `cicd.yml` is only one caller)
+
+**Caller workflow**:
+data-server or config-server CI that invokes `single.yml` on integration-tests `main`. Distinct from this repo’s own `cicd.yml`.
+_Avoid_: paired workflow, the integration-tests workflow
+
+**Missing-suite skip**:
+An explicit suite step that does nothing when that suite’s directory is absent from the checked-out integration-tests revision. Keeps old Pairs-with checkouts green after `single.yml` names `04`/`05` explicitly.
+_Avoid_: optional suite (sounds like suites_to_run), glob skip (that is auto-discovery)
 
 **Backend parity**:
 The property that `Cache.Type: config-server` and `Cache.Type: local` behave identically behind data-server's `cache.Client` interface, per the feature's own ADR. Justifies testing only the seam (does the alternate backend actually get exercised) rather than duplicating full behavioral coverage per backend.
@@ -54,6 +66,10 @@ _Avoid_: Hardcoded suite, manual suite
 **Auto-discovered suite**:
 A numbered Robot suite directory picked up by `single.yml`'s `06+` glob without its own workflow step. Used for experimental or follow-on coverage where no separate deploy profile is required.
 _Avoid_: Dynamic suite, glob suite
+
+**Pairs-with**:
+The PR-body pairing instruction that chooses which integration-tests revision supplies the Robot suites. It does not choose which reusable workflow definition GitHub executes.
+_Avoid_: paired workflow, running the feature-branch cicd.yml
 
 ## Flagged ambiguities
 

@@ -73,13 +73,13 @@ jobs:
 
       - name: Validate cache_type / suites_to_run combination
         run: |
-          # Per CONTEXT.md's "Cache-backend suite" entry: the config-server-backed cache must
-          # never share a deployment with 02-crud/03-deviations (Cache.Type is fixed at deploy
-          # time), so a config-server-backed job must not also select those suites.
+          # 04-sensitive stays local-backed only. 02-crud/03-deviations may run on a
+          # config-server-backed deploy (same Cache.Type for the whole job). 05 still
+          # requires cache_type=config-server.
           if [ "${{ inputs.cache_type }}" = "config-server" ]; then
             case ",${{ inputs.suites_to_run }}," in
-              *,02-crud,*|*,03-deviations,*|*,04-sensitive,*)
-                echo "::error::cache_type=config-server cannot be combined with 02-crud/03-deviations/04-sensitive in suites_to_run (got '${{ inputs.suites_to_run }}') — these suites must run against the local-backed deployment only."
+              *,04-sensitive,*)
+                echo "::error::cache_type=config-server cannot be combined with 04-sensitive in suites_to_run (got '${{ inputs.suites_to_run }}') — 04-sensitive must run against the local-backed deployment only."
                 exit 1
                 ;;
             esac
