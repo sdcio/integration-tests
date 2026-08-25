@@ -31,6 +31,25 @@ on:
         required: false
         default: "main"
         type: string
+      cache_type:
+        description: >
+          data-server cache backend to deploy: "local" (default, today's behavior) or
+          "config-server". When "config-server", the "Set the versions to test" step patches
+          cache.type/cache.address into the generated data-server ConfigMap (CI-side yq patch
+          per ADR 0002 — no config-server kform input change).
+        required: false
+        default: "local"
+        type: string
+      suites_to_run:
+        description: >
+          Comma-separated list of suite steps to run. Controls explicit steps for suites 00–05.
+          Suites 06+ are auto-discovered when present; on local-backed jobs they run unfiltered
+          unless a 06+ suite name is listed (then only listed 06+ suites run). On
+          config-server-backed jobs, 06+ suites run only when listed. Defaults to
+          00-setup, 01-crs, 02-crud, 03-deviations, 04-sensitive.
+        required: false
+        default: "00-setup,01-crs,02-crud,03-deviations,04-sensitive"
+        type: string
 env:
   PY_VER: "3.10"
   GO_VER: "1.25.8"
@@ -51,6 +70,27 @@ jobs:
           echo "CACHE_VERSION=${{ inputs.cache_version }}" >> $GITHUB_ENV
           echo "CONFIG_VERSION=${cfg}" >> $GITHUB_ENV
           echo "CERT_MANAGER_VERSION=${{ inputs.certmanager_version }}" >> $GITHUB_ENV
+
+      - name: Validate cache_type / suites_to_run combination
+        run: |
+          # Per CONTEXT.md's "Cache-backend suite" entry: the config-server-backed cache must
+          # never share a deployment with 02-crud/03-deviations (Cache.Type is fixed at deploy
+          # time), so a config-server-backed job must not also select those suites.
+          if [ "${{ inputs.cache_type }}" = "config-server" ]; then
+            case ",${{ inputs.suites_to_run }}," in
+              *,02-crud,*|*,03-deviations,*|*,04-sensitive,*)
+                echo "::error::cache_type=config-server cannot be combined with 02-crud/03-deviations/04-sensitive in suites_to_run (got '${{ inputs.suites_to_run }}') — these suites must run against the local-backed deployment only."
+                exit 1
+                ;;
+            esac
+          else
+            case ",${{ inputs.suites_to_run }}," in
+              *,05-cache-backend,*)
+                echo "::error::05-cache-backend requires cache_type=config-server (got cache_type='${{ inputs.cache_type }}') — run it from the cicd.yml cache-backend job or dispatch single.yml with cache_type: config-server."
+                exit 1
+                ;;
+            esac
+          fi
 
       - name: Checkout integration-tests
         uses: actions/checkout@v7
@@ -81,6 +121,10 @@ jobs:
       - name: Install gNMIc
         run: |
           bash -c "$(curl -sL https://get-gnmic.openconfig.net)"
+
+      - name: Install grpcurl
+        run: |
+          go install github.com/fullstorydev/grpcurl/cmd/grpcurl@latest
       
       - name: Install containerlab
         run: |
@@ -123,6 +167,10 @@ jobs:
           yq -i 'select(.kind == "StatefulSet" and .metadata.name == "data-server-controller") |= (with(.spec.template.spec.containers[] | select(.name == "data-server"); .env = ((.env // []) | map(select(.name != "DEVIATION_INTERVAL"))) + [{"name":"DEVIATION_INTERVAL","value":"10s"}]))' ./artifacts/out/artifacts.yaml
           # adjust trace level of data-server
           yq -i 'select(.kind == "StatefulSet" and .metadata.name == "data-server-controller") .spec.template.spec.containers[] |= select(.name == "data-server") .args = (.args // []) + ["-t"]' ./artifacts/out/artifacts.yaml
+          # optionally switch the cache backend (ADR 0002: CI-side yq patch, no config-server kform input)
+          if [ "${{ inputs.cache_type }}" = "config-server" ]; then
+            yq -i '(select(.kind == "ConfigMap" and .metadata.name == "data-server") | .data["data-server.yaml"]) |= (from_yaml | .cache.type = "config-server" | .cache.address = "127.0.0.1:56010" | to_yaml)' ./artifacts/out/artifacts.yaml
+          fi
           cd -
 
       - name: Create k8s Kind Cluster
@@ -140,14 +188,17 @@ jobs:
           kubectl config set-context --current --namespace=default
 
       - name: Run Robot Tests 00 - Setup SDCIO
+        if: contains(format(',{0},', inputs.suites_to_run), ',00-setup,')
         run: |
           robot --consolecolors on -r none -l ./integration-tests/tests/out/00-setup-log --output ./integration-tests/tests/out/00-setup-out.xml ./integration-tests/tests/00-setup/
 
       - name: Run Robot Tests 01 - Load Schema, Apply Connection Profiles, Acquire Targets
+        if: contains(format(',{0},', inputs.suites_to_run), ',01-crs,')
         run: |
           robot --consolecolors on -r none -l ./integration-tests/tests/out/01-crs-log --output ./integration-tests/tests/out/01-crs-out.xml ./integration-tests/tests/01-crs/
 
       - name: Start collecting logs for 02-CRUD
+        if: contains(format(',{0},', inputs.suites_to_run), ',02-crud,')
         run: |
           mkdir -p ./integration-tests/tests/out/02-crud-logs
           
@@ -164,11 +215,12 @@ jobs:
           echo $! > /tmp/api-server-pid.txt
 
       - name: Run Robot Tests 02 - CRUD testing
+        if: contains(format(',{0},', inputs.suites_to_run), ',02-crud,')
         run: |
           robot --consolecolors on -r none -l ./integration-tests/tests/out/02-crud-log --output ./integration-tests/tests/out/02-crud-out.xml ./integration-tests/tests/02-crud/
 
       - name: Stop collecting logs for 02-CRUD
-        if: always()
+        if: always() && contains(format(',{0},', inputs.suites_to_run), ',02-crud,')
         run: |
           # Kill processes using the standard PID files
           [ -f /tmp/data-server-pid.txt ] && kill $(cat /tmp/data-server-pid.txt) 2>/dev/null || true
@@ -177,6 +229,7 @@ jobs:
           sleep 1
 
       - name: Start collecting logs for 03-Deviations
+        if: contains(format(',{0},', inputs.suites_to_run), ',03-deviations,')
         run: |
           mkdir -p ./integration-tests/tests/out/03-deviations-logs
           
@@ -193,11 +246,12 @@ jobs:
           echo $! > /tmp/api-server-pid.txt
 
       - name: Run Robot Tests 03 - Deviations testing
+        if: contains(format(',{0},', inputs.suites_to_run), ',03-deviations,')
         run: |
           robot --consolecolors on -r none -l ./integration-tests/tests/out/03-deviations-log --output ./integration-tests/tests/out/03-deviations-out.xml ./integration-tests/tests/03-deviations/
 
       - name: Stop collecting logs for 03-Deviations
-        if: always()
+        if: always() && contains(format(',{0},', inputs.suites_to_run), ',03-deviations,')
         run: |
           # Kill processes using the standard PID files
           [ -f /tmp/data-server-pid.txt ] && kill $(cat /tmp/data-server-pid.txt) 2>/dev/null || true
@@ -205,21 +259,107 @@ jobs:
           [ -f /tmp/api-server-pid.txt ] && kill $(cat /tmp/api-server-pid.txt) 2>/dev/null || true
           sleep 1
 
-      # Runs any numbered suites beyond 03 that are present in the checked-out integration-tests
-      # branch (e.g. 04-sensitive, 05-foo). Suites 00-03 above are handled by explicit steps.
-      # This step is a no-op when no additional suites exist, so merging it to main once is enough
-      # — feature branches that add new suites are picked up automatically via integration_tests_ref.
-      - name: Run Robot Tests 04+ - Additional suites (auto-discovered)
+      - name: Start collecting logs for 04-Sensitive
+        if: contains(format(',{0},', inputs.suites_to_run), ',04-sensitive,')
+        run: |
+          mkdir -p ./integration-tests/tests/out/04-sensitive-logs
+
+          kubectl logs -f statefulset/data-server-controller -c data-server -n ${{ env.SDC_NAMESPACE }} --tail=0 --since=0s > ./integration-tests/tests/out/04-sensitive-logs/data-server.log 2>&1 &
+          echo $! > /tmp/data-server-pid.txt
+
+          kubectl logs -f statefulset/data-server-controller -c controller -n ${{ env.SDC_NAMESPACE }} --tail=0 --since=0s > ./integration-tests/tests/out/04-sensitive-logs/data-server-controller.log 2>&1 &
+          echo $! > /tmp/data-server-controller-pid.txt
+
+          kubectl logs -f deployment/api-server -c api-server -n ${{ env.SDC_NAMESPACE }} --tail=0 --since=0s > ./integration-tests/tests/out/04-sensitive-logs/api-server.log 2>&1 &
+          echo $! > /tmp/api-server-pid.txt
+
+      - name: Run Robot Tests 04 - Sensitive testing
+        if: contains(format(',{0},', inputs.suites_to_run), ',04-sensitive,')
+        run: |
+          suite_dir=./integration-tests/tests/04-sensitive
+          if [ ! -d "$suite_dir" ]; then
+            echo "Skipping 04-sensitive: $suite_dir absent from checkout"
+            exit 0
+          fi
+          robot --consolecolors on -r none -l ./integration-tests/tests/out/04-sensitive-log --output ./integration-tests/tests/out/04-sensitive-out.xml "$suite_dir"
+
+      - name: Stop collecting logs for 04-Sensitive
+        if: always() && contains(format(',{0},', inputs.suites_to_run), ',04-sensitive,')
+        run: |
+          [ -f /tmp/data-server-pid.txt ] && kill $(cat /tmp/data-server-pid.txt) 2>/dev/null || true
+          [ -f /tmp/data-server-controller-pid.txt ] && kill $(cat /tmp/data-server-controller-pid.txt) 2>/dev/null || true
+          [ -f /tmp/api-server-pid.txt ] && kill $(cat /tmp/api-server-pid.txt) 2>/dev/null || true
+          sleep 1
+
+      - name: Start collecting logs for 05-Cache-backend
+        if: contains(format(',{0},', inputs.suites_to_run), ',05-cache-backend,')
+        run: |
+          mkdir -p ./integration-tests/tests/out/05-cache-backend-logs
+
+          kubectl logs -f statefulset/data-server-controller -c data-server -n ${{ env.SDC_NAMESPACE }} --tail=0 --since=0s > ./integration-tests/tests/out/05-cache-backend-logs/data-server.log 2>&1 &
+          echo $! > /tmp/data-server-pid.txt
+
+          kubectl logs -f statefulset/data-server-controller -c controller -n ${{ env.SDC_NAMESPACE }} --tail=0 --since=0s > ./integration-tests/tests/out/05-cache-backend-logs/data-server-controller.log 2>&1 &
+          echo $! > /tmp/data-server-controller-pid.txt
+
+          kubectl logs -f deployment/api-server -c api-server -n ${{ env.SDC_NAMESPACE }} --tail=0 --since=0s > ./integration-tests/tests/out/05-cache-backend-logs/api-server.log 2>&1 &
+          echo $! > /tmp/api-server-pid.txt
+
+      - name: Run Robot Tests 05 - Cache backend testing
+        if: contains(format(',{0},', inputs.suites_to_run), ',05-cache-backend,')
+        run: |
+          suite_dir=./integration-tests/tests/05-cache-backend
+          if [ ! -d "$suite_dir" ]; then
+            echo "Skipping 05-cache-backend: $suite_dir absent from checkout"
+            exit 0
+          fi
+          robot --consolecolors on -r none -l ./integration-tests/tests/out/05-cache-backend-log --output ./integration-tests/tests/out/05-cache-backend-out.xml "$suite_dir"
+
+      - name: Stop collecting logs for 05-Cache-backend
+        if: always() && contains(format(',{0},', inputs.suites_to_run), ',05-cache-backend,')
+        run: |
+          [ -f /tmp/data-server-pid.txt ] && kill $(cat /tmp/data-server-pid.txt) 2>/dev/null || true
+          [ -f /tmp/data-server-controller-pid.txt ] && kill $(cat /tmp/data-server-controller-pid.txt) 2>/dev/null || true
+          [ -f /tmp/api-server-pid.txt ] && kill $(cat /tmp/api-server-pid.txt) 2>/dev/null || true
+          sleep 1
+
+      # Runs numbered suites from 06 onward when present (04-sensitive and 05-cache-backend
+      # are explicit steps above). Auto-discovery is for experimental/follow-on suites
+      # without separate deploy profiles.
+      - name: Run Robot Tests 06+ - Additional suites (auto-discovered)
         run: |
           shopt -s nullglob
-          additional=( ./integration-tests/tests/0[4-9]-* ./integration-tests/tests/[1-9][0-9]-* )
+          additional=( ./integration-tests/tests/0[6-9]-* ./integration-tests/tests/[1-9][0-9]-* )
           if [ ${#additional[@]} -eq 0 ]; then
-            echo "No additional test suites found (04+), skipping."
+            echo "No additional test suites found (06+), skipping."
             exit 0
+          fi
+          suites_csv=",${{ inputs.suites_to_run }},"
+          has_06_selection=false
+          if [ "${{ inputs.cache_type }}" = "config-server" ]; then
+            # config-server-backed deploys only run auto-discovered suites when listed
+            has_06_selection=true
+          else
+            IFS=',' read -ra suite_tokens <<< "${{ inputs.suites_to_run }}"
+            for token in "${suite_tokens[@]}"; do
+              if [[ "$token" =~ ^0[6-9]- ]] || [[ "$token" =~ ^[1-9][0-9]- ]]; then
+                has_06_selection=true
+                break
+              fi
+            done
           fi
           for dir in "${additional[@]}"; do
             [ -d "$dir" ] || continue
             suite=$(basename "$dir")
+            if [ "$has_06_selection" = true ]; then
+              case "$suites_csv" in
+                *,"${suite}",*) ;;
+                *)
+                  echo "Skipping suite ${suite} (not listed in suites_to_run)"
+                  continue
+                  ;;
+              esac
+            fi
             echo "=== Running suite: ${suite} ==="
             mkdir -p "./integration-tests/tests/out/${suite}-logs"
 
@@ -238,11 +378,13 @@ jobs:
               > "./integration-tests/tests/out/${suite}-logs/api-server.log" 2>&1 &
             echo $! > /tmp/extra-api-pid.txt
 
+            echo "robot binary: $(which robot) ($(robot --version 2>&1 | head -1))"
             robot --consolecolors on -r none \
               -l  "./integration-tests/tests/out/${suite}-log" \
               --output "./integration-tests/tests/out/${suite}-out.xml" \
               "$dir"
             ROBOT_RC=$?
+            echo "ROBOT_RC=${ROBOT_RC} for suite ${suite}"
 
             [ -f /tmp/extra-ds-pid.txt ]  && kill "$(cat /tmp/extra-ds-pid.txt)"  2>/dev/null || true
             [ -f /tmp/extra-dsc-pid.txt ] && kill "$(cat /tmp/extra-dsc-pid.txt)" 2>/dev/null || true
@@ -257,6 +399,6 @@ jobs:
         uses: actions/upload-artifact@v7
         if: always()
         with:
-          name: single-robot-tests-log-config-server_${{ env.CONFIG_VERSION }}-data-server_${{ env.DATA_VERSION }}
+          name: single-robot-tests-log-cache_${{ inputs.cache_type }}-config-server_${{ env.CONFIG_VERSION }}-data-server_${{ env.DATA_VERSION }}
           path: |
             ./integration-tests/tests/out/*
