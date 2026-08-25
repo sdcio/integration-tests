@@ -140,7 +140,7 @@ Assert Deployed Cache Type Is Config Server
     [Documentation]    Fail fast when this suite runs against a cluster not deployed with
     ...    Cache.Type: config-server — prevents a false pass on the local-backed backend.
     ${rc}    ${cache_type}=    Run And Return Rc And Output
-    ...    kubectl get configmap data-server -n ${SDCIO_SYSTEM_NAMESPACE} -o jsonpath={.data.data-server\\.yaml} | yq -r .cache.type
+    ...    kubectl get configmap data-server -n ${SDCIO_SYSTEM_NAMESPACE} -o jsonpath='{.data.data-server\\.yaml}' | yq -r .cache.type
     Log    ${cache_type}
     Should Be Equal As Integers    ${rc}    0
     Should Be Equal    ${cache_type}    config-server
