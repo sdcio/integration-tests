@@ -3,7 +3,14 @@ name: citest
 mgmt:
   network: ci_test                 # management network name
   ipv4-subnet: 172.21.0.0/16       # ipv4 range
-  ipv6-subnet: fd00:172:21::/48    # ipv6 range (optional)
+  # ipv6-subnet intentionally omitted: no test targets a mgmt IPv6 address
+  # (all connection profiles / discovery rules use the IPv4 addresses below).
+  # Left enabled, containerlab's postdeploy healthcheck dials an IPv6
+  # address (observed: the *same* fd00:172:21::2 for both sr1 and sr2,
+  # rather than each node's own address) over NETCONF and times out,
+  # crashing both nokia_srsim containers before the healthcheck completes -
+  # even though the nodes are otherwise fine. Disabling IPv6 mgmt addressing
+  # removes that (mis-resolved) healthcheck path entirely.
 
 topology:
   defaults:

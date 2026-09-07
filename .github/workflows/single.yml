@@ -169,6 +169,35 @@ jobs:
         run: |
           sudo -E containerlab deploy -t ./integration-tests/containerlab/citest.clab.yml --reconfigure
 
+      - name: Verify containerlab nodes are healthy
+        run: |
+          sudo containerlab inspect -t ./integration-tests/containerlab/citest.clab.yml --format json > /tmp/clab-inspect.json
+
+          echo "=== containerlab node states ==="
+          jq -r '.[][] | "\(.name)\t\(.state)\t\(.status)"' /tmp/clab-inspect.json
+
+          # containerlab deploy can exit 0 even when a node's postdeploy healthcheck
+          # fails and the container subsequently exits (observed with nokia_srsim
+          # nodes). Left unchecked, that failure is only discovered ~40 minutes later
+          # as an opaque Robot "Targets Check Ready" timeout with no useful signal.
+          # Fail fast here instead, with the container's own logs attached.
+          # Any state other than "running" is a problem.
+          unhealthy=$(jq -r '.[][] | select(.state != "running") | .name' /tmp/clab-inspect.json)
+
+          if [ -n "$unhealthy" ]; then
+            for c in $unhealthy; do
+              echo "::error::containerlab node $c is not running after deploy"
+              echo "=== docker logs $c (last 200 lines) ==="
+              sudo docker logs --tail 200 "$c" || true
+            done
+            echo ""
+            echo "Nodes not running after deploy: $unhealthy"
+            echo "Check the logs above for the cause (e.g. an expired/invalid SROS license -> refresh the SROS25_LICENSE secret; or a containerlab/image regression in the postdeploy healthcheck)."
+            exit 1
+          fi
+
+          echo "All containerlab nodes are running."
+
       - name: Set the versions to test
         run: |
           cat ./integration-tests/artifacts/kform/configmap-input-vars.yaml.tmpl | envsubst > ./config-server/artifacts/in/configmap-input-vars.yaml
