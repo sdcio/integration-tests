@@ -14,7 +14,7 @@ ${SDCIO_CONFIG_SERVER_SECRETS_FILES_BASE}                           ${SDCIO_CONF
 
 ${SDCIO_INTEGRATION_TESTS_SECRETS_FILES_BASE}                       ${CURDIR}/01-crs/secrets
 # This is intentionally left empty as there are no custom schema's to be tested yet.
-@{SDCIO_INTEGRATION_TESTS_SECRETS_FILES}                            secret-srl.yaml    secret-sros.yaml
+@{SDCIO_INTEGRATION_TESTS_SECRETS_FILES}                            secret-srl.yaml    secret-sros.yaml    # secret-keyring.yaml
 
 # Schemas
 ${SDCIO_CONFIG_SERVER_SCHEMA_FILES_BASE}                            ${SDCIO_CONFIG_SERVER_REPO_PATH}/example/schemas

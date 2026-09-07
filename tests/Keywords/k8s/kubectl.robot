@@ -39,6 +39,16 @@ kubectl patch
     Should Be Equal As Integers    ${rc}    0
     RETURN    ${rc}    ${output}
 
+kubectl get jsonpath
+    [Documentation]    Fetch a single jsonpath value from a named namespaced resource.
+    ...    Returns the raw string output; fails if kubectl exits non-zero.
+    [Arguments]    ${resource}    ${name}    ${namespace}    ${jsonpath}
+    ${rc}    ${output} =    Run And Return Rc And Output
+    ...    kubectl get ${resource}/${name} -n ${namespace} -o jsonpath='${jsonpath}'
+    Log    ${output}
+    Should Be Equal As Integers    ${rc}    0
+    RETURN    ${output}
+
 Kubectl log diagnostic
     [Documentation]    Run `kubectl` with the rest of the CLI (everything after the word kubectl). Logs at WARN; does not fail on non-zero exit (for CI troubleshooting).
     [Arguments]    ${kubectl_arguments}
