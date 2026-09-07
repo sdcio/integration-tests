@@ -157,6 +157,10 @@ jobs:
         env:
           SROS_LICENSE: ${{ secrets.SROS25_LICENSE }}
         run: |
+          if [ -z "$SROS_LICENSE" ]; then
+            echo "::error::SROS25_LICENSE is empty for this run (actor=${{ github.actor }}, event=${{ github.event_name }}). Check the org Actions secret and, for Dependabot-triggered runs, the matching org Dependabot secret — both must be kept in sync (same name, same repos)."
+            exit 1
+          fi
           echo $SROS_LICENSE | tee ./integration-tests/containerlab/license-sros.txt
 
       - name: Deploy CI-Test-Containerlab
