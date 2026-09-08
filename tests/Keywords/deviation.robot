@@ -24,11 +24,19 @@ Verify Deviation on k8s
     Should Be Equal As Integers    ${result}    ${match}
 
 Delete Deviation
-    [Documentation]    Delete the deviation CR on k8s
+    [Documentation]    Delete the deviation CR on k8s, retrying on transient lock
+    ...    contention (code=Aborted "datastore is locked"). Uses the caller suite's
+    ...    ${eventual_timeout} and ${retry} variables, which every deviation suite defines.
     [Arguments]    ${name}
     ${deviation_name} =    Get Config Deviation Resource Name    ${name}
+    Wait Until Keyword Succeeds    ${eventual_timeout}    ${retry}
+    ...    Run Deviation Revert    ${deviation_name}
+
+Run Deviation Revert
+    [Documentation]    Execute the revert RPC for one deviation; fails on non-zero exit so
+    ...    Wait Until Keyword Succeeds can retry on transient lock errors.
+    [Arguments]    ${deviation_name}
     ${rc}    ${output} =    Run And Return Rc And Output
     ...    kubectl sdc deviation --deviation ${deviation_name} --revert -n ${SDCIO_RESOURCE_NAMESPACE}
     Log    ${output}
     Should Be Equal As Integers    ${rc}    0
-    RETURN    ${rc}    ${output}
