@@ -1,0 +1,18 @@
+apiVersion: config.sdcio.dev/v1alpha1
+kind: Config
+metadata:
+  name: cache-backend-customer
+  namespace: default
+  labels:
+    config.sdcio.dev/targetName: sr1
+    config.sdcio.dev/targetNamespace: default
+spec:
+  priority: 5
+  config:
+  - path: /
+    value:
+      configure:
+        service:
+          customer:
+            - customer-name: "9"
+              customer-id: 9
