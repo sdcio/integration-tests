@@ -291,22 +291,32 @@ Verify Device Config For Intent
     END
 
 Partial Revert Deviations For Intent by Admin State
+    [Documentation]    Partially revert deviations by admin-state filter-path, retrying on
+    ...    transient lock contention (code=Aborted "datastore is locked"), matching the
+    ...    pattern in Delete Deviation (tests/Keywords/deviation.robot).
     [Arguments]    ${intent}
     @{targetnodes} =    Get Target Nodes For Intent    ${intent}    ${SDCIO_SROS_NODES}
     ${targetnode} =    Get From List    ${targetnodes}    0
     ${deviation_name} =    Get Deviation Name    ${intent}    ${targetnode}
     ${deviation_resource} =    Get Config Deviation Resource Name    ${deviation_name}
     ${filter_path} =    Set Variable    /configure/service/vprn[service-name=${intents.${intent}}]/admin-state
-    ${rc}    ${output} =    Run And Return Rc And Output
-    ...    kubectl sdc deviation --deviation ${deviation_resource} --filter-path ${filter_path} --revert
-    Log    ${output}
-    Should Be Equal As Integers    ${rc}    0
+    Wait Until Keyword Succeeds    ${eventual_timeout}    ${retry}
+    ...    Run Partial Revert Deviations by Admin State    ${deviation_resource}    ${filter_path}
     Wait Until Keyword Succeeds
     ...    ${eventual_timeout}
     ...    ${retry}
     ...    Verify Deviation on k8s
     ...    ${deviation_name}
     ...    2
+
+Run Partial Revert Deviations by Admin State
+    [Documentation]    Execute the partial-revert-by-admin-state RPC for one deviation; fails
+    ...    on non-zero exit so Wait Until Keyword Succeeds can retry on transient lock errors.
+    [Arguments]    ${deviation_resource}    ${filter_path}
+    ${rc}    ${output} =    Run And Return Rc And Output
+    ...    kubectl sdc deviation --deviation ${deviation_resource} --filter-path ${filter_path} --revert
+    Log    ${output}
+    Should Be Equal As Integers    ${rc}    0
 
 Get Deviation Name
     [Arguments]    ${intent}    ${node}

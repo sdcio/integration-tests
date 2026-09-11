@@ -322,22 +322,32 @@ Verify Device Config For Intent
     END
 
 Partial Revert Deviations For Intent by Interface
+    [Documentation]    Partially revert deviations by interface filter-path, retrying on
+    ...    transient lock contention (code=Aborted "datastore is locked"), matching the
+    ...    pattern in Delete Deviation (tests/Keywords/deviation.robot).
     [Arguments]    ${intent}
     @{targetnodes} =    Get Target Nodes For Intent    ${intent}    ${SDCIO_SRL_NODES}
     ${targetnode} =    Get From List    ${targetnodes}    0
     ${deviation_name} =    Get Deviation Name    ${intent}    ${targetnode}
     ${deviation_resource} =    Get Config Deviation Resource Name    ${deviation_name}
     ${interface_path} =    Set Variable    /interface[name=${intentsinterfaces.${intent}}]
-    ${rc}    ${output} =    Run And Return Rc And Output
-    ...    kubectl sdc deviation --deviation ${deviation_resource} --filter-path ${interface_path} --revert
-    Log    ${output}
-    Should Be Equal As Integers    ${rc}    0
+    Wait Until Keyword Succeeds    ${eventual_timeout}    ${retry}
+    ...    Run Partial Revert Deviations by Interface    ${deviation_resource}    ${interface_path}
     Wait Until Keyword Succeeds
     ...    ${eventual_timeout}
     ...    ${retry}
     ...    Verify Deviation on k8s
     ...    ${deviation_name}
     ...    3
+
+Run Partial Revert Deviations by Interface
+    [Documentation]    Execute the partial-revert-by-interface RPC for one deviation; fails
+    ...    on non-zero exit so Wait Until Keyword Succeeds can retry on transient lock errors.
+    [Arguments]    ${deviation_resource}    ${interface_path}
+    ${rc}    ${output} =    Run And Return Rc And Output
+    ...    kubectl sdc deviation --deviation ${deviation_resource} --filter-path ${interface_path} --revert
+    Log    ${output}
+    Should Be Equal As Integers    ${rc}    0
 
 Get Deviation Name
     [Arguments]    ${intent}    ${node}
