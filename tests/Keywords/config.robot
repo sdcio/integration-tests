@@ -14,6 +14,17 @@ Config Check Ready
     ${status} =    Get values from JSON    ${json}    $.status.conditions[?(@.type=='Ready')].status
     Should be equal as strings    ${status}    ['True']
 
+Config Check Not Ready
+    [Documentation]    Make sure the referenced Config is NOT Ready (used to assert that a
+    ...    device-rejected apply surfaces as a failure condition, not a silent success).
+    [Arguments]    ${namespace}    ${object}
+
+    ${rc}    ${output} =    kubectl get    -n ${namespace} configs.config.sdcio.dev -o=json ${object}
+    Log    ${output}
+    ${json} =    Convert string to JSON    ${output}
+    ${status} =    Get values from JSON    ${json}    $.status.conditions[?(@.type=='Ready')].status
+    Should be equal as strings    ${status}    ['False']
+
 ConfigSet Check Ready
     [Documentation]    Make sure the referenced ConfigSet is applied properly
     [Arguments]    ${namespace}    ${object}

@@ -1,0 +1,18 @@
+apiVersion: config.sdcio.dev/v1alpha1
+kind: Config
+metadata:
+  name: cache-backend-recovery-srl
+  namespace: default
+  labels:
+    config.sdcio.dev/targetName: srl1
+    config.sdcio.dev/targetNamespace: default
+spec:
+  priority: 10
+  revertive: true
+  config:
+  - path: /
+    value:
+      interface:
+      - name: ethernet-1/13
+        admin-state: "enable"
+        description: "cache-backend-recovery"
