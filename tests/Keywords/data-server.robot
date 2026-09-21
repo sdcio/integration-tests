@@ -2,6 +2,7 @@
 Resource    ../variables.robot
 Library     Process
 Library     OperatingSystem
+Library     RPA.JSON
 
 *** Variables ***
 ${DATA_SERVER_GRPC_LOCAL_PORT}    56000
@@ -13,7 +14,11 @@ Ensure Data Server gRPC Port Forward
     [Documentation]    Port-forward the data-server gRPC service once per suite so
     ...    GetIntent can be exercised directly (kubectl sdc has no named-intent read).
     IF    ${DATA_SERVER_PF_STARTED}
-        RETURN
+        ${ready}=    Run Keyword And Return Status    Data Server gRPC Port Forward Ready
+        IF    ${ready}
+            RETURN
+        END
+        Stop Data Server gRPC Port Forward
     END
     ${handle}=    Start Process
     ...    kubectl port-forward -n ${SDCIO_SYSTEM_NAMESPACE} svc/data-server ${DATA_SERVER_GRPC_LOCAL_PORT}:56000
@@ -57,4 +62,18 @@ Verify Intent Get Contains Description
     ...    NewImportAdapter → mergeConfigBlobs for config-server root blobs.
     [Arguments]    ${target}    ${intent_name}    ${expected_description}
     ${output}=    Get Intent Output Via gRPC    ${target}    ${intent_name}
-    Should Contain    ${output}    ${expected_description}
+    ${contains_raw}=    Run Keyword And Return Status
+    ...    Should Contain    ${output}    ${expected_description}
+    IF    not ${contains_raw}
+        ${decoded_blob}=    Decode GetIntent Blob Output    ${output}
+        Should Not Be Empty    ${decoded_blob}
+        Should Contain    ${decoded_blob}    ${expected_description}
+    END
+
+Decode GetIntent Blob Output
+    [Documentation]    Decode GetIntent's base64 blob payload (when present) into JSON text.
+    [Arguments]    ${output}
+    ${json}=    Convert String to JSON    ${output}
+    ${blob}=    Evaluate    $json.get("blob", "")
+    ${decoded}=    Evaluate    base64.b64decode($blob).decode("utf-8") if $blob else ""    modules=base64
+    RETURN    ${decoded}
