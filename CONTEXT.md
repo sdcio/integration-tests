@@ -40,7 +40,7 @@ _Avoid_: Sensitive intent, test intent
 Seven cases in `10-srl-sensitive.robot`: (1) K8s pipeline happy path, (2) southbound runningconfig unredacted, (3) blame redacts `***`, (4) deviation on sensitive leaf masked, (5) missing secret → ConfigResolverFailed + last-good SC preserved, (6) pod-restart recovery via TargetSnapshot, (7) TODO placeholder for `include_sensitive` admin bypass pending kubectl-sdc flag.
 
 **Cache-backend suite (`05-cache-backend`)**:
-Dedicated Robot suite proving the config-server-backed `Cache.Type` implementation works. It never switches `Cache.Type`; a caller must already have deployed a cluster with that backend. Scoped to the seam — a CRUD round-trip through `ConfigReadService` plus a `data-server-controller` restart-recovery check. The cache-backend job also runs `02-crud` and `03-deviations` against that same deploy; `04-sensitive` stays on the local-backed job only.
+Dedicated Robot suite proving the config-server-backed `Cache.Type` implementation works. It never switches `Cache.Type`; a caller must already have deployed a cluster with that backend. Scoped to the seam — a CRUD round-trip through `ConfigSnapshotService`, sync-revert reload, and TargetSnapshot write-path regressions (no process-restart cases). The cache-backend job also runs `02-crud` and `03-deviations` against that same deploy; `04-sensitive` stays on the local-backed job only.
 _Avoid_: Cache backend tests, config-server cache suite, reconfiguring the environment
 
 **Cache-backend job**:

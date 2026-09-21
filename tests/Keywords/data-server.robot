@@ -46,7 +46,7 @@ Stop Data Server gRPC Port Forward
 Get Intent Output Via gRPC
     [Documentation]    Call data.DataServer/GetIntent for a named intent. Under
     ...    Cache.Type: config-server this reads last-applied blobs through
-    ...    ConfigReadService and assembles them via mergeConfigBlobs.
+    ...    ConfigSnapshotService and assembles them via mergeConfigBlobs.
     [Arguments]    ${target}    ${intent_name}
     Ensure Data Server gRPC Port Forward
     ${datastore}=    Catenate    SEPARATOR=.    ${SDCIO_RESOURCE_NAMESPACE}    ${target}

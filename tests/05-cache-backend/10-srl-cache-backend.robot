@@ -53,11 +53,11 @@ ${CB_ROLLBACK_GOOD_DESCRIPTION}    cache-backend-rollback-good
 ${CB_ROLLBACK_BAD_IFACE}        ethernet-1/999
 
 *** Test Cases ***
-TC1: CRUD Round Trip Reads Flow Through ConfigReadService
+TC1: CRUD Round Trip Reads Flow Through ConfigSnapshotService
     [Documentation]    The intent applied in Suite Setup is Ready and reflected on the device;
     ...    named-intent GetIntent (gRPC), BlameConfig (`kubectl sdc blame`), and running
     ...    export (`kubectl sdc runningconfig`) all read back the expected description.
-    ...    Named-intent GetIntent and BlameConfig both load intents via ConfigReadService;
+    ...    Named-intent GetIntent and BlameConfig both load intents via ConfigSnapshotService;
     ...    runningconfig reads the in-memory sync tree only.
     [Tags]    happy-path    crud
     Verify Interface Description On Device    ${TARGET}    ${IFACE}    ${DESCRIPTION}
@@ -68,7 +68,7 @@ TC1: CRUD Round Trip Reads Flow Through ConfigReadService
 TC2: Sync Revert Reloads Intents After Device Drift
     [Documentation]    Introduce device drift and wait for periodic sync to revert it.
     ...    This exercises performRevert's LoadAllButRunningIntents path, which must
-    ...    assemble root-path Config blobs from ConfigReadService on every sync cycle.
+    ...    assemble root-path Config blobs from ConfigSnapshotService on every sync cycle.
     [Tags]    sync    revert
     Set Interface Description On Device    ${TARGET}    ${IFACE}    ${DRIFT_DESCRIPTION}
     Wait Until Keyword Succeeds    ${sync_revert_timeout}    5s
@@ -234,7 +234,7 @@ Verify Interface Description On Device
 Verify Running Config Contains Description
     [Documentation]    Running export seam: `kubectl sdc runningconfig` calls GetIntent(running)
     ...    and reads the in-memory sync tree. It does not load named intents from
-    ...    ConfigReadService, so it is not sufficient alone to prove cache-backend import.
+    ...    ConfigSnapshotService, so it is not sufficient alone to prove cache-backend import.
     [Arguments]    ${target}    ${expected_description}
     ${rc}    ${output} =    Run And Return Rc And Output
     ...    kubectl sdc runningconfig --target ${target} -n ${SDCIO_RESOURCE_NAMESPACE}
@@ -245,7 +245,7 @@ Verify Running Config Contains Description
 Verify Blame Contains Description
     [Documentation]    BlameConfig seam: `kubectl sdc blame` calls LoadAllButRunningIntents,
     ...    which under Cache.Type: config-server assembles intent blobs from
-    ...    ConfigReadService via mergeConfigBlobs.
+    ...    ConfigSnapshotService via mergeConfigBlobs.
     [Arguments]    ${target}    ${expected_description}
     ${rc}    ${output} =    Run And Return Rc And Output
     ...    kubectl sdc blame --target ${target} -n ${SDCIO_RESOURCE_NAMESPACE}
