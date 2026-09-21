@@ -131,7 +131,11 @@ Create And Verify Intent
     Apply Intent On K8s    ${intent}    ${EMPTY}    ${CURDIR}/input/srl    -srl
     @{nodes} =    Get Target Nodes For Intent    ${intent}    ${SDCIO_SRL_NODES}
     FOR    ${node}    IN    @{nodes}
-        Verify Intent Config On Node    ${intent}    ${node}    ${CURDIR}/expectedoutput/srl/${intent}-srl.json
+        Wait Until Keyword Succeeds    ${eventual_timeout}    ${retry}
+        ...    Verify Intent Config On Node
+        ...    ${intent}
+        ...    ${node}
+        ...    ${CURDIR}/expectedoutput/srl/${intent}-srl.json
     END
 
 Delete And Verify Intent

@@ -37,7 +37,7 @@ Log data-server-controller diagnostics
 
 Config-Server until config-Server deployment ready
     [Documentation]     Will wait for the Colocated Deployment to become available
-    Wait Until Keyword Succeeds    3 min    2 sec  Deployment AvailableReplicas    ${SDCIO_SYSTEM_NAMESPACE}    ${SDCIO_COLOCATED_DEPLOYMENT}
+    Wait Until Deployment AvailableReplicas    ${SDCIO_SYSTEM_NAMESPACE}    ${SDCIO_COLOCATED_DEPLOYMENT}    3 min    2 sec
 
 Config-Server until Service Endpoints
     [Documentation]    Checks that the Servie endpoints are registered for the API Aggregation Service

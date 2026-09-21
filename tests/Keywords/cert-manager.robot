@@ -8,11 +8,11 @@ Wait until Cert-Manger Ready
     Cert-Manager until cert-manager-webhook deployment ready
     
 Cert-Manager until cert-manager deployment ready
-    Wait Until Keyword Succeeds    3 min    2 sec  Deployment AvailableReplicas    cert-manager    cert-manager
+    Wait Until Deployment AvailableReplicas    cert-manager    cert-manager    3 min    2 sec
 
 Cert-Manager until cert-manager-cainjector deployment ready
-    Wait Until Keyword Succeeds    2 min    2 sec    Deployment AvailableReplicas    cert-manager    cert-manager-cainjector
+    Wait Until Deployment AvailableReplicas    cert-manager    cert-manager-cainjector    2 min    2 sec
 
 Cert-Manager until cert-manager-webhook deployment ready
-    Wait Until Keyword Succeeds    2 min    2 sec    Deployment AvailableReplicas    cert-manager    cert-manager-webhook
+    Wait Until Deployment AvailableReplicas    cert-manager    cert-manager-webhook    2 min    2 sec
 

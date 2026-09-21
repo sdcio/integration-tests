@@ -1,0 +1,21 @@
+apiVersion: config.sdcio.dev/v1alpha1
+kind: Config
+metadata:
+  name: cache-backend-intent1-sros
+  namespace: default
+  labels:
+    config.sdcio.dev/targetName: sr1
+    config.sdcio.dev/targetNamespace: default
+spec:
+  priority: 10
+  revertive: true
+  config:
+  - path: /
+    value:
+      configure:
+        service:
+          vprn:
+            service-name: "vprn900"
+            customer: "9"
+            service-id: "900"
+            admin-state: "enable"

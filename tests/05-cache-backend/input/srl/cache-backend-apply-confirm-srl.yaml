@@ -1,0 +1,18 @@
+apiVersion: config.sdcio.dev/v1alpha1
+kind: Config
+metadata:
+  name: cache-backend-apply-confirm-srl
+  namespace: default
+  labels:
+    config.sdcio.dev/targetName: srl1
+    config.sdcio.dev/targetNamespace: default
+spec:
+  priority: 10
+  revertive: true
+  config:
+  - path: /
+    value:
+      interface:
+      - name: ethernet-1/11
+        admin-state: "enable"
+        description: "cache-backend-apply-confirm"
