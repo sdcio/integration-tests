@@ -136,6 +136,15 @@ jobs:
         with:
           go-version: ${{ env.GO_VER }}
 
+      - name: Resolve sdc-protos from config-server go.mod
+        working-directory: config-server
+        run: |
+          # grpcurl reads the protos of the exact module version under test
+          # (tag or pseudo-version), since the data-server serves no reflection.
+          dir=$(go mod download -json github.com/sdcio/sdc-protos | jq -r .Dir)
+          test -f "$dir/data.proto"
+          echo "SDC_PROTOS_DIR=$dir" >> "$GITHUB_ENV"
+
       - name: Install kubectl-sdc plugin from main
         run: |
           # GOPRIVATE (not a blanket GOPROXY=direct) forces a fresh, direct
