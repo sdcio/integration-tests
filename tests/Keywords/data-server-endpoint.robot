@@ -8,13 +8,15 @@ Library     String
 ${DS_ENDPOINT_LOCAL_PORT}    56000
 ${DS_ENDPOINT_PF_HANDLE}     ${NONE}
 ${SDC_PROTOS_REPO}           https://github.com/sdcio/sdc-protos.git
-${SDC_PROTOS_DIR}            ${OUTPUT DIR}${/}sdc-protos
+${SDC_PROTOS_DIR}            %{SDC_PROTOS_DIR=${OUTPUT DIR}${/}sdc-protos}
 ${GRPCURL_PROTOS}            -import-path ${SDC_PROTOS_DIR} -proto data.proto -proto schema.proto
 
 *** Keywords ***
 Fetch Sdc Protos
     [Documentation]    The data-server does not serve gRPC reflection, so grpcurl reads the
-    ...    DataServer and SchemaServer definitions from a checkout of sdc-protos.
+    ...    DataServer and SchemaServer definitions from sdc-protos. CI sets SDC_PROTOS_DIR to
+    ...    the module version config-server's go.mod selects; without it (local runs) the
+    ...    default branch of sdc-protos is cloned, which can differ from the deployed build.
     ${exists}=    Run Keyword And Return Status    File Should Exist    ${SDC_PROTOS_DIR}${/}data.proto
     IF    ${exists}    RETURN
     ${rc}    ${output}=    Run And Return Rc And Output
