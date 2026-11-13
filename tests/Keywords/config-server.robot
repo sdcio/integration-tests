@@ -17,7 +17,7 @@ Wait until Config-Server Ready
     Config-Server until data-server-controller StatefulSet ready
 
 Config-Server until data-server-controller StatefulSet ready
-    [Documentation]    Schema CRs (suite 01) need gRPC to schema-server:56000; that is the data-server container in this StatefulSet. Not covered by api-server Deployment checks above.
+    [Documentation]    Schema CRs (suite 01) need gRPC to schema-server:56000; that is served by the controller container of this StatefulSet. Not covered by api-server Deployment checks above.
     ${ready}=    Run Keyword And Return Status    Wait Until Keyword Succeeds    10 min    5 sec    StatefulSet Ready Replicas    ${SDCIO_SYSTEM_NAMESPACE}    ${SDCIO_DATA_SERVER_CONTROLLER_STATEFULSET}
     IF    not ${ready}
         Log data-server-controller diagnostics
@@ -32,8 +32,7 @@ Log data-server-controller diagnostics
     Kubectl log diagnostic    describe statefulset ${SDCIO_DATA_SERVER_CONTROLLER_STATEFULSET} -n ${SDCIO_SYSTEM_NAMESPACE}
     Kubectl log diagnostic    get endpointslices -n ${SDCIO_SYSTEM_NAMESPACE} -l kubernetes.io/service-name=schema-server -o wide
     Kubectl log diagnostic    get endpoints schema-server -n ${SDCIO_SYSTEM_NAMESPACE} -o yaml
-    Kubectl log diagnostic    logs statefulset/${SDCIO_DATA_SERVER_CONTROLLER_STATEFULSET} -n ${SDCIO_SYSTEM_NAMESPACE} -c data-server --tail=400
-    Kubectl log diagnostic    logs statefulset/${SDCIO_DATA_SERVER_CONTROLLER_STATEFULSET} -n ${SDCIO_SYSTEM_NAMESPACE} -c controller --tail=250
+    Kubectl log diagnostic    logs statefulset/${SDCIO_DATA_SERVER_CONTROLLER_STATEFULSET} -n ${SDCIO_SYSTEM_NAMESPACE} -c controller --tail=400
 
 Config-Server until config-Server deployment ready
     [Documentation]     Will wait for the Colocated Deployment to become available

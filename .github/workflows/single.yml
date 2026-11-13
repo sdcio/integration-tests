@@ -136,6 +136,15 @@ jobs:
         with:
           go-version: ${{ env.GO_VER }}
 
+      - name: Resolve sdc-protos from config-server go.mod
+        working-directory: config-server
+        run: |
+          # grpcurl reads the protos of the exact module version under test
+          # (tag or pseudo-version), since the data-server serves no reflection.
+          dir=$(go mod download -json github.com/sdcio/sdc-protos | jq -r .Dir)
+          test -f "$dir/data.proto"
+          echo "SDC_PROTOS_DIR=$dir" >> "$GITHUB_ENV"
+
       - name: Install kubectl-sdc plugin from main
         run: |
           # GOPRIVATE (not a blanket GOPROXY=direct) forces a fresh, direct
@@ -174,9 +183,7 @@ jobs:
           cat ./integration-tests/artifacts/kform/configmap-input-vars.yaml.tmpl | envsubst > ./config-server/artifacts/in/configmap-input-vars.yaml
           cd ./config-server
           make artifacts
-          yq -i 'select(.kind == "StatefulSet" and .metadata.name == "data-server-controller") |= (with(.spec.template.spec.containers[] | select(.name == "data-server"); .env = ((.env // []) | map(select(.name != "DEVIATION_INTERVAL"))) + [{"name":"DEVIATION_INTERVAL","value":"10s"}]))' ./artifacts/out/artifacts.yaml
-          # adjust trace level of data-server
-          yq -i 'select(.kind == "StatefulSet" and .metadata.name == "data-server-controller") .spec.template.spec.containers[] |= select(.name == "data-server") .args = (.args // []) + ["-t"]' ./artifacts/out/artifacts.yaml
+          yq -i 'select(.kind == "StatefulSet" and .metadata.name == "data-server-controller") |= (with(.spec.template.spec.containers[] | select(.name == "controller"); .env = ((.env // []) | map(select(.name != "DEVIATION_INTERVAL"))) + [{"name":"DEVIATION_INTERVAL","value":"10s"}]))' ./artifacts/out/artifacts.yaml
           # optionally switch the cache backend (ADR 0002: CI-side yq patch, no config-server kform input)
           if [ "${{ inputs.cache_type }}" = "config-server" ]; then
             yq -i '(select(.kind == "ConfigMap" and .metadata.name == "data-server") | .data["data-server.yaml"]) |= (from_yaml | .cache.type = "config-server" | .cache.address = "127.0.0.1:56010" | to_yaml)' ./artifacts/out/artifacts.yaml
@@ -212,9 +219,6 @@ jobs:
         run: |
           mkdir -p ./integration-tests/tests/out/02-crud-logs
           
-          # Start data-server log collection
-          kubectl logs -f statefulset/data-server-controller -c data-server -n ${{ env.SDC_NAMESPACE }} --tail=0 --since=0s > ./integration-tests/tests/out/02-crud-logs/data-server.log 2>&1 &
-          echo $! > /tmp/data-server-pid.txt
           
           # Start data-server-controller log collection
           kubectl logs -f statefulset/data-server-controller -c controller -n ${{ env.SDC_NAMESPACE }} --tail=0 --since=0s > ./integration-tests/tests/out/02-crud-logs/data-server-controller.log 2>&1 &
@@ -233,7 +237,6 @@ jobs:
         if: always() && contains(format(',{0},', inputs.suites_to_run), ',02-crud,')
         run: |
           # Kill processes using the standard PID files
-          [ -f /tmp/data-server-pid.txt ] && kill $(cat /tmp/data-server-pid.txt) 2>/dev/null || true
           [ -f /tmp/data-server-controller-pid.txt ] && kill $(cat /tmp/data-server-controller-pid.txt) 2>/dev/null || true
           [ -f /tmp/api-server-pid.txt ] && kill $(cat /tmp/api-server-pid.txt) 2>/dev/null || true
           sleep 1
@@ -243,9 +246,6 @@ jobs:
         run: |
           mkdir -p ./integration-tests/tests/out/03-deviations-logs
           
-          # Collect data-server logs
-          kubectl logs -f statefulset/data-server-controller -c data-server -n ${{ env.SDC_NAMESPACE }} --tail=0 --since=0s > ./integration-tests/tests/out/03-deviations-logs/data-server.log 2>&1 &
-          echo $! > /tmp/data-server-pid.txt
           
           # Collect data-server-controller logs
           kubectl logs -f statefulset/data-server-controller -c controller -n ${{ env.SDC_NAMESPACE }} --tail=0 --since=0s > ./integration-tests/tests/out/03-deviations-logs/data-server-controller.log 2>&1 &
@@ -264,7 +264,6 @@ jobs:
         if: always() && contains(format(',{0},', inputs.suites_to_run), ',03-deviations,')
         run: |
           # Kill processes using the standard PID files
-          [ -f /tmp/data-server-pid.txt ] && kill $(cat /tmp/data-server-pid.txt) 2>/dev/null || true
           [ -f /tmp/data-server-controller-pid.txt ] && kill $(cat /tmp/data-server-controller-pid.txt) 2>/dev/null || true
           [ -f /tmp/api-server-pid.txt ] && kill $(cat /tmp/api-server-pid.txt) 2>/dev/null || true
           sleep 1
@@ -274,8 +273,6 @@ jobs:
         run: |
           mkdir -p ./integration-tests/tests/out/04-sensitive-logs
 
-          kubectl logs -f statefulset/data-server-controller -c data-server -n ${{ env.SDC_NAMESPACE }} --tail=0 --since=0s > ./integration-tests/tests/out/04-sensitive-logs/data-server.log 2>&1 &
-          echo $! > /tmp/data-server-pid.txt
 
           kubectl logs -f statefulset/data-server-controller -c controller -n ${{ env.SDC_NAMESPACE }} --tail=0 --since=0s > ./integration-tests/tests/out/04-sensitive-logs/data-server-controller.log 2>&1 &
           echo $! > /tmp/data-server-controller-pid.txt
@@ -296,7 +293,6 @@ jobs:
       - name: Stop collecting logs for 04-Sensitive
         if: always() && contains(format(',{0},', inputs.suites_to_run), ',04-sensitive,')
         run: |
-          [ -f /tmp/data-server-pid.txt ] && kill $(cat /tmp/data-server-pid.txt) 2>/dev/null || true
           [ -f /tmp/data-server-controller-pid.txt ] && kill $(cat /tmp/data-server-controller-pid.txt) 2>/dev/null || true
           [ -f /tmp/api-server-pid.txt ] && kill $(cat /tmp/api-server-pid.txt) 2>/dev/null || true
           sleep 1
@@ -306,8 +302,6 @@ jobs:
         run: |
           mkdir -p ./integration-tests/tests/out/05-cache-backend-logs
 
-          kubectl logs -f statefulset/data-server-controller -c data-server -n ${{ env.SDC_NAMESPACE }} --tail=0 --since=0s > ./integration-tests/tests/out/05-cache-backend-logs/data-server.log 2>&1 &
-          echo $! > /tmp/data-server-pid.txt
 
           kubectl logs -f statefulset/data-server-controller -c controller -n ${{ env.SDC_NAMESPACE }} --tail=0 --since=0s > ./integration-tests/tests/out/05-cache-backend-logs/data-server-controller.log 2>&1 &
           echo $! > /tmp/data-server-controller-pid.txt
@@ -328,7 +322,6 @@ jobs:
       - name: Stop collecting logs for 05-Cache-backend
         if: always() && contains(format(',{0},', inputs.suites_to_run), ',05-cache-backend,')
         run: |
-          [ -f /tmp/data-server-pid.txt ] && kill $(cat /tmp/data-server-pid.txt) 2>/dev/null || true
           [ -f /tmp/data-server-controller-pid.txt ] && kill $(cat /tmp/data-server-controller-pid.txt) 2>/dev/null || true
           [ -f /tmp/api-server-pid.txt ] && kill $(cat /tmp/api-server-pid.txt) 2>/dev/null || true
           sleep 1
@@ -373,10 +366,6 @@ jobs:
             echo "=== Running suite: ${suite} ==="
             mkdir -p "./integration-tests/tests/out/${suite}-logs"
 
-            kubectl logs -f statefulset/data-server-controller -c data-server \
-              -n ${{ env.SDC_NAMESPACE }} --tail=0 --since=0s \
-              > "./integration-tests/tests/out/${suite}-logs/data-server.log" 2>&1 &
-            echo $! > /tmp/extra-ds-pid.txt
 
             kubectl logs -f statefulset/data-server-controller -c controller \
               -n ${{ env.SDC_NAMESPACE }} --tail=0 --since=0s \
@@ -396,7 +385,6 @@ jobs:
             ROBOT_RC=$?
             echo "ROBOT_RC=${ROBOT_RC} for suite ${suite}"
 
-            [ -f /tmp/extra-ds-pid.txt ]  && kill "$(cat /tmp/extra-ds-pid.txt)"  2>/dev/null || true
             [ -f /tmp/extra-dsc-pid.txt ] && kill "$(cat /tmp/extra-dsc-pid.txt)" 2>/dev/null || true
             [ -f /tmp/extra-api-pid.txt ] && kill "$(cat /tmp/extra-api-pid.txt)" 2>/dev/null || true
             sleep 1
